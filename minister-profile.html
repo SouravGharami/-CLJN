@@ -3137,6 +3137,111 @@ document.addEventListener('keydown', e => {
     document.querySelectorAll('.modal-overlay.open').forEach(m => closeModal(m.id));
   }
 });
+
+// ============================================================
+// DEMO MINISTER OVERRIDE — loads data for ids 13 & 14
+// ============================================================
+(function() {
+  const demoMinisters = {
+    13: {
+      name: 'Pastor Samiran Felix',
+      title: 'Pastoral Counselor & Bible Teacher',
+      ministry: 'Covenant Grace Fellowship',
+      country: '🇨🇦 Canada',
+      denomination: 'Non-Denominational',
+      exp: '10 yrs',
+      fee: '$70/hr',
+      rating: '4.8',
+      reviews: '156',
+      emoji: '🌿',
+      online: true,
+      tags: ['Teaching', 'Counseling', 'Prayer'],
+      bio: 'Gifted teacher and pastoral counselor with a heart for restoration. Pastor Samiran Felix ministers across multicultural communities with a gentle prophetic grace. His warm teaching style and compassionate approach have helped hundreds find healing and spiritual direction.',
+      lang: 'English, French'
+    },
+    14: {
+      name: 'Prophet Prophecy Gilbert',
+      title: 'Prophetic Minister & Intercessor',
+      ministry: 'Burning Bush Prophetic Ministry',
+      country: '🇳🇬 Nigeria',
+      denomination: 'Pentecostal',
+      exp: '13 yrs',
+      fee: '$95/hr',
+      rating: '4.9',
+      reviews: '203',
+      emoji: '🔥',
+      online: true,
+      tags: ['Prophecy', 'Intercession', 'Deliverance'],
+      bio: 'Fiery prophetic voice and intercessor. Prophet Prophecy Gilbert carries a strong mantle for accurate prophetic utterances and breakthrough prayer ministry. Known for transforming lives through powerful declarations and deliverance sessions across West Africa and the diaspora.',
+      lang: 'English, Pidgin'
+    }
+  };
+
+  const params = new URLSearchParams(window.location.search);
+  const id = parseInt(params.get('id'));
+  const m = demoMinisters[id];
+  if (!m) return;
+
+  // Update page title
+  document.title = m.name + ' — CLJN Ministry Platform';
+
+  // Run after DOM ready
+  function applyOverride() {
+    // Name & title
+    const nameEl = document.querySelector('.minister-name');
+    const titleEl = document.querySelector('.minister-title');
+    if (nameEl) nameEl.textContent = m.name;
+    if (titleEl) titleEl.textContent = m.title;
+
+    // Avatar emoji — find all avatar areas
+    document.querySelectorAll('.avatar-emoji, .profile-avatar-emoji').forEach(el => {
+      el.textContent = m.emoji;
+    });
+
+    // Online status dot
+    const statusDot = document.querySelector('.status-dot');
+    const statusText = document.querySelector('.status-text');
+    if (statusDot) statusDot.style.background = m.online ? '#4ade80' : '#f87171';
+    if (statusText) statusText.textContent = m.online ? 'Available Now' : 'Offline';
+
+    // Bio paragraphs — update first <p> in about section if present
+    const bioEls = document.querySelectorAll('.minister-bio, .about-text p');
+    if (bioEls.length) bioEls[0].textContent = m.bio;
+
+    // Stats / meta items: look for exp and fee
+    document.querySelectorAll('.stat-value, .meta-value').forEach(el => {
+      const label = el.nextElementSibling || el.parentElement.querySelector('.stat-label, .meta-label');
+      if (!label) return;
+      const lTxt = label.textContent.toLowerCase();
+      if (lTxt.includes('exp') || lTxt.includes('year')) el.textContent = m.exp;
+      if (lTxt.includes('fee') || lTxt.includes('consult') || lTxt.includes('rate')) el.textContent = m.fee;
+      if (lTxt.includes('review') || lTxt.includes('rating')) {
+        if (el.textContent.includes('.')) el.textContent = m.rating;
+        else el.textContent = m.reviews;
+      }
+    });
+
+    // Tags
+    document.querySelectorAll('.tags-container .tag').forEach((el, i) => {
+      if (m.tags[i]) el.textContent = m.tags[i];
+    });
+
+    // Chat header name
+    const chatName = document.querySelector('.chat-name');
+    if (chatName) chatName.textContent = m.name;
+
+    // Breadcrumb last item
+    const crumbs = document.querySelectorAll('.breadcrumb span, .breadcrumb a');
+    if (crumbs.length) crumbs[crumbs.length - 1].textContent = m.name;
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', applyOverride);
+  } else {
+    applyOverride();
+  }
+})();
+
 </script>
 </body>
 </html>

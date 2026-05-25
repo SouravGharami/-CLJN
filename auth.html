@@ -1737,7 +1737,7 @@
       <div class="form-panel active" id="loginPanel">
         <div class="form-group">
           <label class="form-label">Email or Phone</label>
-          <input type="text" class="form-input" placeholder="you@example.com" autocomplete="email">
+          <input type="text" class="form-input" id="loginEmail" placeholder="you@example.com" autocomplete="email">
         </div>
         <div class="form-group">
           <label class="form-label">Password</label>
@@ -1755,6 +1755,10 @@
         <button class="btn-primary" id="loginBtn" onclick="handleLoginRedirect(this)">
           Sign In to CLJN
         </button>
+        <div style="margin-top:14px;padding:12px 16px;background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.2);border-radius:10px;font-size:0.8rem;color:rgba(255,255,255,0.65);line-height:1.6;">
+          <span style="color:var(--gold);font-weight:600;">Demo Account:</span> Alex Muhagama &nbsp;|&nbsp;
+          <span style="color:var(--gold-light);">alex@cljn.org</span> &nbsp;/&nbsp; <span style="color:var(--gold-light);">Demo@1234</span>
+        </div>
         <div class="divider"><span>OR CONTINUE WITH</span></div>
         <div class="social-btns">
           <button class="btn-social">
@@ -2338,7 +2342,34 @@
   }
 
   /* ── BUTTON LOADING ── */
+  /* ── DEMO ACCOUNTS ── */
+  const demoAccounts = [
+    { email: 'alex@cljn.org', password: 'Demo@1234', name: 'Alex Muhagama' },
+    { email: 'alex.muhagama@cljn.org', password: 'Demo@1234', name: 'Alex Muhagama' }
+  ];
+
   function handleLogin(btn) {
+    const emailInput = document.getElementById('loginEmail');
+    const pwInput = document.getElementById('loginPw');
+    const email = emailInput ? emailInput.value.trim().toLowerCase() : '';
+    const pw = pwInput ? pwInput.value : '';
+
+    // Check if credentials match a demo account
+    const demoMatch = demoAccounts.find(a => a.email === email && a.password === pw);
+
+    // Also allow any non-empty entry (open demo mode)
+    const hasInput = email.length > 0 && pw.length > 0;
+
+    if (!hasInput) {
+      btn.style.background = 'linear-gradient(135deg, #e07070, #c05050)';
+      btn.textContent = 'Please enter your credentials';
+      setTimeout(() => {
+        btn.style.background = '';
+        btn.textContent = 'Sign In to CLJN';
+      }, 2000);
+      return;
+    }
+
     btn.classList.add('loading');
     const orig = btn.textContent;
     btn.textContent = 'Authenticating…';
@@ -2346,7 +2377,7 @@
       btn.classList.remove('loading');
       btn.textContent = orig;
       btn.style.background = 'linear-gradient(135deg, #70c49a, #50b080)';
-      btn.textContent = '✓ Welcome Back!';
+      btn.textContent = demoMatch ? `✓ Welcome, ${demoMatch.name}!` : '✓ Welcome Back!';
       setTimeout(() => {
         window.location.href = 'dashboard.html';
       }, 800);
@@ -2451,7 +2482,6 @@
 
 function handleLoginRedirect(btn) {
   handleLogin(btn);
-  setTimeout(function(){ window.location.href = 'dashboard.html'; }, 800);
 }
 </script>
 </body>

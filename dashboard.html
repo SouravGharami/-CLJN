@@ -1977,9 +1977,9 @@ body::before {
     <!-- Profile -->
     <div class="sidebar-profile">
       <div class="profile-card">
-        <div class="profile-avatar">EO</div>
+        <div class="profile-avatar" id="sidebarInitials">AM</div>
         <div class="profile-info">
-          <div class="profile-name">Emmanuel Osei</div>
+          <div class="profile-name" id="sidebarName">Alex Muhagama</div>
           <div class="profile-plan">✦ CLJN Member</div>
         </div>
       </div>
@@ -2018,8 +2018,8 @@ body::before {
         </div>
 
         <div style="position:relative">
-          <div class="topbar-avatar" onclick="toggleDropdown('userDropdown')">
-            EO
+          <div class="topbar-avatar" onclick="toggleDropdown('userDropdown')" id="topbarInitials">
+            AM
             <div class="online-dot"></div>
           </div>
           <div class="dropdown" id="userDropdown">
@@ -2045,7 +2045,7 @@ body::before {
               <div class="hero-inner">
                 <div class="hero-left">
                   <div class="hero-greeting">Welcome Back, Beloved</div>
-                  <div class="hero-name">Emmanuel <span>Osei</span></div>
+                  <div class="hero-name" id="heroName">Alex <span>Muhagama</span></div>
                   <div class="hero-quote">"The Lord is my shepherd; I shall not want. He makes me lie down in green pastures."<br>— Psalm 23:1-2</div>
                   <div class="hero-plan"><div class="plan-dot"></div> CLJN Membership Active</div>
                   <div class="hero-ctas">
@@ -2292,7 +2292,7 @@ body::before {
                 <div class="notif-icon-wrap">GM</div>
                 <div class="notif-body">
                   <div class="notif-title">Rev. Dr. Grace Mensah</div>
-                  <div class="notif-text">Thank you for your session today, Emmanuel. I will be praying for your breakthrough. Remember, God's timing is always perfect...</div>
+                  <div class="notif-text">Thank you for your session today, Alex. I will be praying for your breakthrough. Remember, God's timing is always perfect...</div>
                 </div>
                 <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px">
                   <div class="notif-time">2h ago</div>
@@ -2732,11 +2732,11 @@ body::before {
                 <div class="settings-card-title">Profile Information</div>
                 <div class="form-group">
                   <label class="form-label">Full Name</label>
-                  <input class="form-input" type="text" value="Emmanuel Osei" placeholder="Your name">
+                  <input class="form-input" type="text" id="settingsName" value="Alex Muhagama" placeholder="Your name">
                 </div>
                 <div class="form-group">
                   <label class="form-label">Email Address</label>
-                  <input class="form-input" type="email" value="emmanuel@cljn.com" placeholder="Email">
+                  <input class="form-input" type="email" id="settingsEmail" value="alex.muhagama@cljn.com" placeholder="Email">
                 </div>
                 <div class="form-group">
                   <label class="form-label">Location</label>
@@ -3021,6 +3021,87 @@ document.querySelector('.topbar-search input')?.addEventListener('keyup', functi
     this.blur();
   }
 });
+
+// ===== DYNAMIC USER PROFILE LOADER =====
+// Reads the logged-in user from localStorage (set at login/register time).
+// Falls back to the defaults already in the HTML (Alex Muhagama).
+(function loadCurrentUser() {
+  try {
+    // Support both a direct object key and a "currentUser" pointer
+    const raw =
+      localStorage.getItem('currentUser') ||
+      localStorage.getItem('cljn_user') ||
+      localStorage.getItem('loggedInUser');
+    if (!raw) return; // No stored user → keep HTML defaults
+
+    const user = JSON.parse(raw);
+    if (!user) return;
+
+    const fullName  = user.fullName  || user.name  || user.username || '';
+    const email     = user.email     || '';
+    const location  = user.location  || user.city  || '';
+
+    if (!fullName) return; // Nothing useful to show
+
+    // Compute initials (up to 2 letters)
+    const parts    = fullName.trim().split(/\s+/);
+    const initials = parts.length >= 2
+      ? (parts[0][0] + parts[parts.length - 1][0]).toUpperCase()
+      : fullName.slice(0, 2).toUpperCase();
+
+    // Split into first / last for the hero heading
+    const firstName = parts[0] || fullName;
+    const lastName  = parts.slice(1).join(' ');
+
+    // ── Sidebar ──
+    const sidebarInit = document.getElementById('sidebarInitials');
+    if (sidebarInit) sidebarInit.textContent = initials;
+
+    const sidebarName = document.getElementById('sidebarName');
+    if (sidebarName) sidebarName.textContent = fullName;
+
+    // ── Topbar avatar ──
+    const topbarInit = document.getElementById('topbarInitials');
+    if (topbarInit) {
+      // Keep the online-dot child, just update the text node
+      const onlineDot = topbarInit.querySelector('.online-dot');
+      topbarInit.textContent = initials;
+      if (onlineDot) topbarInit.appendChild(onlineDot);
+    }
+
+    // ── Hero welcome heading ──
+    const heroName = document.getElementById('heroName');
+    if (heroName) {
+      heroName.innerHTML = lastName
+        ? `${firstName} <span>${lastName}</span>`
+        : `<span>${firstName}</span>`;
+    }
+
+    // ── Settings form ──
+    const settingsName = document.getElementById('settingsName');
+    if (settingsName) settingsName.value = fullName;
+
+    const settingsEmail = document.getElementById('settingsEmail');
+    if (settingsEmail && email) settingsEmail.value = email;
+
+    const settingsLocation = document.querySelector('#section-settings .form-input[placeholder="City, Country"]');
+    if (settingsLocation && location) settingsLocation.value = location;
+
+    // ── Update personal message greeting in Messages tab ──
+    const msgGreeting = document.querySelector('#section-messages .notif-text');
+    if (msgGreeting) {
+      msgGreeting.textContent = msgGreeting.textContent.replace(
+        /today, \w+/i,
+        `today, ${firstName}`
+      );
+    }
+
+  } catch (e) {
+    // Silently fail — the HTML defaults will show
+    console.warn('CLJN: Could not load user profile from localStorage.', e);
+  }
+})();
+
 </script>
 
 </body>

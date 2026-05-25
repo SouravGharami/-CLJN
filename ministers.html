@@ -1774,6 +1774,24 @@ const ministersData = [
     rating: '4.9', reviews: '342', online: true,
     bio: 'Pioneering female bishop with a powerful healing ministry. Champion for women in ministry and spiritual mentoring.',
     country: '🇿🇦 South Africa', denomination: 'Charismatic', specialty: 'Healing & Deliverance'
+  },
+  {
+    id: 13, emoji: '🌿', name: 'Pastor Samiran Felix',
+    ministry: 'Covenant Grace Fellowship',
+    tags: ['Teaching', 'Counseling', 'Prayer'],
+    langs: 'English, French', exp: '10 yrs', fee: '$70/hr',
+    rating: '4.8', reviews: '156', online: true,
+    bio: 'Gifted teacher and pastoral counselor with a heart for restoration. Samiran Felix ministers across multicultural communities with a gentle prophetic grace.',
+    country: '🇨🇦 Canada', denomination: 'Non-Denominational', specialty: 'Teaching & Preaching'
+  },
+  {
+    id: 14, emoji: '🔥', name: 'Prophet Prophecy Gilbert',
+    ministry: 'Burning Bush Prophetic Ministry',
+    tags: ['Prophecy', 'Intercession', 'Deliverance'],
+    langs: 'English, Pidgin', exp: '13 yrs', fee: '$95/hr',
+    rating: '4.9', reviews: '203', online: true,
+    bio: 'Fiery prophetic voice and intercessor. Prophecy Gilbert carries a strong mantle for accurate prophetic utterances and breakthrough prayer ministry.',
+    country: '🇳🇬 Nigeria', denomination: 'Pentecostal', specialty: 'Prophecy'
   }
 ];
 
@@ -1960,7 +1978,7 @@ function performSearch() {
 // PROFILE MODAL
 // ============================================================
 function openProfile(id) {
-  window.location.href = 'minister-profile.html';
+  window.location.href = 'minister-profile.html?id=' + id;
 }
 
 function openSubModal(id) {
