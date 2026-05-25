@@ -1,0 +1,1169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CLJN — Saved Sermons</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --royal: #1a3a8f;
+    --royal-mid: #1e4db7;
+    --royal-light: #2563eb;
+    --navy: #050d1a;
+    --navy-mid: #0a1628;
+    --navy-card: #0d1e38;
+    --gold: #c9a227;
+    --gold-light: #f0c040;
+    --gold-pale: #fde68a;
+    --gold-dim: rgba(201,162,39,0.18);
+    --glass: rgba(255,255,255,0.055);
+    --glass-border: rgba(201,162,39,0.22);
+    --glass-hover: rgba(255,255,255,0.09);
+    --text-primary: #f0e6c8;
+    --text-secondary: rgba(240,230,200,0.62);
+    --text-muted: rgba(240,230,200,0.38);
+    --shadow-gold: 0 0 40px rgba(201,162,39,0.12);
+    --shadow-deep: 0 20px 60px rgba(0,0,0,0.55);
+    --radius: 18px;
+    --radius-sm: 10px;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Crimson Pro', Georgia, serif;
+    background: var(--navy);
+    color: var(--text-primary);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ─── BACKGROUND ─── */
+  body::before {
+    content: '';
+    position: fixed; inset: 0; z-index: 0;
+    background:
+      radial-gradient(ellipse 80% 50% at 15% 20%, rgba(26,58,143,0.45) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 40% at 85% 75%, rgba(201,162,39,0.12) 0%, transparent 55%),
+      radial-gradient(ellipse 50% 60% at 50% 10%, rgba(30,77,183,0.2) 0%, transparent 50%),
+      linear-gradient(160deg, #050d1a 0%, #090f1f 40%, #060d1c 100%);
+    pointer-events: none;
+  }
+
+  body::after {
+    content: '';
+    position: fixed; inset: 0; z-index: 0;
+    background-image:
+      radial-gradient(circle, rgba(201,162,39,0.07) 1px, transparent 1px);
+    background-size: 44px 44px;
+    pointer-events: none;
+    opacity: 0.5;
+  }
+
+  /* ─── LAYOUT ─── */
+  .page-wrap { position: relative; z-index: 1; max-width: 1320px; margin: 0 auto; padding: 0 24px 80px; }
+
+  /* ─── TOP NAV ─── */
+  .top-nav {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 20px 0 10px;
+    border-bottom: 1px solid rgba(201,162,39,0.15);
+    margin-bottom: 10px;
+  }
+  .brand {
+    display: flex; align-items: center; gap: 12px;
+  }
+  .brand-icon {
+    width: 40px; height: 40px;
+    background: linear-gradient(135deg, var(--gold), var(--royal-mid));
+    border-radius: 10px;
+    display: grid; place-items: center;
+    font-size: 20px;
+    box-shadow: 0 4px 16px rgba(201,162,39,0.35);
+  }
+  .brand-name {
+    font-family: 'Cinzel', serif;
+    font-size: 20px;
+    font-weight: 700;
+    background: linear-gradient(90deg, var(--gold-light), var(--text-primary));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    letter-spacing: 1.5px;
+  }
+  .nav-links { display: flex; gap: 6px; }
+  .nav-link {
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    padding: 7px 14px;
+    border-radius: 8px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    transition: all .25s;
+    text-decoration: none;
+  }
+  .nav-link:hover { background: var(--glass); color: var(--text-primary); }
+  .nav-link.active { background: var(--gold-dim); color: var(--gold-light); }
+  .nav-avatar {
+    width: 38px; height: 38px;
+    border-radius: 50%;
+    border: 2px solid var(--gold);
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform .2s, box-shadow .2s;
+  }
+  .nav-avatar:hover { transform: scale(1.08); box-shadow: 0 0 14px rgba(201,162,39,0.5); }
+  .nav-avatar img { width: 100%; height: 100%; object-fit: cover; }
+
+  /* ─── HEADER ─── */
+  .page-header {
+    padding: 44px 0 32px;
+    animation: fadeDown .7s ease both;
+  }
+  .header-eyebrow {
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 3.5px;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 10px;
+  }
+  .header-title {
+    font-family: 'Cinzel', serif;
+    font-size: clamp(30px, 5vw, 52px);
+    font-weight: 700;
+    background: linear-gradient(120deg, var(--gold-light) 0%, var(--text-primary) 50%, var(--gold-pale) 100%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    line-height: 1.1;
+    margin-bottom: 8px;
+  }
+  .header-sub {
+    font-size: 17px;
+    color: var(--text-secondary);
+    font-style: italic;
+    margin-bottom: 30px;
+  }
+  .header-controls {
+    display: flex; gap: 12px; flex-wrap: wrap;
+    align-items: center;
+  }
+  .search-wrap {
+    position: relative;
+    flex: 1; min-width: 260px;
+  }
+  .search-icon {
+    position: absolute; left: 14px; top: 50%; transform: translateY(-50%);
+    color: var(--gold); font-size: 16px; pointer-events: none;
+  }
+  .search-bar {
+    width: 100%;
+    padding: 12px 14px 12px 42px;
+    background: var(--glass);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-sm);
+    color: var(--text-primary);
+    font-family: 'Crimson Pro', serif;
+    font-size: 15px;
+    outline: none;
+    backdrop-filter: blur(16px);
+    transition: border-color .25s, box-shadow .25s;
+  }
+  .search-bar::placeholder { color: var(--text-muted); }
+  .search-bar:focus { border-color: var(--gold); box-shadow: 0 0 0 3px rgba(201,162,39,0.14); }
+  .filter-select {
+    padding: 12px 18px;
+    background: var(--glass);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-sm);
+    color: var(--text-primary);
+    font-family: 'Crimson Pro', serif;
+    font-size: 15px;
+    outline: none;
+    cursor: pointer;
+    backdrop-filter: blur(16px);
+    transition: border-color .25s;
+    appearance: none;
+    padding-right: 36px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23c9a227' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 13px center;
+  }
+  .filter-select:focus { border-color: var(--gold); }
+  .filter-select option { background: #0d1e38; color: var(--text-primary); }
+  .stats-row {
+    display: flex; gap: 20px; flex-wrap: wrap; margin-top: 24px;
+  }
+  .stat-pill {
+    display: flex; align-items: center; gap: 8px;
+    padding: 7px 16px;
+    background: var(--gold-dim);
+    border: 1px solid rgba(201,162,39,0.25);
+    border-radius: 999px;
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--gold-light);
+    transition: transform .2s;
+  }
+  .stat-pill:hover { transform: translateY(-1px); }
+  .stat-pill span { color: var(--text-secondary); font-weight: 400; }
+
+  /* ─── SECTION TITLES ─── */
+  .section {
+    margin-top: 52px;
+    animation: fadeUp .65s ease both;
+  }
+  .section-header {
+    display: flex; align-items: flex-end; justify-content: space-between;
+    margin-bottom: 24px;
+  }
+  .section-title {
+    font-family: 'Cinzel', serif;
+    font-size: clamp(18px, 2.8vw, 26px);
+    font-weight: 600;
+    color: var(--text-primary);
+    position: relative;
+    padding-bottom: 10px;
+  }
+  .section-title::after {
+    content: '';
+    position: absolute; bottom: 0; left: 0;
+    width: 48px; height: 2px;
+    background: linear-gradient(90deg, var(--gold), transparent);
+    border-radius: 2px;
+  }
+  .section-count {
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+  .see-all {
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--gold);
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 6px 0;
+    transition: opacity .2s;
+    text-decoration: none;
+  }
+  .see-all:hover { opacity: 0.7; }
+
+  /* ─── SERMON CARDS GRID ─── */
+  .sermons-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 22px;
+  }
+
+  .sermon-card {
+    background: var(--glass);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    backdrop-filter: blur(20px);
+    box-shadow: var(--shadow-deep), var(--shadow-gold);
+    transition: transform .3s cubic-bezier(.2,.8,.2,1), box-shadow .3s, border-color .3s;
+    animation: cardIn .6s ease both;
+    cursor: pointer;
+  }
+  .sermon-card:hover {
+    transform: translateY(-6px) scale(1.012);
+    border-color: rgba(201,162,39,0.45);
+    box-shadow: 0 28px 70px rgba(0,0,0,0.65), 0 0 50px rgba(201,162,39,0.18);
+  }
+
+  .card-img-wrap {
+    position: relative;
+    height: 175px;
+    overflow: hidden;
+  }
+  .card-img-wrap img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    transition: transform .5s ease;
+  }
+  .sermon-card:hover .card-img-wrap img { transform: scale(1.07); }
+  .card-img-overlay {
+    position: absolute; inset: 0;
+    background: linear-gradient(to bottom, rgba(5,13,26,0.1) 0%, rgba(5,13,26,0.8) 100%);
+  }
+  .card-duration {
+    position: absolute; bottom: 10px; right: 12px;
+    background: rgba(5,13,26,0.8);
+    border: 1px solid rgba(201,162,39,0.3);
+    color: var(--gold-light);
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 9px;
+    border-radius: 5px;
+    backdrop-filter: blur(8px);
+    letter-spacing: .5px;
+  }
+  .card-category {
+    position: absolute; top: 12px; left: 12px;
+    background: linear-gradient(90deg, var(--royal-mid), var(--royal-light));
+    color: #fff;
+    font-family: 'Inter', sans-serif;
+    font-size: 10px;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 5px;
+    letter-spacing: .8px;
+    text-transform: uppercase;
+  }
+  .play-overlay {
+    position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    opacity: 0;
+    transition: opacity .3s;
+  }
+  .sermon-card:hover .play-overlay { opacity: 1; }
+  .play-circle {
+    width: 50px; height: 50px;
+    background: rgba(201,162,39,0.9);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px;
+    box-shadow: 0 0 28px rgba(201,162,39,0.55);
+    transform: scale(.8);
+    transition: transform .25s;
+  }
+  .sermon-card:hover .play-circle { transform: scale(1); }
+
+  .card-body { padding: 18px 18px 14px; }
+  .card-minister-row {
+    display: flex; align-items: center; gap: 10px; margin-bottom: 10px;
+  }
+  .minister-avatar {
+    width: 34px; height: 34px; border-radius: 50%;
+    border: 2px solid var(--gold);
+    object-fit: cover;
+    flex-shrink: 0;
+  }
+  .minister-info .minister-name {
+    font-family: 'Cinzel', serif;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--gold-light);
+  }
+  .minister-info .minister-role {
+    font-size: 11.5px;
+    color: var(--text-muted);
+    font-style: italic;
+  }
+  .sermon-title {
+    font-family: 'Cinzel', serif;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-primary);
+    line-height: 1.35;
+    margin-bottom: 8px;
+  }
+  .sermon-meta {
+    display: flex; align-items: center; gap: 14px;
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-bottom: 14px;
+  }
+  .meta-dot { color: var(--gold); }
+  .card-actions {
+    display: flex; gap: 8px; flex-wrap: wrap;
+  }
+  .btn {
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 7px 14px;
+    border-radius: 7px;
+    border: none;
+    cursor: pointer;
+    transition: all .22s;
+    display: flex; align-items: center; gap: 5px;
+    letter-spacing: .3px;
+  }
+  .btn-play {
+    background: linear-gradient(90deg, var(--gold), var(--gold-light));
+    color: var(--navy);
+    flex: 1;
+    justify-content: center;
+  }
+  .btn-play:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(201,162,39,0.45); }
+  .btn-download {
+    background: var(--glass);
+    border: 1px solid var(--glass-border);
+    color: var(--text-secondary);
+    backdrop-filter: blur(8px);
+  }
+  .btn-download:hover { background: var(--glass-hover); color: var(--text-primary); border-color: rgba(201,162,39,0.4); }
+  .btn-remove {
+    background: transparent;
+    border: 1px solid rgba(239,68,68,0.3);
+    color: rgba(239,68,68,0.7);
+    transition: all .22s;
+  }
+  .btn-remove:hover { background: rgba(239,68,68,0.1); color: #f87171; border-color: rgba(239,68,68,0.6); }
+
+  /* ─── ARTICLES ─── */
+  .articles-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+  }
+  .article-card {
+    background: var(--glass);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    backdrop-filter: blur(20px);
+    transition: transform .3s cubic-bezier(.2,.8,.2,1), box-shadow .3s, border-color .3s;
+    animation: cardIn .6s ease both;
+    cursor: pointer;
+  }
+  .article-card:hover {
+    transform: translateY(-5px);
+    border-color: rgba(201,162,39,0.4);
+    box-shadow: 0 24px 60px rgba(0,0,0,0.55), 0 0 40px rgba(201,162,39,0.14);
+  }
+  .article-img {
+    height: 145px;
+    overflow: hidden;
+    position: relative;
+  }
+  .article-img img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    transition: transform .5s;
+  }
+  .article-card:hover .article-img img { transform: scale(1.06); }
+  .article-img-overlay {
+    position: absolute; inset: 0;
+    background: linear-gradient(to bottom, rgba(5,13,26,0.05), rgba(5,13,26,0.7));
+  }
+  .article-tag {
+    position: absolute; top: 10px; left: 10px;
+    background: rgba(201,162,39,0.88);
+    color: var(--navy);
+    font-family: 'Inter', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 3px 9px;
+    border-radius: 4px;
+    text-transform: uppercase;
+    letter-spacing: .7px;
+  }
+  .article-body { padding: 16px 16px 14px; }
+  .article-title {
+    font-family: 'Cinzel', serif;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text-primary);
+    line-height: 1.4;
+    margin-bottom: 7px;
+  }
+  .article-desc {
+    font-size: 13.5px;
+    color: var(--text-secondary);
+    line-height: 1.55;
+    margin-bottom: 14px;
+    font-style: italic;
+  }
+  .article-meta {
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-bottom: 14px;
+    display: flex; gap: 12px;
+  }
+  .article-actions { display: flex; gap: 8px; }
+  .btn-read {
+    background: linear-gradient(90deg, var(--royal-mid), var(--royal-light));
+    color: #fff;
+    flex: 1;
+    justify-content: center;
+    padding: 8px 14px;
+    font-size: 12px;
+  }
+  .btn-read:hover { box-shadow: 0 6px 20px rgba(30,77,183,0.5); transform: translateY(-1px); }
+
+  /* ─── MINISTERS ─── */
+  .ministers-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 20px;
+  }
+  .minister-card {
+    background: var(--glass);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius);
+    padding: 28px 20px 20px;
+    text-align: center;
+    backdrop-filter: blur(20px);
+    transition: transform .3s cubic-bezier(.2,.8,.2,1), box-shadow .3s, border-color .3s;
+    animation: cardIn .6s ease both;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+  .minister-card::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    opacity: 0;
+    transition: opacity .3s;
+  }
+  .minister-card:hover::before { opacity: 1; }
+  .minister-card:hover {
+    transform: translateY(-6px);
+    border-color: rgba(201,162,39,0.45);
+    box-shadow: 0 26px 60px rgba(0,0,0,0.6), 0 0 40px rgba(201,162,39,0.15);
+  }
+  .minister-card-avatar {
+    width: 80px; height: 80px;
+    border-radius: 50%;
+    border: 3px solid var(--gold);
+    object-fit: cover;
+    margin: 0 auto 14px;
+    display: block;
+    box-shadow: 0 0 28px rgba(201,162,39,0.3);
+    transition: box-shadow .3s, transform .3s;
+  }
+  .minister-card:hover .minister-card-avatar { box-shadow: 0 0 40px rgba(201,162,39,0.55); transform: scale(1.05); }
+  .minister-card-name {
+    font-family: 'Cinzel', serif;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 5px;
+  }
+  .minister-card-expertise {
+    font-size: 13px;
+    color: var(--gold);
+    font-style: italic;
+    margin-bottom: 4px;
+  }
+  .minister-card-church {
+    font-family: 'Inter', sans-serif;
+    font-size: 11.5px;
+    color: var(--text-muted);
+    margin-bottom: 16px;
+  }
+  .minister-follow-count {
+    display: flex; gap: 16px; justify-content: center;
+    margin-bottom: 16px;
+  }
+  .follow-stat { text-align: center; }
+  .follow-stat .num {
+    font-family: 'Cinzel', serif;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--gold-light);
+    display: block;
+  }
+  .follow-stat .lbl {
+    font-family: 'Inter', sans-serif;
+    font-size: 10px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: .8px;
+  }
+  .minister-actions { display: flex; gap: 8px; }
+  .btn-profile {
+    background: linear-gradient(90deg, var(--gold), var(--gold-light));
+    color: var(--navy);
+    flex: 1;
+    justify-content: center;
+    font-size: 12px;
+    padding: 8px 10px;
+  }
+  .btn-profile:hover { box-shadow: 0 6px 20px rgba(201,162,39,0.45); transform: translateY(-1px); }
+  .btn-message {
+    background: var(--glass);
+    border: 1px solid var(--glass-border);
+    color: var(--text-secondary);
+    font-size: 12px;
+    padding: 8px 12px;
+  }
+  .btn-message:hover { background: var(--glass-hover); color: var(--text-primary); }
+
+  /* ─── DIVIDER ─── */
+  .gold-divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(201,162,39,0.35), transparent);
+    margin: 52px 0 0;
+  }
+
+  /* ─── EMPTY STATE ─── */
+  .empty-state {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 80px 20px;
+    text-align: center;
+    animation: fadeUp .7s ease both;
+  }
+  .empty-state.visible { display: flex; }
+  .empty-icon-ring {
+    width: 110px; height: 110px;
+    border-radius: 50%;
+    border: 2px solid rgba(201,162,39,0.25);
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 28px;
+    position: relative;
+  }
+  .empty-icon-ring::before {
+    content: '';
+    position: absolute; inset: -10px;
+    border-radius: 50%;
+    border: 1px solid rgba(201,162,39,0.1);
+    animation: pulsering 2.5s ease infinite;
+  }
+  .empty-icon-ring::after {
+    content: '';
+    position: absolute; inset: -20px;
+    border-radius: 50%;
+    border: 1px solid rgba(201,162,39,0.05);
+    animation: pulsering 2.5s ease 0.5s infinite;
+  }
+  .empty-icon { font-size: 48px; }
+  .empty-title {
+    font-family: 'Cinzel', serif;
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 10px;
+  }
+  .empty-sub {
+    font-size: 16px;
+    color: var(--text-secondary);
+    font-style: italic;
+    max-width: 380px;
+    line-height: 1.6;
+    margin-bottom: 30px;
+  }
+  .btn-explore {
+    background: linear-gradient(90deg, var(--gold), var(--gold-light));
+    color: var(--navy);
+    font-family: 'Cinzel', serif;
+    font-size: 14px;
+    font-weight: 700;
+    padding: 14px 36px;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+    letter-spacing: 1px;
+    transition: transform .25s, box-shadow .25s;
+    box-shadow: 0 4px 24px rgba(201,162,39,0.35);
+  }
+  .btn-explore:hover { transform: translateY(-2px); box-shadow: 0 8px 36px rgba(201,162,39,0.55); }
+
+  /* ─── TOAST ─── */
+  .toast-container {
+    position: fixed; bottom: 28px; right: 28px;
+    z-index: 9999;
+    display: flex; flex-direction: column; gap: 10px;
+  }
+  .toast {
+    background: var(--navy-card);
+    border: 1px solid var(--glass-border);
+    border-radius: 10px;
+    padding: 12px 20px;
+    display: flex; align-items: center; gap: 10px;
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-primary);
+    backdrop-filter: blur(16px);
+    box-shadow: 0 12px 36px rgba(0,0,0,0.5);
+    animation: toastIn .35s ease both;
+    min-width: 220px;
+  }
+  .toast.fade-out { animation: toastOut .3s ease forwards; }
+  .toast-icon { font-size: 16px; }
+
+  /* ─── SCROLL BAR ─── */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--navy); }
+  ::-webkit-scrollbar-thumb { background: rgba(201,162,39,0.3); border-radius: 6px; }
+
+  /* ─── KEYFRAMES ─── */
+  @keyframes fadeDown { from { opacity: 0; transform: translateY(-18px); } to { opacity: 1; transform: none; } }
+  @keyframes fadeUp   { from { opacity: 0; transform: translateY(22px); }  to { opacity: 1; transform: none; } }
+  @keyframes cardIn   { from { opacity: 0; transform: translateY(28px) scale(.97); } to { opacity: 1; transform: none; } }
+  @keyframes pulsering { 0%,100%{ transform:scale(1); opacity:.6; } 50%{ transform:scale(1.1); opacity:.2; } }
+  @keyframes toastIn  { from { opacity:0; transform:translateX(30px); } to { opacity:1; transform:none; } }
+  @keyframes toastOut { from { opacity:1; transform:none; } to { opacity:0; transform:translateX(30px); } }
+
+  /* stagger cards */
+  .sermon-card:nth-child(1), .article-card:nth-child(1), .minister-card:nth-child(1) { animation-delay: .05s; }
+  .sermon-card:nth-child(2), .article-card:nth-child(2), .minister-card:nth-child(2) { animation-delay: .12s; }
+  .sermon-card:nth-child(3), .article-card:nth-child(3), .minister-card:nth-child(3) { animation-delay: .19s; }
+  .sermon-card:nth-child(4), .minister-card:nth-child(4) { animation-delay: .26s; }
+
+  /* ─── RESPONSIVE ─── */
+  @media(max-width: 768px) {
+    .top-nav { flex-wrap: wrap; gap: 10px; }
+    .nav-links { display: none; }
+    .header-controls { flex-direction: column; }
+    .filter-select { width: 100%; }
+    .sermons-grid, .articles-grid { grid-template-columns: 1fr; }
+    .ministers-grid { grid-template-columns: repeat(2, 1fr); }
+    .toast-container { bottom: 16px; right: 16px; left: 16px; }
+  }
+  @media(max-width: 480px) {
+    .ministers-grid { grid-template-columns: 1fr; }
+    .page-wrap { padding: 0 14px 60px; }
+  }
+</style>
+</head>
+<body>
+<a href="dashboard.html" style="display:inline-flex;align-items:center;gap:6px;color:var(--gold,#c9a227);text-decoration:none;font-size:13px;padding:8px 16px;opacity:0.85;transition:opacity .2s" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.85">← Back to Dashboard</a>
+
+<div class="page-wrap">
+
+  <!-- TOP NAV -->
+  <nav class="top-nav">
+    <div class="brand">
+      <div class="brand-icon">✝</div>
+      <div class="brand-name">CLJN</div>
+    </div>
+    <div class="nav-links">
+      <a href="index.html" class="nav-link">Home</a>
+      <a href="bookmarks.html" class="nav-link">Sermons</a>
+      <a href="ministers.html" class="nav-link">Ministers</a>
+      <a href="bookmarks.html" class="nav-link active">Bookmarks</a>
+      <a href="dashboard.html" class="nav-link">Community</a>
+    </div>
+    <div class="nav-avatar">
+      <img src="https://i.pravatar.cc/80?img=56" alt="Profile">
+    </div>
+  </nav>
+
+  <!-- PAGE HEADER -->
+  <header class="page-header">
+    <p class="header-eyebrow">✦ Your Sacred Collection</p>
+    <h1 class="header-title">Saved Sermons</h1>
+    <p class="header-sub">Revisit the messages that moved your spirit</p>
+
+    <div class="header-controls">
+      <div class="search-wrap">
+        <span class="search-icon">⌕</span>
+        <input type="text" class="search-bar" id="searchBar" placeholder="Search saved sermons, ministers…" oninput="filterSermons()">
+      </div>
+      <select class="filter-select" id="filterSelect" onchange="filterSermons()">
+        <option value="all">All Categories</option>
+        <option value="faith">Faith & Trust</option>
+        <option value="grace">Grace & Mercy</option>
+        <option value="purpose">Purpose & Calling</option>
+        <option value="healing">Healing & Restoration</option>
+        <option value="prayer">Prayer & Worship</option>
+      </select>
+    </div>
+
+    <div class="stats-row">
+      <div class="stat-pill">📖 <span>12</span> Sermons</div>
+      <div class="stat-pill">📰 <span>7</span> Articles</div>
+      <div class="stat-pill">✝ <span>4</span> Ministers</div>
+      <div class="stat-pill">⏱ <span>18h 40m</span> Total Listening</div>
+    </div>
+  </header>
+
+  <!-- ─── SAVED SERMONS ─── -->
+  <section class="section" id="sermonsSection">
+    <div class="section-header">
+      <div>
+        <h2 class="section-title">Saved Sermons</h2>
+        <p class="section-count" id="sermonCount">Showing 4 of 12 sermons</p>
+      </div>
+      <button class="see-all" onclick="showToast('📖','Loading all saved sermons…')">See All →</button>
+    </div>
+
+    <div class="sermons-grid" id="sermonsGrid">
+
+      <!-- Card 1 -->
+      <div class="sermon-card" data-category="faith">
+        <div class="card-img-wrap">
+          <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&q=80" alt="Sermon">
+          <div class="card-img-overlay"></div>
+          <span class="card-category">Faith & Trust</span>
+          <span class="card-duration">58:12</span>
+          <div class="play-overlay"><div class="play-circle">▶</div></div>
+        </div>
+        <div class="card-body">
+          <div class="card-minister-row">
+            <img class="minister-avatar" src="https://i.pravatar.cc/80?img=11" alt="Minister">
+            <div class="minister-info">
+              <div class="minister-name">Bishop Samuel Osei</div>
+              <div class="minister-role">Senior Pastor, Grace Cathedral</div>
+            </div>
+          </div>
+          <h3 class="sermon-title">Walking in Unwavering Faith</h3>
+          <div class="sermon-meta">
+            <span>🗓 Jan 14, 2025</span>
+            <span class="meta-dot">•</span>
+            <span>👁 24.6K views</span>
+          </div>
+          <div class="card-actions">
+            <button class="btn btn-play" onclick="playSermon(this)">▶ Play</button>
+            <button class="btn btn-download" onclick="showToast('⬇️','Downloading sermon…')">⬇</button>
+            <button class="btn btn-remove" onclick="removeCard(this)">✕</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 2 -->
+      <div class="sermon-card" data-category="grace">
+        <div class="card-img-wrap">
+          <img src="https://images.unsplash.com/photo-1501854140801-50d01698950b?w=600&q=80" alt="Sermon">
+          <div class="card-img-overlay"></div>
+          <span class="card-category">Grace & Mercy</span>
+          <span class="card-duration">44:30</span>
+          <div class="play-overlay"><div class="play-circle">▶</div></div>
+        </div>
+        <div class="card-body">
+          <div class="card-minister-row">
+            <img class="minister-avatar" src="https://i.pravatar.cc/80?img=32" alt="Minister">
+            <div class="minister-info">
+              <div class="minister-name">Pastor Linda Adeyemi</div>
+              <div class="minister-role">Lead Minister, Fountain of Life</div>
+            </div>
+          </div>
+          <h3 class="sermon-title">The Immeasurable Grace of God</h3>
+          <div class="sermon-meta">
+            <span>🗓 Mar 2, 2025</span>
+            <span class="meta-dot">•</span>
+            <span>👁 18.3K views</span>
+          </div>
+          <div class="card-actions">
+            <button class="btn btn-play" onclick="playSermon(this)">▶ Play</button>
+            <button class="btn btn-download" onclick="showToast('⬇️','Downloading sermon…')">⬇</button>
+            <button class="btn btn-remove" onclick="removeCard(this)">✕</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 3 -->
+      <div class="sermon-card" data-category="purpose">
+        <div class="card-img-wrap">
+          <img src="https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=600&q=80" alt="Sermon">
+          <div class="card-img-overlay"></div>
+          <span class="card-category">Purpose & Calling</span>
+          <span class="card-duration">1:02:44</span>
+          <div class="play-overlay"><div class="play-circle">▶</div></div>
+        </div>
+        <div class="card-body">
+          <div class="card-minister-row">
+            <img class="minister-avatar" src="https://i.pravatar.cc/80?img=15" alt="Minister">
+            <div class="minister-info">
+              <div class="minister-name">Rev. Emmanuel Nkosi</div>
+              <div class="minister-role">Apostle, Kingdom Harvest Church</div>
+            </div>
+          </div>
+          <h3 class="sermon-title">Discovering Your Spiritual Purpose</h3>
+          <div class="sermon-meta">
+            <span>🗓 Apr 20, 2025</span>
+            <span class="meta-dot">•</span>
+            <span>👁 31.2K views</span>
+          </div>
+          <div class="card-actions">
+            <button class="btn btn-play" onclick="playSermon(this)">▶ Play</button>
+            <button class="btn btn-download" onclick="showToast('⬇️','Downloading sermon…')">⬇</button>
+            <button class="btn btn-remove" onclick="removeCard(this)">✕</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 4 -->
+      <div class="sermon-card" data-category="healing">
+        <div class="card-img-wrap">
+          <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=600&q=80" alt="Sermon">
+          <div class="card-img-overlay"></div>
+          <span class="card-category">Healing</span>
+          <span class="card-duration">52:18</span>
+          <div class="play-overlay"><div class="play-circle">▶</div></div>
+        </div>
+        <div class="card-body">
+          <div class="card-minister-row">
+            <img class="minister-avatar" src="https://i.pravatar.cc/80?img=44" alt="Minister">
+            <div class="minister-info">
+              <div class="minister-name">Dr. Grace Mensah</div>
+              <div class="minister-role">Evangelist & Author</div>
+            </div>
+          </div>
+          <h3 class="sermon-title">Total Healing: Body, Soul & Spirit</h3>
+          <div class="sermon-meta">
+            <span>🗓 May 5, 2025</span>
+            <span class="meta-dot">•</span>
+            <span>👁 15.8K views</span>
+          </div>
+          <div class="card-actions">
+            <button class="btn btn-play" onclick="playSermon(this)">▶ Play</button>
+            <button class="btn btn-download" onclick="showToast('⬇️','Downloading sermon…')">⬇</button>
+            <button class="btn btn-remove" onclick="removeCard(this)">✕</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Empty state for sermons -->
+    <div class="empty-state" id="sermonsEmpty">
+      <div class="empty-icon-ring"><span class="empty-icon">🕊</span></div>
+      <h3 class="empty-title">No Sermons Found</h3>
+      <p class="empty-sub">No saved sermons match your search. Try a different keyword or category.</p>
+    </div>
+  </section>
+
+  <div class="gold-divider"></div>
+
+  <!-- ─── SAVED ARTICLES ─── -->
+  <section class="section">
+    <div class="section-header">
+      <div>
+        <h2 class="section-title">Saved Articles</h2>
+        <p class="section-count">7 articles saved</p>
+      </div>
+      <button class="see-all" onclick="showToast('📰','Loading all saved articles…')">See All →</button>
+    </div>
+
+    <div class="articles-grid">
+
+      <div class="article-card">
+        <div class="article-img">
+          <img src="https://images.unsplash.com/photo-1504052434569-70ad5836ab65?w=500&q=80" alt="Article">
+          <div class="article-img-overlay"></div>
+          <span class="article-tag">Devotional</span>
+        </div>
+        <div class="article-body">
+          <h3 class="article-title">7 Prayers That Will Transform Your Morning</h3>
+          <p class="article-desc">Discover ancient morning prayers that set the tone for a spirit-filled day and deepen your communion with God.</p>
+          <div class="article-meta">
+            <span>📅 Apr 8, 2025</span>
+            <span>⏱ 5 min read</span>
+          </div>
+          <div class="article-actions">
+            <button class="btn btn-read" onclick="showToast('📖','Opening article…')">Read More →</button>
+            <button class="btn btn-remove" onclick="removeCard(this)">✕</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="article-card">
+        <div class="article-img">
+          <img src="https://images.unsplash.com/photo-1499678329028-101435549a4e?w=500&q=80" alt="Article">
+          <div class="article-img-overlay"></div>
+          <span class="article-tag">Theology</span>
+        </div>
+        <div class="article-body">
+          <h3 class="article-title">Understanding the Covenant of Grace</h3>
+          <p class="article-desc">A deep theological exploration of God's unbreakable covenant with His people throughout Scripture's redemptive narrative.</p>
+          <div class="article-meta">
+            <span>📅 Mar 22, 2025</span>
+            <span>⏱ 9 min read</span>
+          </div>
+          <div class="article-actions">
+            <button class="btn btn-read" onclick="showToast('📖','Opening article…')">Read More →</button>
+            <button class="btn btn-remove" onclick="removeCard(this)">✕</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="article-card">
+        <div class="article-img">
+          <img src="https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=500&q=80" alt="Article">
+          <div class="article-img-overlay"></div>
+          <span class="article-tag">Spiritual Growth</span>
+        </div>
+        <div class="article-body">
+          <h3 class="article-title">Fasting as a Spiritual Discipline</h3>
+          <p class="article-desc">How intentional fasting can silence the noise of the world and amplify your sensitivity to the Holy Spirit's voice.</p>
+          <div class="article-meta">
+            <span>📅 Feb 14, 2025</span>
+            <span>⏱ 7 min read</span>
+          </div>
+          <div class="article-actions">
+            <button class="btn btn-read" onclick="showToast('📖','Opening article…')">Read More →</button>
+            <button class="btn btn-remove" onclick="removeCard(this)">✕</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <div class="gold-divider"></div>
+
+  <!-- ─── FAVORITE MINISTERS ─── -->
+  <section class="section">
+    <div class="section-header">
+      <div>
+        <h2 class="section-title">Favourite Ministers</h2>
+        <p class="section-count">4 ministers followed</p>
+      </div>
+      <button class="see-all" onclick="window.location.href='ministers.html'">See All →</button>
+    </div>
+
+    <div class="ministers-grid">
+
+      <div class="minister-card">
+        <img class="minister-card-avatar" src="https://i.pravatar.cc/160?img=11" alt="Minister">
+        <div class="minister-card-name">Bishop Samuel Osei</div>
+        <div class="minister-card-expertise">Faith & Deliverance</div>
+        <div class="minister-card-church">Grace Cathedral, Accra</div>
+        <div class="minister-follow-count">
+          <div class="follow-stat"><span class="num">142</span><span class="lbl">Sermons</span></div>
+          <div class="follow-stat"><span class="num">86K</span><span class="lbl">Followers</span></div>
+          <div class="follow-stat"><span class="num">4.9★</span><span class="lbl">Rating</span></div>
+        </div>
+        <div class="minister-actions">
+          <button class="btn btn-profile" onclick="window.location.href='minister-profile.html'">View Profile</button>
+          <button class="btn btn-message" onclick="showToast('💬','Opening message…')">✉</button>
+        </div>
+      </div>
+
+      <div class="minister-card">
+        <img class="minister-card-avatar" src="https://i.pravatar.cc/160?img=32" alt="Minister">
+        <div class="minister-card-name">Pastor Linda Adeyemi</div>
+        <div class="minister-card-expertise">Grace & Intercession</div>
+        <div class="minister-card-church">Fountain of Life, Lagos</div>
+        <div class="minister-follow-count">
+          <div class="follow-stat"><span class="num">98</span><span class="lbl">Sermons</span></div>
+          <div class="follow-stat"><span class="num">54K</span><span class="lbl">Followers</span></div>
+          <div class="follow-stat"><span class="num">4.8★</span><span class="lbl">Rating</span></div>
+        </div>
+        <div class="minister-actions">
+          <button class="btn btn-profile" onclick="window.location.href='minister-profile.html'">View Profile</button>
+          <button class="btn btn-message" onclick="showToast('💬','Opening message…')">✉</button>
+        </div>
+      </div>
+
+      <div class="minister-card">
+        <img class="minister-card-avatar" src="https://i.pravatar.cc/160?img=15" alt="Minister">
+        <div class="minister-card-name">Rev. Emmanuel Nkosi</div>
+        <div class="minister-card-expertise">Purpose & Prophetic</div>
+        <div class="minister-card-church">Kingdom Harvest, Nairobi</div>
+        <div class="minister-follow-count">
+          <div class="follow-stat"><span class="num">210</span><span class="lbl">Sermons</span></div>
+          <div class="follow-stat"><span class="num">112K</span><span class="lbl">Followers</span></div>
+          <div class="follow-stat"><span class="num">5.0★</span><span class="lbl">Rating</span></div>
+        </div>
+        <div class="minister-actions">
+          <button class="btn btn-profile" onclick="window.location.href='minister-profile.html'">View Profile</button>
+          <button class="btn btn-message" onclick="showToast('💬','Opening message…')">✉</button>
+        </div>
+      </div>
+
+      <div class="minister-card">
+        <img class="minister-card-avatar" src="https://i.pravatar.cc/160?img=44" alt="Minister">
+        <div class="minister-card-name">Dr. Grace Mensah</div>
+        <div class="minister-card-expertise">Healing & Restoration</div>
+        <div class="minister-card-church">Healing Springs, Kumasi</div>
+        <div class="minister-follow-count">
+          <div class="follow-stat"><span class="num">76</span><span class="lbl">Sermons</span></div>
+          <div class="follow-stat"><span class="num">39K</span><span class="lbl">Followers</span></div>
+          <div class="follow-stat"><span class="num">4.7★</span><span class="lbl">Rating</span></div>
+        </div>
+        <div class="minister-actions">
+          <button class="btn btn-profile" onclick="window.location.href='minister-profile.html'">View Profile</button>
+          <button class="btn btn-message" onclick="showToast('💬','Opening message…')">✉</button>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- FULL EMPTY STATE (shown when all are cleared) -->
+  <section class="empty-state" id="fullEmptyState">
+    <div class="empty-icon-ring"><span class="empty-icon">🕊</span></div>
+    <h2 class="empty-title">Your Collection is Empty</h2>
+    <p class="empty-sub">You haven't saved any sermons, articles, or ministers yet. Begin your spiritual journey and save content that speaks to your heart.</p>
+    <button class="btn-explore" onclick="window.location.href='ministers.html'">✦ Explore Sermons</button>
+  </section>
+
+</div>
+
+<!-- Toast Container -->
+<div class="toast-container" id="toastContainer"></div>
+
+<script>
+  // ── PLAY ──
+  function playSermon(btn) {
+    const title = btn.closest('.sermon-card').querySelector('.sermon-title').textContent;
+    if (btn.textContent.trim().startsWith('▶')) {
+      btn.textContent = '❚❚ Pause';
+      btn.style.background = 'linear-gradient(90deg,#1e4db7,#2563eb)';
+      btn.style.color = '#fff';
+      showToast('🎵', `Now playing: ${title.substring(0,30)}…`);
+    } else {
+      btn.innerHTML = '▶ Play';
+      btn.style.background = '';
+      btn.style.color = '';
+      showToast('⏸', 'Paused');
+    }
+  }
+
+  // ── REMOVE CARD ──
+  function removeCard(btn) {
+    const card = btn.closest('[class$="-card"], .sermon-card, .article-card, .minister-card');
+    card.style.transition = 'all .4s cubic-bezier(.4,0,.2,1)';
+    card.style.opacity = '0';
+    card.style.transform = 'scale(.93) translateY(-10px)';
+    setTimeout(() => {
+      card.remove();
+      showToast('🗑️', 'Bookmark removed');
+    }, 380);
+  }
+
+  // ── FILTER SERMONS ──
+  function filterSermons() {
+    const q   = document.getElementById('searchBar').value.toLowerCase();
+    const cat = document.getElementById('filterSelect').value;
+    const cards = document.querySelectorAll('#sermonsGrid .sermon-card');
+    let visible = 0;
+
+    cards.forEach(card => {
+      const title    = card.querySelector('.sermon-title').textContent.toLowerCase();
+      const minister = card.querySelector('.minister-name').textContent.toLowerCase();
+      const catMatch = cat === 'all' || card.dataset.category === cat;
+      const qMatch   = title.includes(q) || minister.includes(q);
+      if (catMatch && qMatch) {
+        card.style.display = '';
+        visible++;
+      } else {
+        card.style.display = 'none';
+      }
+    });
+
+    document.getElementById('sermonCount').textContent = `Showing ${visible} sermon${visible !== 1 ? 's' : ''}`;
+    document.getElementById('sermonsEmpty').classList.toggle('visible', visible === 0);
+  }
+
+  // ── TOAST ──
+  let toastCount = 0;
+  function showToast(icon, msg) {
+    const container = document.getElementById('toastContainer');
+    const t = document.createElement('div');
+    t.className = 'toast';
+    t.innerHTML = `<span class="toast-icon">${icon}</span><span>${msg}</span>`;
+    container.appendChild(t);
+    setTimeout(() => {
+      t.classList.add('fade-out');
+      setTimeout(() => t.remove(), 300);
+    }, 2800);
+  }
+</script>
+
+</body>
+</html>

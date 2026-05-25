@@ -1,0 +1,2458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CLJN — Sacred Authentication</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&family=Cinzel:wght@400;500;600;700&family=Nunito+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #0a0f1e;
+    --navy-mid: #0d1530;
+    --navy-light: #141e3a;
+    --navy-card: rgba(13,21,48,0.85);
+    --gold: #c9a84c;
+    --gold-light: #e8c96b;
+    --gold-pale: #f5e6b8;
+    --gold-dim: rgba(201,168,76,0.15);
+    --gold-glow: rgba(201,168,76,0.35);
+    --white: #ffffff;
+    --white-80: rgba(255,255,255,0.8);
+    --white-60: rgba(255,255,255,0.6);
+    --white-20: rgba(255,255,255,0.08);
+    --white-10: rgba(255,255,255,0.05);
+    --danger: #e07070;
+    --success: #70c49a;
+    --glass: rgba(255,255,255,0.04);
+    --glass-border: rgba(201,168,76,0.25);
+    --shadow-gold: 0 0 40px rgba(201,168,76,0.12);
+    --shadow-deep: 0 30px 80px rgba(0,0,0,0.5);
+    --radius: 20px;
+    --radius-sm: 12px;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Nunito Sans', sans-serif;
+    background: var(--navy);
+    color: var(--white);
+    overflow-x: hidden;
+    line-height: 1.6;
+  }
+
+  /* ── NOISE OVERLAY ── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.035'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0.4;
+  }
+
+  /* ── NAVBAR ── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 1000;
+    padding: 18px 48px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: rgba(10,15,30,0.7);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(201,168,76,0.12);
+  }
+
+  .nav-logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-decoration: none;
+  }
+
+  .nav-logo-icon {
+    width: 40px; height: 40px;
+    background: linear-gradient(135deg, var(--gold), var(--gold-light));
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    box-shadow: 0 0 20px rgba(201,168,76,0.4);
+  }
+
+  .nav-logo-text {
+    font-family: 'Cinzel', serif;
+    font-size: 1.3rem;
+    font-weight: 600;
+    background: linear-gradient(135deg, var(--gold-light), var(--gold));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .nav-links {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+    list-style: none;
+  }
+
+  .nav-links a {
+    color: var(--white-60);
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    transition: color 0.3s;
+  }
+
+  .nav-links a:hover { color: var(--gold-light); }
+
+  .nav-cta {
+    background: linear-gradient(135deg, var(--gold), var(--gold-light));
+    color: var(--navy) !important;
+    padding: 10px 24px;
+    border-radius: 8px;
+    font-weight: 700 !important;
+    font-family: 'Cinzel', serif;
+    font-size: 0.8rem !important;
+    letter-spacing: 0.08em;
+    text-decoration: none;
+    transition: all 0.3s !important;
+    box-shadow: 0 4px 20px rgba(201,168,76,0.3);
+  }
+
+  .nav-cta:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(201,168,76,0.5) !important;
+    color: var(--navy) !important;
+  }
+
+  /* ── HERO SPLIT ── */
+  .hero {
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    position: relative;
+    overflow: hidden;
+    padding-top: 76px;
+  }
+
+  /* LEFT BRANDING */
+  .hero-brand {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 80px 60px 80px 80px;
+    background: linear-gradient(145deg, #080d1e 0%, #0d1530 40%, #0a1228 100%);
+    overflow: hidden;
+  }
+
+  .hero-brand::before {
+    content: '';
+    position: absolute;
+    top: -200px; right: -100px;
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(201,168,76,0.08) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .hero-brand::after {
+    content: '';
+    position: absolute;
+    bottom: -100px; left: -100px;
+    width: 400px; height: 400px;
+    background: radial-gradient(circle, rgba(100,120,200,0.06) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  /* Floating orbs */
+  .orb {
+    position: absolute;
+    border-radius: 50%;
+    pointer-events: none;
+    animation: floatOrb 8s ease-in-out infinite;
+  }
+
+  .orb-1 {
+    width: 300px; height: 300px;
+    top: 10%; right: 5%;
+    background: radial-gradient(circle, rgba(201,168,76,0.06) 0%, transparent 70%);
+    animation-delay: 0s;
+  }
+
+  .orb-2 {
+    width: 200px; height: 200px;
+    bottom: 20%; left: 10%;
+    background: radial-gradient(circle, rgba(100,150,255,0.05) 0%, transparent 70%);
+    animation-delay: -3s;
+  }
+
+  .orb-3 {
+    width: 150px; height: 150px;
+    top: 50%; right: 20%;
+    background: radial-gradient(circle, rgba(201,168,76,0.04) 0%, transparent 70%);
+    animation-delay: -6s;
+  }
+
+  @keyframes floatOrb {
+    0%, 100% { transform: translateY(0) scale(1); }
+    50% { transform: translateY(-30px) scale(1.05); }
+  }
+
+  /* Gold particles */
+  .particles {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    overflow: hidden;
+  }
+
+  .particle {
+    position: absolute;
+    width: 2px; height: 2px;
+    background: var(--gold);
+    border-radius: 50%;
+    animation: particleDrift linear infinite;
+    opacity: 0;
+  }
+
+  @keyframes particleDrift {
+    0% { transform: translateY(100vh) translateX(0); opacity: 0; }
+    10% { opacity: 0.6; }
+    90% { opacity: 0.3; }
+    100% { transform: translateY(-100px) translateX(40px); opacity: 0; }
+  }
+
+  .brand-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--gold-dim);
+    border: 1px solid rgba(201,168,76,0.3);
+    border-radius: 100px;
+    padding: 6px 16px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--gold-light);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 28px;
+    width: fit-content;
+  }
+
+  .brand-badge::before {
+    content: '✦';
+    font-size: 0.6rem;
+    animation: spin 4s linear infinite;
+  }
+
+  @keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+
+  .brand-heading {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2.4rem, 4vw, 3.6rem);
+    font-weight: 600;
+    line-height: 1.15;
+    margin-bottom: 20px;
+    color: var(--white);
+    position: relative;
+    z-index: 1;
+  }
+
+  .brand-heading em {
+    font-style: italic;
+    background: linear-gradient(135deg, var(--gold-light), var(--gold));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .brand-sub {
+    font-size: 1rem;
+    color: var(--white-60);
+    margin-bottom: 48px;
+    line-height: 1.7;
+    max-width: 420px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Stat cards */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .stat-card {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(201,168,76,0.15);
+    border-radius: var(--radius-sm);
+    padding: 20px;
+    backdrop-filter: blur(10px);
+    transition: all 0.4s ease;
+    animation: fadeInUp 0.8s ease forwards;
+    opacity: 0;
+  }
+
+  .stat-card:nth-child(1) { animation-delay: 0.2s; }
+  .stat-card:nth-child(2) { animation-delay: 0.35s; }
+  .stat-card:nth-child(3) { animation-delay: 0.5s; }
+  .stat-card:nth-child(4) { animation-delay: 0.65s; }
+
+  .stat-card:hover {
+    border-color: rgba(201,168,76,0.4);
+    background: rgba(201,168,76,0.06);
+    transform: translateY(-4px);
+    box-shadow: 0 12px 40px rgba(201,168,76,0.1);
+  }
+
+  .stat-icon {
+    font-size: 1.5rem;
+    margin-bottom: 8px;
+  }
+
+  .stat-num {
+    font-family: 'Cinzel', serif;
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--gold-light);
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+
+  .stat-label {
+    font-size: 0.78rem;
+    color: var(--white-60);
+    font-weight: 500;
+    letter-spacing: 0.05em;
+  }
+
+  /* RIGHT AUTH PANEL */
+  .hero-auth {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 60px 60px 40px;
+    background: linear-gradient(160deg, #0d1530 0%, #0a0f1e 100%);
+    position: relative;
+    overflow-y: auto;
+  }
+
+  .hero-auth::before {
+    content: '';
+    position: absolute;
+    top: 50%; left: -60px;
+    transform: translateY(-50%);
+    width: 120px; height: 500px;
+    background: linear-gradient(to right, rgba(10,15,30,0), rgba(201,168,76,0.03), rgba(10,15,30,0));
+    pointer-events: none;
+  }
+
+  /* AUTH CARD */
+  .auth-card {
+    width: 100%;
+    max-width: 480px;
+    background: rgba(13,21,48,0.9);
+    border: 1px solid rgba(201,168,76,0.2);
+    border-radius: 24px;
+    padding: 44px;
+    backdrop-filter: blur(30px);
+    box-shadow: 0 40px 100px rgba(0,0,0,0.6), 0 0 60px rgba(201,168,76,0.06), inset 0 1px 0 rgba(255,255,255,0.08);
+    position: relative;
+    animation: fadeInRight 0.8s ease forwards;
+  }
+
+  .auth-card::before {
+    content: '';
+    position: absolute;
+    top: -1px; left: 50%; transform: translateX(-50%);
+    width: 60%; height: 1px;
+    background: linear-gradient(to right, transparent, var(--gold-light), transparent);
+  }
+
+  @keyframes fadeInRight {
+    from { opacity: 0; transform: translateX(30px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .auth-logo {
+    text-align: center;
+    margin-bottom: 28px;
+  }
+
+  .auth-logo-mark {
+    width: 52px; height: 52px;
+    background: linear-gradient(135deg, var(--gold), var(--gold-light));
+    border-radius: 14px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    box-shadow: 0 0 30px rgba(201,168,76,0.4);
+    margin-bottom: 10px;
+  }
+
+  .auth-brand-name {
+    font-family: 'Cinzel', serif;
+    font-size: 1.1rem;
+    font-weight: 600;
+    background: linear-gradient(135deg, var(--gold-light), var(--gold));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* TABS */
+  .auth-tabs {
+    display: flex;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 12px;
+    padding: 4px;
+    margin-bottom: 32px;
+    position: relative;
+  }
+
+  .tab-slider {
+    position: absolute;
+    top: 4px; left: 4px;
+    width: calc(50% - 4px);
+    height: calc(100% - 8px);
+    background: linear-gradient(135deg, rgba(201,168,76,0.2), rgba(201,168,76,0.1));
+    border: 1px solid rgba(201,168,76,0.35);
+    border-radius: 9px;
+    transition: transform 0.4s cubic-bezier(0.4,0,0.2,1);
+    box-shadow: 0 4px 16px rgba(201,168,76,0.12);
+  }
+
+  .tab-slider.register { transform: translateX(100%); }
+
+  .tab-btn {
+    flex: 1;
+    padding: 12px;
+    background: none;
+    border: none;
+    color: var(--white-60);
+    font-family: 'Cinzel', serif;
+    font-size: 0.82rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    position: relative;
+    z-index: 1;
+    transition: color 0.3s;
+  }
+
+  .tab-btn.active { color: var(--gold-light); }
+
+  /* FORMS */
+  .form-panel { display: none; }
+  .form-panel.active { display: block; }
+
+  .form-group {
+    margin-bottom: 18px;
+  }
+
+  .form-label {
+    display: block;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--white-60);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+
+  .form-input {
+    width: 100%;
+    padding: 14px 16px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: var(--radius-sm);
+    color: var(--white);
+    font-family: 'Nunito Sans', sans-serif;
+    font-size: 0.95rem;
+    transition: all 0.3s;
+    outline: none;
+  }
+
+  .form-input::placeholder { color: rgba(255,255,255,0.25); }
+
+  .form-input:focus {
+    border-color: rgba(201,168,76,0.5);
+    background: rgba(201,168,76,0.05);
+    box-shadow: 0 0 0 3px rgba(201,168,76,0.08), 0 4px 20px rgba(201,168,76,0.06);
+  }
+
+  .input-wrap {
+    position: relative;
+  }
+
+  .input-wrap .form-input {
+    padding-right: 48px;
+  }
+
+  .input-icon {
+    position: absolute;
+    right: 14px; top: 50%;
+    transform: translateY(-50%);
+    color: var(--white-60);
+    cursor: pointer;
+    font-size: 1.1rem;
+    transition: color 0.3s;
+    user-select: none;
+    background: none;
+    border: none;
+    padding: 0;
+  }
+
+  .input-icon:hover { color: var(--gold-light); }
+
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+  }
+
+  /* Checkbox */
+  .check-wrap {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+  }
+
+  .check-wrap input[type="checkbox"] {
+    width: 18px; height: 18px;
+    accent-color: var(--gold);
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+
+  .check-wrap span {
+    font-size: 0.85rem;
+    color: var(--white-60);
+  }
+
+  .check-wrap a {
+    color: var(--gold-light);
+    text-decoration: none;
+  }
+
+  .check-wrap a:hover { text-decoration: underline; }
+
+  .form-extras {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 22px;
+  }
+
+  .forgot-link {
+    font-size: 0.82rem;
+    color: var(--gold-light);
+    text-decoration: none;
+    transition: color 0.3s;
+  }
+
+  .forgot-link:hover { color: var(--gold-pale); }
+
+  /* Buttons */
+  .btn-primary {
+    width: 100%;
+    padding: 15px;
+    background: linear-gradient(135deg, var(--gold), var(--gold-light));
+    color: var(--navy);
+    border: none;
+    border-radius: var(--radius-sm);
+    font-family: 'Cinzel', serif;
+    font-size: 0.9rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    transition: all 0.3s;
+    box-shadow: 0 6px 30px rgba(201,168,76,0.35);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .btn-primary::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,0.2), transparent);
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 40px rgba(201,168,76,0.5);
+  }
+
+  .btn-primary:hover::after { opacity: 1; }
+
+  .btn-primary:active { transform: translateY(0); }
+
+  .btn-primary.loading {
+    pointer-events: none;
+    opacity: 0.8;
+  }
+
+  .btn-primary.loading::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.2) 50%, transparent 100%);
+    animation: shimmer 1.5s infinite;
+  }
+
+  @keyframes shimmer {
+    from { transform: translateX(-100%); }
+    to { transform: translateX(100%); }
+  }
+
+  .divider {
+    text-align: center;
+    margin: 20px 0;
+    position: relative;
+  }
+
+  .divider::before, .divider::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    width: 40%;
+    height: 1px;
+    background: rgba(255,255,255,0.08);
+  }
+
+  .divider::before { left: 0; }
+  .divider::after { right: 0; }
+
+  .divider span {
+    font-size: 0.75rem;
+    color: var(--white-60);
+    letter-spacing: 0.1em;
+    background: var(--navy-mid);
+    padding: 0 12px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .social-btns {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-top: 8px;
+  }
+
+  .btn-social {
+    padding: 12px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: var(--radius-sm);
+    color: var(--white-80);
+    font-family: 'Nunito Sans', sans-serif;
+    font-size: 0.82rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    letter-spacing: 0.03em;
+  }
+
+  .btn-social:hover {
+    background: rgba(255,255,255,0.08);
+    border-color: rgba(255,255,255,0.2);
+    transform: translateY(-2px);
+  }
+
+  /* ── MULTI-STEP REGISTRATION ── */
+  .step-indicator {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+    margin-bottom: 28px;
+  }
+
+  .step-dot {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Cinzel', serif;
+    font-size: 0.75rem;
+    font-weight: 700;
+    border: 2px solid rgba(255,255,255,0.15);
+    color: rgba(255,255,255,0.3);
+    transition: all 0.4s;
+    position: relative;
+    z-index: 1;
+    flex-shrink: 0;
+  }
+
+  .step-dot.active {
+    border-color: var(--gold);
+    color: var(--gold);
+    background: rgba(201,168,76,0.1);
+    box-shadow: 0 0 20px rgba(201,168,76,0.3);
+  }
+
+  .step-dot.done {
+    border-color: var(--gold);
+    background: linear-gradient(135deg, var(--gold), var(--gold-light));
+    color: var(--navy);
+  }
+
+  .step-line {
+    width: 40px; height: 1px;
+    background: rgba(255,255,255,0.1);
+    transition: background 0.4s;
+  }
+
+  .step-line.done { background: var(--gold); }
+
+  .step-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: var(--white);
+    margin-bottom: 6px;
+  }
+
+  .step-sub {
+    font-size: 0.82rem;
+    color: var(--white-60);
+    margin-bottom: 24px;
+  }
+
+  .step-form { display: none; }
+  .step-form.active { display: block; }
+
+  .step-btns {
+    display: flex;
+    gap: 12px;
+    margin-top: 20px;
+  }
+
+  .btn-ghost {
+    flex: 1;
+    padding: 13px;
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: var(--radius-sm);
+    color: var(--white-60);
+    font-family: 'Cinzel', serif;
+    font-size: 0.8rem;
+    letter-spacing: 0.06em;
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+
+  .btn-ghost:hover {
+    border-color: rgba(201,168,76,0.3);
+    color: var(--gold-light);
+  }
+
+  /* Password strength */
+  .strength-bar {
+    height: 4px;
+    background: rgba(255,255,255,0.08);
+    border-radius: 4px;
+    margin-top: 8px;
+    overflow: hidden;
+  }
+
+  .strength-fill {
+    height: 100%;
+    border-radius: 4px;
+    transition: all 0.4s;
+    width: 0;
+  }
+
+  .strength-fill.weak { width: 25%; background: #e07070; }
+  .strength-fill.fair { width: 50%; background: #e0b070; }
+  .strength-fill.good { width: 75%; background: #8ed4a0; }
+  .strength-fill.strong { width: 100%; background: var(--gold); }
+
+  .strength-text {
+    font-size: 0.72rem;
+    margin-top: 4px;
+    transition: color 0.3s;
+  }
+
+  .pw-checks {
+    list-style: none;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+    margin-top: 12px;
+  }
+
+  .pw-checks li {
+    font-size: 0.75rem;
+    color: var(--white-60);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: color 0.3s;
+  }
+
+  .pw-checks li.pass { color: var(--success); }
+
+  .pw-checks li::before {
+    content: '○';
+    font-size: 0.6rem;
+  }
+
+  .pw-checks li.pass::before { content: '✓'; }
+
+  /* Account type cards */
+  .type-cards {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin-bottom: 8px;
+  }
+
+  .type-card {
+    padding: 20px 16px;
+    background: rgba(255,255,255,0.04);
+    border: 2px solid rgba(255,255,255,0.1);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: all 0.35s;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .type-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(201,168,76,0.08), transparent);
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+
+  .type-card:hover {
+    border-color: rgba(201,168,76,0.3);
+    transform: translateY(-4px);
+  }
+
+  .type-card:hover::before { opacity: 1; }
+
+  .type-card.selected {
+    border-color: var(--gold);
+    background: rgba(201,168,76,0.08);
+    box-shadow: 0 0 30px rgba(201,168,76,0.15);
+  }
+
+  .type-card.selected::before { opacity: 1; }
+
+  .type-icon {
+    font-size: 2rem;
+    margin-bottom: 10px;
+  }
+
+  .type-name {
+    font-family: 'Cinzel', serif;
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: var(--white);
+    margin-bottom: 6px;
+    letter-spacing: 0.06em;
+  }
+
+  .type-desc {
+    font-size: 0.72rem;
+    color: var(--white-60);
+    line-height: 1.5;
+  }
+
+  .type-check {
+    position: absolute;
+    top: 10px; right: 10px;
+    width: 20px; height: 20px;
+    background: linear-gradient(135deg, var(--gold), var(--gold-light));
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.65rem;
+    color: var(--navy);
+    opacity: 0;
+    transition: opacity 0.3s, transform 0.3s;
+    transform: scale(0.5);
+  }
+
+  .type-card.selected .type-check {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  /* Agreement */
+  .agreement-box {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: var(--radius-sm);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    margin-bottom: 4px;
+  }
+
+  /* ── SECTIONS ── */
+  section {
+    padding: 100px 80px;
+    position: relative;
+  }
+
+  .section-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--gold-dim);
+    border: 1px solid rgba(201,168,76,0.25);
+    border-radius: 100px;
+    padding: 6px 16px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: var(--gold-light);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 18px;
+  }
+
+  .section-heading {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2rem, 3.5vw, 3rem);
+    font-weight: 600;
+    line-height: 1.2;
+    margin-bottom: 16px;
+  }
+
+  .section-heading em {
+    font-style: italic;
+    background: linear-gradient(135deg, var(--gold-light), var(--gold));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .section-sub {
+    color: var(--white-60);
+    font-size: 1rem;
+    line-height: 1.7;
+    max-width: 560px;
+  }
+
+  .text-center { text-align: center; }
+  .text-center .section-sub { margin: 0 auto; }
+
+  /* BENEFITS */
+  .benefits {
+    background: linear-gradient(180deg, var(--navy) 0%, var(--navy-mid) 100%);
+  }
+
+  .benefits-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    margin-top: 56px;
+  }
+
+  .benefit-card {
+    background: var(--glass);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius);
+    padding: 32px 28px;
+    transition: all 0.4s;
+    position: relative;
+    overflow: hidden;
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.6s ease, transform 0.6s ease, border-color 0.3s, box-shadow 0.3s, background 0.3s;
+  }
+
+  .benefit-card.revealed {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .benefit-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(to right, transparent, rgba(201,168,76,0.3), transparent);
+  }
+
+  .benefit-card:hover {
+    border-color: rgba(201,168,76,0.35);
+    background: rgba(201,168,76,0.04);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3), 0 0 40px rgba(201,168,76,0.08);
+    transform: translateY(-8px) !important;
+  }
+
+  .benefit-icon {
+    width: 52px; height: 52px;
+    background: var(--gold-dim);
+    border: 1px solid rgba(201,168,76,0.25);
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    margin-bottom: 20px;
+  }
+
+  .benefit-title {
+    font-family: 'Cinzel', serif;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--white);
+    margin-bottom: 10px;
+    letter-spacing: 0.04em;
+  }
+
+  .benefit-desc {
+    font-size: 0.88rem;
+    color: var(--white-60);
+    line-height: 1.7;
+  }
+
+  /* SECURITY */
+  .security {
+    background: var(--navy-mid);
+  }
+
+  .security-wrap {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: center;
+    margin-top: 20px;
+  }
+
+  .security-badges {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+
+  .security-badge {
+    background: var(--glass);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-sm);
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    transition: all 0.3s;
+    opacity: 0;
+    transform: translateX(-20px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+  }
+
+  .security-badge.revealed {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  .security-badge:hover {
+    border-color: rgba(201,168,76,0.3);
+    background: rgba(201,168,76,0.04);
+  }
+
+  .badge-icon {
+    font-size: 1.8rem;
+    flex-shrink: 0;
+  }
+
+  .badge-title {
+    font-family: 'Cinzel', serif;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--gold-light);
+    margin-bottom: 3px;
+    letter-spacing: 0.05em;
+  }
+
+  .badge-desc {
+    font-size: 0.75rem;
+    color: var(--white-60);
+    line-height: 1.4;
+  }
+
+  /* TESTIMONIALS */
+  .testimonials {
+    background: linear-gradient(180deg, var(--navy-mid) 0%, var(--navy) 100%);
+    overflow: hidden;
+  }
+
+  .testi-slider {
+    margin-top: 56px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .testi-track {
+    display: flex;
+    transition: transform 0.6s cubic-bezier(0.4,0,0.2,1);
+    gap: 24px;
+  }
+
+  .testi-card {
+    min-width: calc(33.333% - 16px);
+    background: var(--glass);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius);
+    padding: 32px;
+    flex-shrink: 0;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .testi-card::before {
+    content: '"';
+    position: absolute;
+    top: -10px; right: 20px;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 8rem;
+    color: rgba(201,168,76,0.06);
+    line-height: 1;
+    pointer-events: none;
+  }
+
+  .testi-stars {
+    color: var(--gold);
+    font-size: 0.9rem;
+    margin-bottom: 16px;
+    letter-spacing: 2px;
+  }
+
+  .testi-text {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.05rem;
+    font-style: italic;
+    color: var(--white-80);
+    line-height: 1.7;
+    margin-bottom: 24px;
+  }
+
+  .testi-author {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .testi-avatar {
+    width: 46px; height: 46px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--gold-dim), rgba(100,120,200,0.2));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    border: 2px solid rgba(201,168,76,0.25);
+    flex-shrink: 0;
+  }
+
+  .testi-name {
+    font-family: 'Cinzel', serif;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--white);
+    margin-bottom: 2px;
+  }
+
+  .testi-country {
+    font-size: 0.75rem;
+    color: var(--gold-light);
+  }
+
+  .testi-controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 32px;
+  }
+
+  .testi-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.15);
+    cursor: pointer;
+    transition: all 0.3s;
+    border: none;
+  }
+
+  .testi-dot.active {
+    background: var(--gold);
+    width: 24px;
+    border-radius: 4px;
+  }
+
+  /* FAQ */
+  .faq {
+    background: var(--navy);
+  }
+
+  .faq-list {
+    margin-top: 48px;
+    max-width: 760px;
+    margin-left: auto;
+    margin-right: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .faq-item {
+    background: var(--glass);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    transition: border-color 0.3s;
+  }
+
+  .faq-item.open { border-color: rgba(201,168,76,0.35); }
+
+  .faq-q {
+    padding: 22px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    gap: 16px;
+    user-select: none;
+    transition: background 0.3s;
+  }
+
+  .faq-q:hover { background: rgba(255,255,255,0.02); }
+
+  .faq-question {
+    font-family: 'Cinzel', serif;
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: var(--white);
+    letter-spacing: 0.04em;
+  }
+
+  .faq-icon {
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    background: var(--gold-dim);
+    border: 1px solid rgba(201,168,76,0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--gold-light);
+    font-size: 0.85rem;
+    flex-shrink: 0;
+    transition: all 0.4s;
+  }
+
+  .faq-item.open .faq-icon {
+    background: var(--gold);
+    color: var(--navy);
+    transform: rotate(45deg);
+  }
+
+  .faq-a {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease, padding 0.3s;
+  }
+
+  .faq-item.open .faq-a { max-height: 200px; }
+
+  .faq-answer {
+    padding: 0 24px 22px;
+    font-size: 0.9rem;
+    color: var(--white-60);
+    line-height: 1.7;
+  }
+
+  /* CTA */
+  .cta-section {
+    background: linear-gradient(135deg, #0a0f1e 0%, #111b38 50%, #0a0f1e 100%);
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .cta-section::before {
+    content: '';
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 800px; height: 400px;
+    background: radial-gradient(ellipse, rgba(201,168,76,0.08) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .cta-heading {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    font-weight: 600;
+    line-height: 1.2;
+    margin-bottom: 20px;
+    position: relative;
+  }
+
+  .cta-heading em {
+    font-style: italic;
+    background: linear-gradient(135deg, var(--gold-light), var(--gold));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .cta-sub {
+    color: var(--white-60);
+    font-size: 1.05rem;
+    margin-bottom: 40px;
+    max-width: 480px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .cta-btns {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .btn-cta-primary {
+    padding: 16px 40px;
+    background: linear-gradient(135deg, var(--gold), var(--gold-light));
+    color: var(--navy);
+    border: none;
+    border-radius: 12px;
+    font-family: 'Cinzel', serif;
+    font-size: 0.9rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    transition: all 0.3s;
+    box-shadow: 0 8px 40px rgba(201,168,76,0.4);
+    text-decoration: none;
+    display: inline-block;
+  }
+
+  .btn-cta-primary:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 16px 60px rgba(201,168,76,0.6);
+  }
+
+  .btn-cta-ghost {
+    padding: 16px 40px;
+    background: transparent;
+    color: var(--white-80);
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 12px;
+    font-family: 'Cinzel', serif;
+    font-size: 0.9rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    transition: all 0.3s;
+    text-decoration: none;
+    display: inline-block;
+  }
+
+  .btn-cta-ghost:hover {
+    border-color: rgba(201,168,76,0.4);
+    color: var(--gold-light);
+    transform: translateY(-3px);
+  }
+
+  /* FOOTER */
+  footer {
+    background: #060b18;
+    padding: 72px 80px 40px;
+    border-top: 1px solid rgba(201,168,76,0.1);
+  }
+
+  .footer-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1.5fr;
+    gap: 48px;
+    margin-bottom: 56px;
+  }
+
+  .footer-brand p {
+    font-size: 0.88rem;
+    color: var(--white-60);
+    line-height: 1.7;
+    margin: 16px 0 24px;
+    max-width: 280px;
+  }
+
+  .footer-socials {
+    display: flex;
+    gap: 10px;
+  }
+
+  .social-icon {
+    width: 38px; height: 38px;
+    background: var(--white-10);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem;
+    transition: all 0.3s;
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+  .social-icon:hover {
+    background: var(--gold-dim);
+    border-color: rgba(201,168,76,0.3);
+  }
+
+  .footer-col h4 {
+    font-family: 'Cinzel', serif;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--gold-light);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+  }
+
+  .footer-links {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .footer-links a {
+    font-size: 0.88rem;
+    color: var(--white-60);
+    text-decoration: none;
+    transition: color 0.3s;
+  }
+
+  .footer-links a:hover { color: var(--gold-light); }
+
+  .newsletter-form {
+    display: flex;
+    gap: 8px;
+    margin-top: 4px;
+  }
+
+  .newsletter-input {
+    flex: 1;
+    padding: 12px 14px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 8px;
+    color: var(--white);
+    font-family: 'Nunito Sans', sans-serif;
+    font-size: 0.85rem;
+    outline: none;
+    transition: border-color 0.3s;
+  }
+
+  .newsletter-input:focus { border-color: rgba(201,168,76,0.4); }
+  .newsletter-input::placeholder { color: rgba(255,255,255,0.25); }
+
+  .newsletter-btn {
+    padding: 12px 16px;
+    background: linear-gradient(135deg, var(--gold), var(--gold-light));
+    color: var(--navy);
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    font-weight: 700;
+    transition: all 0.3s;
+    white-space: nowrap;
+  }
+
+  .newsletter-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(201,168,76,0.35);
+  }
+
+  .footer-bottom {
+    border-top: 1px solid rgba(255,255,255,0.06);
+    padding-top: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+  }
+
+  .footer-copy {
+    font-size: 0.8rem;
+    color: rgba(255,255,255,0.3);
+  }
+
+  .footer-copy span { color: var(--gold-light); }
+
+  .footer-legal {
+    display: flex;
+    gap: 20px;
+  }
+
+  .footer-legal a {
+    font-size: 0.78rem;
+    color: rgba(255,255,255,0.3);
+    text-decoration: none;
+    transition: color 0.3s;
+  }
+
+  .footer-legal a:hover { color: var(--gold-light); }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 1200px) {
+    .hero { grid-template-columns: 1fr; }
+    .hero-brand { padding: 60px 60px 40px; min-height: auto; }
+    .hero-auth { padding: 40px 60px 80px; }
+    .benefits-grid { grid-template-columns: repeat(2, 1fr); }
+    .footer-grid { grid-template-columns: 1fr 1fr; }
+    section { padding: 80px 60px; }
+  }
+
+  @media (max-width: 768px) {
+    nav { padding: 16px 24px; }
+    .nav-links { display: none; }
+    .hero-brand { padding: 48px 24px 32px; }
+    .hero-auth { padding: 24px 24px 60px; }
+    .auth-card { padding: 28px 24px; }
+    section { padding: 60px 24px; }
+    .benefits-grid { grid-template-columns: 1fr; }
+    .security-wrap { grid-template-columns: 1fr; gap: 40px; }
+    .security-badges { grid-template-columns: 1fr; }
+    .testi-card { min-width: calc(90% - 8px); }
+    .footer-grid { grid-template-columns: 1fr; gap: 32px; }
+    footer { padding: 48px 24px 28px; }
+    .footer-bottom { flex-direction: column; text-align: center; }
+    .stats-grid { grid-template-columns: 1fr 1fr; }
+    .form-row { grid-template-columns: 1fr; }
+    .social-btns { grid-template-columns: 1fr; }
+    .type-cards { grid-template-columns: 1fr; }
+    .cta-section { padding: 80px 24px; }
+  }
+
+  /* Reveal animation classes */
+  .reveal { opacity: 0; transform: translateY(30px); }
+
+  /* Select styling */
+  select.form-input {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='rgba(201,168,76,0.7)' d='M1 1l5 5 5-5'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 16px center;
+    padding-right: 40px;
+  }
+
+  select.form-input option {
+    background: #0d1530;
+    color: white;
+  }
+
+  /* Mobile menu toggle */
+  .nav-hamburger {
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+    cursor: pointer;
+    background: none;
+    border: none;
+    padding: 4px;
+  }
+
+  .nav-hamburger span {
+    width: 22px; height: 2px;
+    background: var(--white-60);
+    border-radius: 2px;
+    transition: all 0.3s;
+  }
+
+  @media (max-width: 768px) {
+    .nav-hamburger { display: flex; }
+  }
+
+  .mobile-menu {
+    position: fixed;
+    top: 76px; left: 0; right: 0;
+    background: rgba(10,15,30,0.97);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(201,168,76,0.1);
+    padding: 24px;
+    z-index: 999;
+    display: none;
+    flex-direction: column;
+    gap: 20px;
+    transform: translateY(-10px);
+    opacity: 0;
+    transition: all 0.3s;
+  }
+
+  .mobile-menu.open {
+    display: flex;
+    transform: translateY(0);
+    opacity: 1;
+  }
+
+  .mobile-menu a {
+    color: var(--white-80);
+    text-decoration: none;
+    font-size: 1rem;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    transition: color 0.3s;
+  }
+
+  .mobile-menu a:hover { color: var(--gold-light); }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="index.html" class="nav-logo">
+    <div class="nav-logo-icon">✦</div>
+    <span class="nav-logo-text">CLJN</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="ministers.html">Ministers</a></li>
+    <li><a href="ministers.html">Teachings</a></li>
+    <li><a href="dashboard.html">Community</a></li>
+    <li><a href="auth.html" class="nav-cta">Join Now</a></li>
+  </ul>
+  <button class="nav-hamburger" onclick="toggleMobileMenu()" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- MOBILE MENU -->
+<div class="mobile-menu" id="mobileMenu">
+  <a href="index.html">Home</a>
+  <a href="ministers.html">Ministers</a>
+  <a href="ministers.html">Teachings</a>
+  <a href="dashboard.html">Community</a>
+  <a href="auth.html" style="color: var(--gold-light); font-weight: 700;">Join Now</a>
+</div>
+
+<!-- HERO SPLIT -->
+<section class="hero" style="padding:0;">
+
+  <!-- LEFT BRAND -->
+  <div class="hero-brand">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+    <div class="particles" id="particles"></div>
+
+    <div class="section-badge">✦ Global Spiritual Platform</div>
+
+    <h1 class="brand-heading">
+      Connect<br><em>Spiritually</em><br>Across The World
+    </h1>
+
+    <p class="brand-sub">
+      Join a thriving divine community of believers, seekers, and verified spiritual leaders from over 35 countries. Your sacred journey begins here.
+    </p>
+
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon">🌍</div>
+        <div class="stat-num">10K+</div>
+        <div class="stat-label">Members Worldwide</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">✝</div>
+        <div class="stat-num">120+</div>
+        <div class="stat-label">Verified Ministers</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">🌐</div>
+        <div class="stat-num">35+</div>
+        <div class="stat-label">Countries Reached</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">🕊</div>
+        <div class="stat-num">24/7</div>
+        <div class="stat-label">Spiritual Guidance</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT AUTH -->
+  <div class="hero-auth">
+    <div class="auth-card">
+
+      <div class="auth-logo">
+        <div class="auth-logo-mark">✦</div>
+        <div class="auth-brand-name">CLJN</div>
+      </div>
+
+      <!-- TABS -->
+      <div class="auth-tabs">
+        <div class="tab-slider" id="tabSlider"></div>
+        <button class="tab-btn active" id="loginTab" onclick="switchTab('login')">Login</button>
+        <button class="tab-btn" id="registerTab" onclick="switchTab('register')">Register</button>
+      </div>
+
+      <!-- LOGIN FORM -->
+      <div class="form-panel active" id="loginPanel">
+        <div class="form-group">
+          <label class="form-label">Email or Phone</label>
+          <input type="text" class="form-input" placeholder="you@example.com" autocomplete="email">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Password</label>
+          <div class="input-wrap">
+            <input type="password" class="form-input" id="loginPw" placeholder="••••••••" autocomplete="current-password">
+            <button type="button" class="input-icon" onclick="togglePw('loginPw', this)">👁</button>
+          </div>
+        </div>
+        <div class="form-extras">
+          <label class="check-wrap">
+            <input type="checkbox"> <span>Remember me</span>
+          </label>
+          <a href="#" class="forgot-link">Forgot password?</a>
+        </div>
+        <button class="btn-primary" id="loginBtn" onclick="handleLoginRedirect(this)">
+          Sign In to CLJN
+        </button>
+        <div class="divider"><span>OR CONTINUE WITH</span></div>
+        <div class="social-btns">
+          <button class="btn-social">
+            <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+            Google
+          </button>
+          <button class="btn-social">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="#1877F2"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+            Facebook
+          </button>
+        </div>
+      </div>
+
+      <!-- REGISTER FORM -->
+      <div class="form-panel" id="registerPanel">
+        <!-- Step indicator -->
+        <div class="step-indicator">
+          <div class="step-dot active" id="dot-1">1</div>
+          <div class="step-line" id="line-1"></div>
+          <div class="step-dot" id="dot-2">2</div>
+          <div class="step-line" id="line-2"></div>
+          <div class="step-dot" id="dot-3">3</div>
+          <div class="step-line" id="line-3"></div>
+          <div class="step-dot" id="dot-4">4</div>
+        </div>
+
+        <!-- STEP 1: Basic Info -->
+        <div class="step-form active" id="step1">
+          <div class="step-title">Your Identity</div>
+          <div class="step-sub">Tell us a little about yourself</div>
+          <div class="form-group">
+            <label class="form-label">Full Name</label>
+            <input type="text" class="form-input" placeholder="Grace Emmanuel" autocomplete="name">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Email Address</label>
+            <input type="email" class="form-input" placeholder="you@example.com" autocomplete="email">
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Phone</label>
+              <input type="tel" class="form-input" placeholder="+1 234 567 8900" autocomplete="tel">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Country</label>
+              <select class="form-input">
+                <option value="">Select…</option>
+                <option>Nigeria</option>
+                <option>United States</option>
+                <option>United Kingdom</option>
+                <option>Ghana</option>
+                <option>Kenya</option>
+                <option>South Africa</option>
+                <option>Canada</option>
+                <option>India</option>
+                <option>Brazil</option>
+                <option>Other</option>
+              </select>
+            </div>
+          </div>
+          <div class="step-btns">
+            <button class="btn-primary" onclick="nextStep(2)" style="flex:1;">Continue →</button>
+          </div>
+        </div>
+
+        <!-- STEP 2: Security -->
+        <div class="step-form" id="step2">
+          <div class="step-title">Account Security</div>
+          <div class="step-sub">Create a strong password to protect your account</div>
+          <div class="form-group">
+            <label class="form-label">Password</label>
+            <div class="input-wrap">
+              <input type="password" class="form-input" id="regPw" placeholder="Min. 8 characters" oninput="checkStrength(this.value)" autocomplete="new-password">
+              <button type="button" class="input-icon" onclick="togglePw('regPw', this)">👁</button>
+            </div>
+            <div class="strength-bar"><div class="strength-fill" id="strengthFill"></div></div>
+            <div class="strength-text" id="strengthText" style="color: var(--white-60);">Enter a password</div>
+            <ul class="pw-checks">
+              <li id="chk-len">At least 8 characters</li>
+              <li id="chk-upper">Uppercase letter</li>
+              <li id="chk-num">Contains number</li>
+              <li id="chk-sym">Special character</li>
+            </ul>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Confirm Password</label>
+            <div class="input-wrap">
+              <input type="password" class="form-input" id="regPwConf" placeholder="Repeat password" autocomplete="new-password">
+              <button type="button" class="input-icon" onclick="togglePw('regPwConf', this)">👁</button>
+            </div>
+          </div>
+          <div class="step-btns">
+            <button class="btn-ghost" onclick="prevStep(1)">← Back</button>
+            <button class="btn-primary" onclick="nextStep(3)" style="flex:2;">Continue →</button>
+          </div>
+        </div>
+
+        <!-- STEP 3: Account Type -->
+        <div class="step-form" id="step3">
+          <div class="step-title">Your Role</div>
+          <div class="step-sub">Choose how you'll journey with CLJN</div>
+          <div class="type-cards">
+            <div class="type-card" onclick="selectType(this, 'subscriber')" id="typeSubscriber">
+              <div class="type-check">✓</div>
+              <div class="type-icon">🙏</div>
+              <div class="type-name">Subscriber</div>
+              <div class="type-desc">Access teachings, book sessions & join the community</div>
+            </div>
+            <div class="type-card" onclick="selectType(this, 'minister')" id="typeMinister">
+              <div class="type-check">✓</div>
+              <div class="type-icon">✝</div>
+              <div class="type-name">Minister</div>
+              <div class="type-desc">Share your calling, host sessions & minister globally</div>
+            </div>
+          </div>
+          <div class="step-btns" style="margin-top:16px;">
+            <button class="btn-ghost" onclick="prevStep(2)">← Back</button>
+            <button class="btn-primary" onclick="nextStep(4)" style="flex:2;">Continue →</button>
+          </div>
+        </div>
+
+        <!-- STEP 4: Agreement -->
+        <div class="step-form" id="step4">
+          <div class="step-title">Final Step</div>
+          <div class="step-sub">Review and accept our community standards</div>
+          <div class="agreement-box">
+            <label class="check-wrap">
+              <input type="checkbox" id="agreeTerms">
+              <span>I agree to the <a href="terms.html">Terms & Conditions</a></span>
+            </label>
+            <label class="check-wrap">
+              <input type="checkbox" id="agreePrivacy">
+              <span>I accept the <a href="terms.html">Privacy Policy</a></span>
+            </label>
+            <label class="check-wrap">
+              <input type="checkbox" id="agreeCommunity">
+              <span>I will uphold the <a href="terms.html">Community Guidelines</a></span>
+            </label>
+          </div>
+          <div class="step-btns" style="margin-top:20px;">
+            <button class="btn-ghost" onclick="prevStep(3)">← Back</button>
+            <button class="btn-primary" onclick="handleRegister(this)" style="flex:2;" id="regBtn">
+              Create My Account ✦
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- BENEFITS -->
+<section class="benefits">
+  <div class="text-center">
+    <div class="section-badge">✦ Platform Features</div>
+    <h2 class="section-heading">Everything You Need for Your <em>Spiritual Journey</em></h2>
+    <p class="section-sub">A complete ecosystem for divine growth, connection, and transformation — available from anywhere in the world.</p>
+  </div>
+  <div class="benefits-grid">
+    <div class="benefit-card">
+      <div class="benefit-icon">📡</div>
+      <h3 class="benefit-title">Live Spiritual Consultations</h3>
+      <p class="benefit-desc">Connect face-to-face with verified ministers through crystal-clear HD video sessions, scheduled at your convenience.</p>
+    </div>
+    <div class="benefit-card">
+      <div class="benefit-icon">📖</div>
+      <h3 class="benefit-title">Premium Teachings Library</h3>
+      <p class="benefit-desc">Access thousands of curated sermons, spiritual courses, and divine wisdom resources from global faith leaders.</p>
+    </div>
+    <div class="benefit-card">
+      <div class="benefit-icon">🌍</div>
+      <h3 class="benefit-title">Global Ministry Community</h3>
+      <p class="benefit-desc">Join sacred circles, discussion groups, and prayer communities spanning over 35 nations worldwide.</p>
+    </div>
+    <div class="benefit-card">
+      <div class="benefit-icon">✅</div>
+      <h3 class="benefit-title">Verified Ministers Only</h3>
+      <p class="benefit-desc">Every spiritual leader on CLJN undergoes rigorous verification to ensure authenticity and trustworthiness.</p>
+    </div>
+    <div class="benefit-card">
+      <div class="benefit-icon">🔒</div>
+      <h3 class="benefit-title">Secure Private Messaging</h3>
+      <p class="benefit-desc">Communicate confidentially with ministers and community members through end-to-end encrypted messaging.</p>
+    </div>
+    <div class="benefit-card">
+      <div class="benefit-icon">🌐</div>
+      <h3 class="benefit-title">Multi-Country Access</h3>
+      <p class="benefit-desc">Available in 35+ countries with localized content, language support, and regional spiritual guidance.</p>
+    </div>
+  </div>
+</section>
+
+<!-- SECURITY -->
+<section class="security">
+  <div class="security-wrap">
+    <div>
+      <div class="section-badge">✦ Trust & Safety</div>
+      <h2 class="section-heading">Your Privacy is <em>Sacred</em> to Us</h2>
+      <p class="section-sub">We employ enterprise-grade security standards to ensure your spiritual journey remains private, safe, and protected at all times.</p>
+    </div>
+    <div class="security-badges">
+      <div class="security-badge">
+        <div class="badge-icon">🔐</div>
+        <div>
+          <div class="badge-title">End-to-End Encryption</div>
+          <div class="badge-desc">All messages and sessions secured with AES-256</div>
+        </div>
+      </div>
+      <div class="security-badge">
+        <div class="badge-icon">✅</div>
+        <div>
+          <div class="badge-title">Verified Ministers</div>
+          <div class="badge-desc">Multi-step credential verification process</div>
+        </div>
+      </div>
+      <div class="security-badge">
+        <div class="badge-icon">💳</div>
+        <div>
+          <div class="badge-title">Secure Payments</div>
+          <div class="badge-desc">PCI-DSS compliant payment processing</div>
+        </div>
+      </div>
+      <div class="security-badge">
+        <div class="badge-icon">🛡</div>
+        <div>
+          <div class="badge-title">Privacy Protected</div>
+          <div class="badge-desc">GDPR compliant data handling & storage</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="testimonials">
+  <div class="text-center">
+    <div class="section-badge">✦ Testimonials</div>
+    <h2 class="section-heading">Voices from Our <em>Sacred Community</em></h2>
+    <p class="section-sub">Real testimonies from believers and ministers whose lives have been transformed through CLJN.</p>
+  </div>
+  <div class="testi-slider">
+    <div class="testi-track" id="testiTrack">
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <p class="testi-text">"CLJN changed everything. I found a minister from Lagos who speaks to my soul. This platform bridges oceans with prayer."</p>
+        <div class="testi-author">
+          <div class="testi-avatar">🙏</div>
+          <div>
+            <div class="testi-name">Abigail Mensah</div>
+            <div class="testi-country">🇬🇭 Ghana</div>
+          </div>
+        </div>
+      </div>
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <p class="testi-text">"As a minister, I now reach believers across 12 countries weekly. The platform is flawless — elegant, secure, and spiritually aligned."</p>
+        <div class="testi-author">
+          <div class="testi-avatar">✝</div>
+          <div>
+            <div class="testi-name">Pastor David Osei</div>
+            <div class="testi-country">🇳🇬 Nigeria</div>
+          </div>
+        </div>
+      </div>
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <p class="testi-text">"I was searching for authentic spiritual guidance. CLJN's verification process means I always find trustworthy, anointed leaders."</p>
+        <div class="testi-author">
+          <div class="testi-avatar">🌟</div>
+          <div>
+            <div class="testi-name">Sarah Williams</div>
+            <div class="testi-country">🇺🇸 United States</div>
+          </div>
+        </div>
+      </div>
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <p class="testi-text">"The live consultation feature is remarkable. Having access to anointed ministers at 3am when I needed prayer most — priceless."</p>
+        <div class="testi-author">
+          <div class="testi-avatar">🕊</div>
+          <div>
+            <div class="testi-name">Emmanuel Boateng</div>
+            <div class="testi-country">🇬🇧 United Kingdom</div>
+          </div>
+        </div>
+      </div>
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <p class="testi-text">"The premium teachings library alone is worth every subscription. Sermons curated by the Spirit — deep, transformative, and authentic."</p>
+        <div class="testi-author">
+          <div class="testi-avatar">🌺</div>
+          <div>
+            <div class="testi-name">Priya Sharma</div>
+            <div class="testi-country">🇮🇳 India</div>
+          </div>
+        </div>
+      </div>
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <p class="testi-text">"Community features are divine. Prayer groups, Bible studies, and global fellowship — CLJN has become my spiritual home."</p>
+        <div class="testi-author">
+          <div class="testi-avatar">💫</div>
+          <div>
+            <div class="testi-name">Miriam Otieno</div>
+            <div class="testi-country">🇰🇪 Kenya</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="testi-controls" id="testiControls"></div>
+</section>
+
+<!-- FAQ -->
+<section class="faq">
+  <div class="text-center">
+    <div class="section-badge">✦ Questions & Answers</div>
+    <h2 class="section-heading">Frequently <em>Asked Questions</em></h2>
+  </div>
+  <div class="faq-list">
+    <div class="faq-item open">
+      <div class="faq-q" onclick="toggleFaq(this)">
+        <span class="faq-question">Is registration free on CLJN?</span>
+        <span class="faq-icon">+</span>
+      </div>
+      <div class="faq-a">
+        <p class="faq-answer">Yes, creating a CLJN account is completely free. You can access selected community features and browse minister profiles at no cost. Premium subscriptions unlock the full library, live consultations, and exclusive content.</p>
+      </div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">
+        <span class="faq-question">Can I become a minister after registering as a subscriber?</span>
+        <span class="faq-icon">+</span>
+      </div>
+      <div class="faq-a">
+        <p class="faq-answer">Absolutely. You may apply to become a verified minister from your dashboard at any time. Our team reviews credentials, spiritual background, and references before granting minister status — a process that takes 3–7 business days.</p>
+      </div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">
+        <span class="faq-question">Is my personal information and spiritual data secure?</span>
+        <span class="faq-icon">+</span>
+      </div>
+      <div class="faq-a">
+        <p class="faq-answer">Your privacy is our highest priority. All data is encrypted using AES-256 standards, sessions are end-to-end encrypted, and we are fully GDPR compliant. We never sell, share, or misuse your personal information.</p>
+      </div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">
+        <span class="faq-question">Can I cancel my subscription at any time?</span>
+        <span class="faq-icon">+</span>
+      </div>
+      <div class="faq-a">
+        <p class="faq-answer">Yes. You may cancel your subscription at any time from your account settings with no cancellation fees. You retain access to premium features until the end of your current billing period.</p>
+      </div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">
+        <span class="faq-question">Is CLJN available worldwide?</span>
+        <span class="faq-icon">+</span>
+      </div>
+      <div class="faq-a">
+        <p class="faq-answer">Yes! CLJN is accessible in 35+ countries with localized payment options, multilingual support, and regionally curated spiritual content. We are continuously expanding our reach to serve more nations.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+  <div class="section-badge" style="margin: 0 auto 24px;">✦ Begin Today</div>
+  <h2 class="cta-heading">Begin Your<br><em>Spiritual Journey</em> Today</h2>
+  <p class="cta-sub">Join thousands of believers and ministers already experiencing divine connection across the globe.</p>
+  <div class="cta-btns">
+    <a href="#" class="btn-cta-primary" onclick="scrollToAuth('register'); return false;">Create Free Account</a>
+    <a href="#" class="btn-cta-ghost">Explore Ministers</a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <div style="display:flex;align-items:center;gap:12px;">
+        <div class="nav-logo-icon" style="width:36px;height:36px;font-size:16px;">✦</div>
+        <span class="nav-logo-text">CLJN</span>
+      </div>
+      <p>A premium global spiritual ministry ecosystem connecting believers with verified ministers across 35+ nations. Your sacred digital home.</p>
+      <div class="footer-socials">
+        <div class="social-icon">𝕏</div>
+        <div class="social-icon">f</div>
+        <div class="social-icon">in</div>
+        <div class="social-icon">▶</div>
+        <div class="social-icon">📷</div>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h4>Platform</h4>
+      <ul class="footer-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="ministers.html">Ministers</a></li>
+        <li><a href="#">Premium Teachings</a></li>
+        <li><a href="dashboard.html">Community</a></li>
+        <li><a href="#">Become a Minister</a></li>
+        <li><a href="pricing.html">Pricing</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Support</h4>
+      <ul class="footer-links">
+        <li><a href="#">Help Center</a></li>
+        <li><a href="#">Contact Us</a></li>
+        <li><a href="terms.html">Privacy Policy</a></li>
+        <li><a href="terms.html">Terms of Service</a></li>
+        <li><a href="terms.html">Community Guidelines</a></li>
+        <li><a href="#">Cookie Policy</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Stay Connected</h4>
+      <p style="font-size:0.85rem;color:var(--white-60);margin-bottom:14px;line-height:1.6;">Receive divine inspiration, platform updates, and spiritual insights weekly.</p>
+      <div class="newsletter-form">
+        <input type="email" class="newsletter-input" placeholder="Your email address">
+        <button class="newsletter-btn">✦ Join</button>
+      </div>
+      <p style="font-size:0.72rem;color:rgba(255,255,255,0.25);margin-top:10px;">No spam. Unsubscribe anytime.</p>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div class="footer-copy">© 2025 <span>CLJN</span>. Crafted with faith & excellence.</div>
+    <div class="footer-legal">
+      <a href="#">Privacy</a>
+      <a href="terms.html">Terms</a>
+      <a href="#">Cookies</a>
+      <a href="#">Accessibility</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  /* ── PARTICLES ── */
+  const particleContainer = document.getElementById('particles');
+  for (let i = 0; i < 20; i++) {
+    const p = document.createElement('div');
+    p.className = 'particle';
+    p.style.left = Math.random() * 100 + '%';
+    p.style.animationDuration = (6 + Math.random() * 10) + 's';
+    p.style.animationDelay = (Math.random() * 12) + 's';
+    p.style.opacity = 0;
+    particleContainer.appendChild(p);
+  }
+
+  /* ── MOBILE MENU ── */
+  function toggleMobileMenu() {
+    const menu = document.getElementById('mobileMenu');
+    menu.classList.toggle('open');
+  }
+
+  document.addEventListener('click', (e) => {
+    const menu = document.getElementById('mobileMenu');
+    if (!menu.contains(e.target) && !e.target.closest('.nav-hamburger')) {
+      menu.classList.remove('open');
+    }
+  });
+
+  /* ── TABS ── */
+  let currentTab = 'login';
+
+  function switchTab(tab) {
+    currentTab = tab;
+    const slider = document.getElementById('tabSlider');
+    const loginBtn = document.getElementById('loginTab');
+    const regBtn = document.getElementById('registerTab');
+    const loginPanel = document.getElementById('loginPanel');
+    const regPanel = document.getElementById('registerPanel');
+
+    if (tab === 'login') {
+      slider.classList.remove('register');
+      loginBtn.classList.add('active');
+      regBtn.classList.remove('active');
+      loginPanel.classList.add('active');
+      regPanel.classList.remove('active');
+    } else {
+      slider.classList.add('register');
+      regBtn.classList.add('active');
+      loginBtn.classList.remove('active');
+      regPanel.classList.add('active');
+      loginPanel.classList.remove('active');
+    }
+  }
+
+  /* ── MULTI-STEP ── */
+  let currentStep = 1;
+
+  function nextStep(step) {
+    goToStep(step);
+  }
+
+  function prevStep(step) {
+    goToStep(step);
+  }
+
+  function goToStep(step) {
+    // Hide current
+    document.getElementById('step' + currentStep).classList.remove('active');
+    // Mark old as done
+    if (step > currentStep) {
+      document.getElementById('dot-' + currentStep).classList.remove('active');
+      document.getElementById('dot-' + currentStep).classList.add('done');
+      document.getElementById('dot-' + currentStep).textContent = '✓';
+      if (currentStep < 4) {
+        document.getElementById('line-' + currentStep).classList.add('done');
+      }
+    } else {
+      // Going back — undo
+      document.getElementById('dot-' + currentStep).classList.remove('active', 'done');
+      document.getElementById('dot-' + currentStep).textContent = currentStep;
+      if (currentStep > 1) {
+        document.getElementById('line-' + (currentStep - 1)).classList.remove('done');
+      }
+    }
+    currentStep = step;
+    // Activate new
+    document.getElementById('step' + currentStep).classList.add('active');
+    document.getElementById('dot-' + currentStep).classList.remove('done');
+    document.getElementById('dot-' + currentStep).classList.add('active');
+    document.getElementById('dot-' + currentStep).textContent = currentStep;
+  }
+
+  /* ── PASSWORD TOGGLE ── */
+  function togglePw(id, btn) {
+    const input = document.getElementById(id);
+    if (input.type === 'password') {
+      input.type = 'text';
+      btn.textContent = '🙈';
+    } else {
+      input.type = 'password';
+      btn.textContent = '👁';
+    }
+  }
+
+  /* ── PASSWORD STRENGTH ── */
+  function checkStrength(val) {
+    const fill = document.getElementById('strengthFill');
+    const text = document.getElementById('strengthText');
+    const chks = {
+      len: document.getElementById('chk-len'),
+      upper: document.getElementById('chk-upper'),
+      num: document.getElementById('chk-num'),
+      sym: document.getElementById('chk-sym'),
+    };
+
+    const hasLen = val.length >= 8;
+    const hasUpper = /[A-Z]/.test(val);
+    const hasNum = /[0-9]/.test(val);
+    const hasSym = /[^A-Za-z0-9]/.test(val);
+
+    chks.len.classList.toggle('pass', hasLen);
+    chks.upper.classList.toggle('pass', hasUpper);
+    chks.num.classList.toggle('pass', hasNum);
+    chks.sym.classList.toggle('pass', hasSym);
+
+    const score = [hasLen, hasUpper, hasNum, hasSym].filter(Boolean).length;
+
+    fill.className = 'strength-fill';
+    if (!val) { text.textContent = 'Enter a password'; text.style.color = 'var(--white-60)'; return; }
+    if (score === 1) { fill.classList.add('weak'); text.textContent = 'Weak'; text.style.color = '#e07070'; }
+    else if (score === 2) { fill.classList.add('fair'); text.textContent = 'Fair'; text.style.color = '#e0b070'; }
+    else if (score === 3) { fill.classList.add('good'); text.textContent = 'Good'; text.style.color = '#8ed4a0'; }
+    else if (score === 4) { fill.classList.add('strong'); text.textContent = 'Strong — Excellent!'; text.style.color = 'var(--gold-light)'; }
+  }
+
+  /* ── ACCOUNT TYPE ── */
+  let selectedType = null;
+
+  function selectType(card, type) {
+    document.querySelectorAll('.type-card').forEach(c => c.classList.remove('selected'));
+    card.classList.add('selected');
+    selectedType = type;
+  }
+
+  /* ── BUTTON LOADING ── */
+  function handleLogin(btn) {
+    btn.classList.add('loading');
+    const orig = btn.textContent;
+    btn.textContent = 'Authenticating…';
+    setTimeout(() => {
+      btn.classList.remove('loading');
+      btn.textContent = orig;
+      btn.style.background = 'linear-gradient(135deg, #70c49a, #50b080)';
+      btn.textContent = '✓ Welcome Back!';
+      setTimeout(() => {
+        window.location.href = 'dashboard.html';
+      }, 800);
+    }, 2000);
+  }
+
+  function handleRegister(btn) {
+    const checks = ['agreeTerms', 'agreePrivacy', 'agreeCommunity'];
+    const allChecked = checks.every(id => document.getElementById(id).checked);
+    if (!allChecked) {
+      btn.style.background = 'linear-gradient(135deg, #e07070, #c05050)';
+      btn.textContent = 'Please accept all agreements';
+      setTimeout(() => {
+        btn.style.background = '';
+        btn.textContent = 'Create My Account ✦';
+      }, 2000);
+      return;
+    }
+    btn.classList.add('loading');
+    btn.textContent = 'Creating your sacred space…';
+    setTimeout(() => {
+      btn.classList.remove('loading');
+      btn.style.background = 'linear-gradient(135deg, #70c49a, #50b080)';
+      btn.textContent = '✓ Account Created! Welcome!';
+      setTimeout(() => {
+        window.location.href = 'dashboard.html';
+      }, 800);
+    }, 2500);
+  }
+
+  /* ── FAQ ACCORDION ── */
+  function toggleFaq(el) {
+    const item = el.parentElement;
+    const isOpen = item.classList.contains('open');
+    document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+    if (!isOpen) item.classList.add('open');
+  }
+
+  /* ── TESTIMONIAL SLIDER ── */
+  let testiIndex = 0;
+  const testiData = [0, 1, 2, 3, 4, 5];
+  const visibleCount = window.innerWidth < 768 ? 1 : 3;
+  const maxIndex = testiData.length - visibleCount;
+  const controls = document.getElementById('testiControls');
+
+  // Build dots
+  for (let i = 0; i <= maxIndex; i++) {
+    const dot = document.createElement('button');
+    dot.className = 'testi-dot' + (i === 0 ? ' active' : '');
+    dot.onclick = () => goToTesti(i);
+    controls.appendChild(dot);
+  }
+
+  function goToTesti(idx) {
+    testiIndex = Math.max(0, Math.min(idx, maxIndex));
+    const track = document.getElementById('testiTrack');
+    const cardW = track.children[0].offsetWidth + 24;
+    track.style.transform = `translateX(-${testiIndex * cardW}px)`;
+    document.querySelectorAll('.testi-dot').forEach((d, i) => {
+      d.classList.toggle('active', i === testiIndex);
+    });
+  }
+
+  // Auto-slide
+  setInterval(() => { goToTesti((testiIndex + 1) > maxIndex ? 0 : testiIndex + 1); }, 4500);
+
+  /* ── SCROLL REVEAL ── */
+  const revealObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('revealed');
+        const delay = entry.target.dataset.delay || 0;
+        entry.target.style.transitionDelay = delay + 'ms';
+        revealObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.15 });
+
+  document.querySelectorAll('.benefit-card').forEach((el, i) => {
+    el.dataset.delay = i * 80;
+    revealObserver.observe(el);
+  });
+
+  document.querySelectorAll('.security-badge').forEach((el, i) => {
+    el.dataset.delay = i * 100;
+    revealObserver.observe(el);
+  });
+
+  /* ── SCROLL TO AUTH ── */
+  function scrollToAuth(tab) {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    setTimeout(() => switchTab(tab), 600);
+  }
+
+  /* ── NAV SCROLL EFFECT ── */
+  window.addEventListener('scroll', () => {
+    const nav = document.querySelector('nav');
+    nav.style.background = window.scrollY > 50
+      ? 'rgba(10,15,30,0.95)'
+      : 'rgba(10,15,30,0.7)';
+  });
+
+function handleLoginRedirect(btn) {
+  handleLogin(btn);
+  setTimeout(function(){ window.location.href = 'dashboard.html'; }, 800);
+}
+</script>
+</body>
+</html>

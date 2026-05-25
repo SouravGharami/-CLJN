@@ -1,0 +1,894 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CLJN — Notifications</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --royal:        #1a3a8f;
+  --royal-deep:   #0d2260;
+  --royal-light:  #2550c0;
+  --royal-mid:    #1e40af;
+  --gold:         #c9a84c;
+  --gold-light:   #e8c96d;
+  --gold-bright:  #f5d98c;
+  --gold-pale:    rgba(201,168,76,0.08);
+  --navy:         #060d20;
+  --navy-mid:     #0b1530;
+  --navy-card:    #0e1c3c;
+  --glass:        rgba(255,255,255,0.04);
+  --glass-hover:  rgba(255,255,255,0.07);
+  --gb:           rgba(201,168,76,0.16);
+  --gb-hover:     rgba(201,168,76,0.28);
+  --text:         #eee8d6;
+  --text-2:       rgba(238,232,214,0.58);
+  --text-3:       rgba(238,232,214,0.32);
+  --success:      #1abc9c;
+  --warning:      #f39c12;
+  --danger:       #e74c3c;
+  --info:         #3498db;
+  --r:            16px;
+  --r-sm:         10px;
+  --ease:         cubic-bezier(0.4,0,0.2,1);
+  --t:            all 0.32s var(--ease);
+}
+
+*,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
+html { scroll-behavior:smooth; }
+
+body {
+  font-family:'Montserrat',sans-serif;
+  background:var(--navy);
+  color:var(--text);
+  min-height:100vh;
+  overflow-x:hidden;
+}
+
+/* ── BACKGROUND ── */
+.bg-layer {
+  position:fixed; inset:0; z-index:0; pointer-events:none;
+  background:
+    radial-gradient(ellipse 70% 55% at 15% 15%, rgba(26,58,143,0.5) 0%, transparent 65%),
+    radial-gradient(ellipse 55% 45% at 88% 85%, rgba(13,34,96,0.6) 0%, transparent 60%),
+    radial-gradient(ellipse 40% 35% at 60% 40%, rgba(201,168,76,0.05) 0%, transparent 70%);
+}
+.bg-grid {
+  position:fixed; inset:0; z-index:0; pointer-events:none; opacity:0.4;
+  background-image:
+    linear-gradient(rgba(201,168,76,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(201,168,76,0.04) 1px, transparent 1px);
+  background-size: 48px 48px;
+  mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 30%, transparent 100%);
+}
+.orb {
+  position:fixed; border-radius:50%; pointer-events:none; z-index:0;
+  filter:blur(90px); opacity:0.12;
+}
+.orb-1 { width:500px; height:500px; background:var(--royal); top:-120px; left:-80px; animation:orbf 14s ease-in-out infinite; }
+.orb-2 { width:360px; height:360px; background:var(--gold); bottom:-60px; right:-60px; animation:orbf 18s ease-in-out infinite reverse; }
+@keyframes orbf { 0%,100%{transform:translate(0,0) scale(1)} 50%{transform:translate(20px,-25px) scale(1.06)} }
+
+/* ── LAYOUT ── */
+.app { position:relative; z-index:1; display:flex; min-height:100vh; }
+
+/* ── SIDEBAR ── */
+.sidebar {
+  width:72px; background:rgba(6,13,32,0.85); backdrop-filter:blur(24px);
+  border-right:1px solid var(--gb); display:flex; flex-direction:column;
+  align-items:center; padding:24px 0; position:fixed; top:0; left:0; bottom:0; z-index:200; gap:4px;
+}
+.s-logo {
+  font-family:'Cinzel',serif; font-size:20px; color:var(--gold); margin-bottom:24px;
+  text-shadow:0 0 24px rgba(201,168,76,0.55); cursor:pointer; letter-spacing:2px;
+  animation:pulse-logo 3s ease-in-out infinite;
+}
+@keyframes pulse-logo { 0%,100%{text-shadow:0 0 20px rgba(201,168,76,0.5)} 50%{text-shadow:0 0 36px rgba(201,168,76,0.85)} }
+.s-item {
+  width:46px; height:46px; border-radius:13px; display:flex; align-items:center; justify-content:center;
+  cursor:pointer; color:var(--text-2); font-size:19px; transition:var(--t); position:relative;
+}
+.s-item:hover,.s-item.active { background:rgba(201,168,76,0.1); color:var(--gold); box-shadow:0 0 22px rgba(201,168,76,0.14); }
+.s-item.active::before {
+  content:''; position:absolute; left:-1px; top:50%; transform:translateY(-50%);
+  width:3px; height:26px; background:linear-gradient(180deg,var(--gold-bright),var(--gold)); border-radius:0 3px 3px 0;
+}
+.s-badge {
+  position:absolute; top:7px; right:7px; width:8px; height:8px;
+  background:var(--danger); border-radius:50%; border:2px solid var(--navy);
+  box-shadow:0 0 8px rgba(231,76,60,0.7);
+}
+
+/* ── MAIN ── */
+.main { flex:1; margin-left:72px; padding:40px 44px; max-width:1100px; }
+
+/* ── PAGE HEADER ── */
+.page-header {
+  display:flex; align-items:flex-start; justify-content:space-between;
+  margin-bottom:36px; gap:20px; flex-wrap:wrap;
+  animation:fadeDown 0.55s var(--ease) both;
+}
+@keyframes fadeDown { from{opacity:0;transform:translateY(-18px)} to{opacity:1;transform:translateY(0)} }
+.header-left .eyebrow {
+  font-size:10px; font-weight:700; letter-spacing:4px; color:var(--gold);
+  text-transform:uppercase; margin-bottom:7px;
+}
+.header-left h1 {
+  font-family:'Cinzel',serif; font-size:30px; font-weight:700; letter-spacing:1px;
+  color:var(--text); line-height:1.15;
+}
+.header-left p { font-size:12px; color:var(--text-2); margin-top:5px; font-weight:300; }
+.header-right { display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
+
+/* ── SEARCH BAR ── */
+.search-wrap {
+  position:relative; display:flex; align-items:center;
+}
+.search-icon {
+  position:absolute; left:14px; color:var(--text-3); font-size:14px; pointer-events:none;
+}
+.search-input {
+  background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.09);
+  border-radius:11px; padding:11px 14px 11px 38px; font-family:'Montserrat',sans-serif;
+  font-size:12px; color:var(--text); outline:none; width:220px; transition:var(--t);
+}
+.search-input::placeholder { color:var(--text-3); }
+.search-input:focus {
+  border-color:rgba(201,168,76,0.38); background:rgba(255,255,255,0.065);
+  box-shadow:0 0 0 3px rgba(201,168,76,0.08); width:260px;
+}
+
+/* ── BUTTONS ── */
+.btn {
+  display:inline-flex; align-items:center; gap:7px; padding:11px 20px;
+  border-radius:10px; font-family:'Montserrat',sans-serif; font-size:11px;
+  font-weight:600; letter-spacing:1px; text-transform:uppercase; cursor:pointer;
+  border:none; transition:var(--t); position:relative; overflow:hidden; white-space:nowrap;
+}
+.btn::after { content:''; position:absolute; inset:0; background:rgba(255,255,255,0); transition:var(--t); }
+.btn:hover::after { background:rgba(255,255,255,0.06); }
+.btn-gold {
+  background:linear-gradient(135deg,var(--gold) 0%,var(--gold-light) 55%,#a07820 100%);
+  color:var(--navy); box-shadow:0 4px 18px rgba(201,168,76,0.3);
+}
+.btn-gold:hover { box-shadow:0 6px 28px rgba(201,168,76,0.52); transform:translateY(-1px); }
+.btn-ghost {
+  background:rgba(255,255,255,0.05); color:var(--text-2);
+  border:1px solid rgba(255,255,255,0.1);
+}
+.btn-ghost:hover { background:rgba(255,255,255,0.09); border-color:rgba(201,168,76,0.28); color:var(--gold); }
+.btn-sm { padding:8px 15px; font-size:10px; }
+
+/* ── FILTER TABS ── */
+.filter-row {
+  display:flex; align-items:center; gap:8px; margin-bottom:28px;
+  animation:fadeUp 0.5s var(--ease) 0.1s both; flex-wrap:wrap;
+}
+@keyframes fadeUp { from{opacity:0;transform:translateY(14px)} to{opacity:1;transform:translateY(0)} }
+.filter-tab {
+  padding:9px 18px; border-radius:30px; font-size:11px; font-weight:600;
+  letter-spacing:0.8px; text-transform:uppercase; cursor:pointer; transition:var(--t);
+  background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08);
+  color:var(--text-2); display:flex; align-items:center; gap:7px;
+}
+.filter-tab:hover { border-color:rgba(201,168,76,0.28); color:var(--gold); background:rgba(201,168,76,0.05); }
+.filter-tab.active {
+  background:linear-gradient(135deg,var(--royal) 0%,var(--royal-light) 100%);
+  border-color:rgba(201,168,76,0.35); color:var(--gold);
+  box-shadow:0 4px 20px rgba(26,58,143,0.45);
+}
+.filter-count {
+  background:rgba(255,255,255,0.1); border-radius:20px; padding:2px 7px;
+  font-size:10px; min-width:20px; text-align:center;
+}
+.filter-tab.active .filter-count { background:rgba(201,168,76,0.2); color:var(--gold); }
+
+/* ── BODY GRID ── */
+.body-grid { display:grid; grid-template-columns:1fr 300px; gap:24px; align-items:start; }
+
+/* ── NOTIFICATIONS LIST ── */
+.notif-list { display:flex; flex-direction:column; gap:10px; }
+
+/* ── DATE DIVIDER ── */
+.date-divider {
+  display:flex; align-items:center; gap:12px; margin:6px 0 4px;
+  opacity:0; animation:fadeUp 0.4s var(--ease) forwards;
+}
+.date-divider-line { flex:1; height:1px; background:linear-gradient(90deg,transparent,rgba(201,168,76,0.18),transparent); }
+.date-divider-label {
+  font-size:10px; font-weight:700; letter-spacing:2px; text-transform:uppercase;
+  color:var(--text-3); white-space:nowrap;
+}
+
+/* ── NOTIFICATION CARD ── */
+.ncard {
+  display:flex; align-items:flex-start; gap:14px;
+  background:linear-gradient(135deg,rgba(255,255,255,0.052) 0%,rgba(255,255,255,0.018) 100%);
+  backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px);
+  border:1px solid rgba(255,255,255,0.085); border-radius:var(--r);
+  padding:18px 20px; cursor:pointer; transition:var(--t);
+  position:relative; overflow:hidden;
+  opacity:0; animation:cardIn 0.45s var(--ease) forwards;
+}
+@keyframes cardIn { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
+.ncard::before {
+  content:''; position:absolute; top:0; left:0; right:0; height:1px;
+  background:linear-gradient(90deg,transparent,rgba(201,168,76,0.25),transparent);
+}
+.ncard::after {
+  content:''; position:absolute; inset:0;
+  background:radial-gradient(circle at 0% 50%, rgba(201,168,76,0.03) 0%, transparent 60%);
+  opacity:0; transition:var(--t);
+}
+.ncard:hover { border-color:var(--gb-hover); transform:translateX(4px) translateY(-1px); box-shadow:0 16px 48px rgba(0,0,0,0.35),0 0 0 1px rgba(201,168,76,0.1); }
+.ncard:hover::after { opacity:1; }
+.ncard.unread { border-color:rgba(201,168,76,0.22); background:linear-gradient(135deg,rgba(26,58,143,0.18) 0%,rgba(255,255,255,0.025) 100%); }
+.ncard.unread::before { background:linear-gradient(90deg,transparent,rgba(201,168,76,0.4),transparent); }
+
+/* unread left bar */
+.ncard.unread .ncard-bar {
+  position:absolute; left:0; top:0; bottom:0; width:3px;
+  background:linear-gradient(180deg,var(--gold-bright),var(--gold));
+  border-radius:var(--r) 0 0 var(--r);
+}
+
+/* icon */
+.ncard-icon-wrap {
+  width:46px; height:46px; border-radius:14px; flex-shrink:0;
+  display:flex; align-items:center; justify-content:center;
+  font-size:20px; position:relative; transition:var(--t);
+}
+.ncard:hover .ncard-icon-wrap { transform:scale(1.08); }
+.icon-msg    { background:linear-gradient(135deg,rgba(26,58,143,0.5),rgba(37,80,192,0.35)); border:1px solid rgba(37,80,192,0.4); }
+.icon-book   { background:linear-gradient(135deg,rgba(26,188,156,0.2),rgba(26,188,156,0.12)); border:1px solid rgba(26,188,156,0.3); }
+.icon-pay    { background:linear-gradient(135deg,rgba(201,168,76,0.22),rgba(201,168,76,0.1)); border:1px solid rgba(201,168,76,0.3); }
+.icon-reply  { background:linear-gradient(135deg,rgba(155,89,182,0.25),rgba(155,89,182,0.12)); border:1px solid rgba(155,89,182,0.35); }
+.icon-sub    { background:linear-gradient(135deg,rgba(231,76,60,0.2),rgba(231,76,60,0.1)); border:1px solid rgba(231,76,60,0.3); }
+.icon-system { background:linear-gradient(135deg,rgba(52,152,219,0.2),rgba(52,152,219,0.1)); border:1px solid rgba(52,152,219,0.3); }
+
+/* content */
+.ncard-content { flex:1; min-width:0; }
+.ncard-top { display:flex; align-items:flex-start; justify-content:space-between; gap:10px; margin-bottom:5px; }
+.ncard-sender {
+  font-family:'Cinzel',serif; font-size:12px; font-weight:700;
+  color:var(--text); letter-spacing:0.3px; white-space:nowrap;
+}
+.ncard.unread .ncard-sender { color:var(--gold-light); }
+.ncard-meta { display:flex; align-items:center; gap:8px; flex-shrink:0; }
+.ncard-time { font-size:10px; color:var(--text-3); white-space:nowrap; }
+.unread-dot {
+  width:7px; height:7px; border-radius:50%; background:var(--gold);
+  box-shadow:0 0 8px rgba(201,168,76,0.7); flex-shrink:0; animation:dot-pulse 2s ease-in-out infinite;
+}
+@keyframes dot-pulse { 0%,100%{box-shadow:0 0 6px rgba(201,168,76,0.7)} 50%{box-shadow:0 0 14px rgba(201,168,76,1)} }
+.ncard-msg { font-size:12px; color:var(--text-2); line-height:1.65; }
+.ncard.unread .ncard-msg { color:var(--text); }
+.ncard-tag {
+  display:inline-flex; align-items:center; gap:5px; margin-top:9px;
+  font-size:10px; font-weight:600; letter-spacing:1px; text-transform:uppercase;
+  padding:3px 10px; border-radius:20px;
+}
+.tag-msg    { background:rgba(26,58,143,0.25); color:#7ba8ff; border:1px solid rgba(26,58,143,0.4); }
+.tag-book   { background:rgba(26,188,156,0.12); color:#1abc9c; border:1px solid rgba(26,188,156,0.25); }
+.tag-pay    { background:rgba(201,168,76,0.12); color:var(--gold-light); border:1px solid rgba(201,168,76,0.25); }
+.tag-reply  { background:rgba(155,89,182,0.15); color:#c39bd3; border:1px solid rgba(155,89,182,0.3); }
+.tag-sub    { background:rgba(231,76,60,0.12); color:#f1948a; border:1px solid rgba(231,76,60,0.25); }
+.tag-system { background:rgba(52,152,219,0.12); color:#85c1e9; border:1px solid rgba(52,152,219,0.25); }
+
+/* card actions */
+.ncard-actions {
+  display:flex; flex-direction:column; align-items:flex-end; gap:6px; flex-shrink:0;
+}
+.ncard-action-btn {
+  width:28px; height:28px; border-radius:8px;
+  background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08);
+  display:flex; align-items:center; justify-content:center;
+  cursor:pointer; color:var(--text-3); font-size:12px; transition:var(--t);
+  opacity:0; transform:translateX(6px);
+}
+.ncard:hover .ncard-action-btn { opacity:1; transform:translateX(0); }
+.ncard-action-btn:hover { background:rgba(201,168,76,0.1); color:var(--gold); border-color:rgba(201,168,76,0.25); }
+
+/* ── EMPTY STATE ── */
+.empty-state {
+  display:none; flex-direction:column; align-items:center; justify-content:center;
+  text-align:center; padding:80px 32px; gap:20px;
+}
+.empty-state.visible { display:flex; animation:fadeUp 0.5s var(--ease) both; }
+.empty-orb {
+  width:110px; height:110px; border-radius:50%;
+  background:linear-gradient(135deg,rgba(26,58,143,0.3),rgba(201,168,76,0.12));
+  border:1px solid rgba(201,168,76,0.2); display:flex; align-items:center; justify-content:center;
+  font-size:44px; margin-bottom:8px;
+  box-shadow:0 0 50px rgba(201,168,76,0.1), inset 0 0 30px rgba(26,58,143,0.2);
+  animation:orbf 5s ease-in-out infinite;
+}
+.empty-title { font-family:'Cinzel',serif; font-size:20px; font-weight:700; color:var(--text); }
+.empty-sub { font-size:13px; color:var(--text-2); max-width:280px; line-height:1.7; }
+.empty-dec {
+  display:flex; gap:8px; margin-top:8px;
+}
+.empty-dec span {
+  width:6px; height:6px; border-radius:50%; background:rgba(201,168,76,0.3);
+  animation:dec-bounce 1.5s ease-in-out infinite;
+}
+.empty-dec span:nth-child(2) { animation-delay:0.2s; }
+.empty-dec span:nth-child(3) { animation-delay:0.4s; }
+@keyframes dec-bounce { 0%,100%{transform:translateY(0);opacity:0.3} 50%{transform:translateY(-6px);opacity:1} }
+
+/* ── RIGHT PANEL ── */
+.right-panel { display:flex; flex-direction:column; gap:20px; position:sticky; top:24px; }
+
+/* ── GLASS CARD ── */
+.panel-card {
+  background:linear-gradient(135deg,rgba(255,255,255,0.05) 0%,rgba(255,255,255,0.02) 100%);
+  backdrop-filter:blur(24px); -webkit-backdrop-filter:blur(24px);
+  border:1px solid var(--gb); border-radius:var(--r); padding:26px;
+  position:relative; overflow:hidden; transition:var(--t);
+  animation:fadeUp 0.5s var(--ease) both;
+}
+.panel-card::before {
+  content:''; position:absolute; top:0; left:0; right:0; height:1px;
+  background:linear-gradient(90deg,transparent,rgba(201,168,76,0.38),transparent);
+}
+.panel-card:hover { border-color:var(--gb-hover); box-shadow:0 16px 50px rgba(0,0,0,0.3); }
+
+.panel-title {
+  font-family:'Cinzel',serif; font-size:13px; font-weight:700;
+  color:var(--gold); letter-spacing:0.8px; margin-bottom:18px;
+  display:flex; align-items:center; gap:9px;
+}
+.panel-title-icon {
+  width:28px; height:28px; border-radius:8px; display:flex; align-items:center; justify-content:center;
+  background:rgba(201,168,76,0.1); border:1px solid rgba(201,168,76,0.2); font-size:13px;
+}
+
+/* ── SUMMARY STATS ── */
+.stat-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+.stat-box {
+  background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.07);
+  border-radius:11px; padding:14px 12px; text-align:center; cursor:default;
+  transition:var(--t);
+}
+.stat-box:hover { background:rgba(201,168,76,0.05); border-color:rgba(201,168,76,0.2); }
+.stat-num { font-family:'Cinzel',serif; font-size:24px; font-weight:900; color:var(--gold); display:block; }
+.stat-lbl { font-size:10px; color:var(--text-3); text-transform:uppercase; letter-spacing:1px; margin-top:3px; }
+
+/* ── TOGGLE ── */
+.toggle-row {
+  display:flex; align-items:center; justify-content:space-between;
+  padding:13px 0; border-bottom:1px solid rgba(255,255,255,0.05);
+  cursor:pointer; transition:var(--t);
+}
+.toggle-row:last-child { border-bottom:none; padding-bottom:0; }
+.toggle-row:first-child { padding-top:0; }
+.toggle-row:hover { padding-left:3px; }
+.toggle-info { flex:1; }
+.toggle-name { font-size:12px; font-weight:500; color:var(--text); margin-bottom:2px; }
+.toggle-desc { font-size:10px; color:var(--text-2); }
+.toggle-sw { position:relative; width:42px; height:23px; flex-shrink:0; margin-left:12px; }
+.toggle-sw input { display:none; }
+.toggle-track {
+  position:absolute; inset:0; background:rgba(255,255,255,0.09);
+  border:1px solid rgba(255,255,255,0.12); border-radius:23px; cursor:pointer; transition:var(--t);
+}
+.toggle-track::after {
+  content:''; position:absolute; top:3px; left:3px;
+  width:15px; height:15px; border-radius:50%;
+  background:var(--text-3); transition:var(--t); box-shadow:0 2px 5px rgba(0,0,0,0.35);
+}
+.toggle-sw input:checked + .toggle-track {
+  background:linear-gradient(135deg,var(--royal),var(--royal-light));
+  border-color:rgba(201,168,76,0.3); box-shadow:0 0 14px rgba(26,58,143,0.5);
+}
+.toggle-sw input:checked + .toggle-track::after {
+  left:calc(100% - 18px); background:var(--gold);
+  box-shadow:0 0 10px rgba(201,168,76,0.65);
+}
+
+/* ── QUICK ACTIONS ── */
+.quick-action {
+  display:flex; align-items:center; gap:12px;
+  padding:12px 14px; border-radius:11px;
+  background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.07);
+  cursor:pointer; transition:var(--t); margin-bottom:8px;
+}
+.quick-action:last-child { margin-bottom:0; }
+.quick-action:hover { background:rgba(201,168,76,0.06); border-color:rgba(201,168,76,0.2); transform:translateX(3px); }
+.qa-icon { width:34px; height:34px; border-radius:9px; display:flex; align-items:center; justify-content:center; font-size:15px; flex-shrink:0; }
+.qa-text { flex:1; }
+.qa-title { font-size:12px; font-weight:500; color:var(--text); }
+.qa-sub { font-size:10px; color:var(--text-2); margin-top:1px; }
+.qa-arrow { color:var(--text-3); font-size:14px; transition:var(--t); }
+.quick-action:hover .qa-arrow { color:var(--gold); transform:translateX(3px); }
+
+/* ── TOAST ── */
+.toast {
+  position:fixed; bottom:28px; right:28px; z-index:9999;
+  background:linear-gradient(135deg,rgba(14,28,60,0.96),rgba(6,13,32,0.98));
+  backdrop-filter:blur(20px); border:1px solid rgba(201,168,76,0.3);
+  border-radius:14px; padding:14px 20px;
+  display:flex; align-items:center; gap:12px;
+  min-width:260px; max-width:360px;
+  transform:translateY(90px); opacity:0;
+  transition:all 0.38s var(--ease);
+  box-shadow:0 20px 60px rgba(0,0,0,0.45);
+}
+.toast.show { transform:translateY(0); opacity:1; }
+.toast-ic { font-size:17px; flex-shrink:0; }
+.toast-body { flex:1; }
+.toast-ttl { font-size:11px; font-weight:700; color:var(--gold); letter-spacing:0.5px; margin-bottom:2px; }
+.toast-msg { font-size:11px; color:var(--text-2); }
+
+/* ── LOAD MORE ── */
+.load-more-wrap { display:flex; justify-content:center; margin-top:16px; }
+
+/* ── RESPONSIVE ── */
+@media(max-width:1000px){ .body-grid{grid-template-columns:1fr} .right-panel{position:static} }
+@media(max-width:768px){ .main{padding:24px 18px} .sidebar{width:54px} .main{margin-left:54px} .search-input{width:160px} .search-input:focus{width:190px} }
+@media(max-width:520px){ .sidebar{display:none} .main{margin-left:0} .page-header{flex-direction:column} .header-right{width:100%} .search-input{flex:1;width:100%} .search-input:focus{width:100%} }
+
+/* animation delays */
+.ncard:nth-child(1){animation-delay:.05s} .ncard:nth-child(2){animation-delay:.1s}
+.ncard:nth-child(3){animation-delay:.15s} .ncard:nth-child(4){animation-delay:.2s}
+.ncard:nth-child(5){animation-delay:.25s} .ncard:nth-child(6){animation-delay:.3s}
+.ncard:nth-child(7){animation-delay:.35s} .ncard:nth-child(8){animation-delay:.4s}
+.date-divider:nth-of-type(1){animation-delay:.03s} .date-divider:nth-of-type(2){animation-delay:.18s}
+.panel-card:nth-child(1){animation-delay:.12s} .panel-card:nth-child(2){animation-delay:.22s} .panel-card:nth-child(3){animation-delay:.32s}
+</style>
+</head>
+<body>
+
+<!-- Background -->
+<div class="bg-layer"></div>
+<div class="bg-grid"></div>
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
+
+<!-- Toast -->
+<div class="toast" id="toast">
+  <div class="toast-ic" id="toast-ic">✦</div>
+  <div class="toast-body">
+    <div class="toast-ttl" id="toast-ttl">Done</div>
+    <div class="toast-msg" id="toast-msg">Action completed.</div>
+  </div>
+</div>
+
+<div class="app">
+
+  <!-- Sidebar -->
+  <nav class="sidebar">
+    <div class="s-logo">✦</div>
+    <div class="s-item" title="Dashboard" onclick="window.location.href='dashboard.html'">🏠</div>
+    <div class="s-item" title="Ministry" onclick="window.location.href='ministers.html'">⛪</div>
+    <div class="s-item" title="Messages" onclick="window.location.href='dashboard.html#messages'">💬</div>
+    <div class="s-item" title="Bookings" onclick="window.location.href='dashboard.html#sessions'">📅</div>
+    <div class="s-item active" title="Notifications" style="position:relative">
+      🔔
+      <div class="s-badge"></div>
+    </div>
+    <div class="s-item" title="Bookmarks" onclick="window.location.href='bookmarks.html'">🔖</div>
+    <div class="s-item" title="Settings" onclick="window.location.href='settings.html'">⚙️</div>
+    <div style="flex:1"></div>
+    <div class="s-item" title="Help" onclick="window.location.href='faq.html'">❓</div>
+  </nav>
+
+  <!-- Main -->
+  <main class="main">
+
+    <!-- Header -->
+    <div class="page-header">
+      <div class="header-left">
+        <div class="eyebrow">✦ Activity Centre</div>
+        <h1>Notifications</h1>
+        <p>Stay connected with your ministry community</p>
+      </div>
+      <div class="header-right">
+        <div class="search-wrap">
+          <span class="search-icon">🔍</span>
+          <input class="search-input" type="text" placeholder="Search notifications…" id="searchInput" oninput="filterSearch()">
+        </div>
+        <button class="btn btn-ghost btn-sm" onclick="markAllRead()">✓ Mark All Read</button>
+        <button class="btn btn-gold btn-sm" onclick="window.location.href='settings.html'">⚙ Settings</button>
+      </div>
+    </div>
+
+    <!-- Filters -->
+    <div class="filter-row" id="filterRow">
+      <div class="filter-tab active" data-filter="all" onclick="setFilter('all',this)">
+        All <span class="filter-count" id="cnt-all">12</span>
+      </div>
+      <div class="filter-tab" data-filter="unread" onclick="setFilter('unread',this)">
+        Unread <span class="filter-count" id="cnt-unread">5</span>
+      </div>
+      <div class="filter-tab" data-filter="message" onclick="setFilter('message',this)">
+        Messages <span class="filter-count" id="cnt-message">4</span>
+      </div>
+      <div class="filter-tab" data-filter="payment" onclick="setFilter('payment',this)">
+        Payments <span class="filter-count" id="cnt-payment">2</span>
+      </div>
+      <div class="filter-tab" data-filter="booking" onclick="setFilter('booking',this)">
+        Bookings <span class="filter-count" id="cnt-booking">3</span>
+      </div>
+    </div>
+
+    <!-- Body Grid -->
+    <div class="body-grid">
+
+      <!-- Notifications List -->
+      <div>
+        <div class="notif-list" id="notifList"></div>
+        <div class="empty-state" id="emptyState">
+          <div class="empty-orb">✦</div>
+          <div class="empty-title">All Caught Up</div>
+          <div class="empty-sub">No notifications here. When something important happens, you'll see it right here.</div>
+          <div class="empty-dec"><span></span><span></span><span></span></div>
+        </div>
+        <div class="load-more-wrap" id="loadMoreWrap">
+          <button class="btn btn-ghost" onclick="loadMore()">Load Earlier Notifications ↓</button>
+        </div>
+      </div>
+
+      <!-- Right Panel -->
+      <div class="right-panel">
+
+        <!-- Summary Stats -->
+        <div class="panel-card">
+          <div class="panel-title"><div class="panel-title-icon">📊</div>Summary</div>
+          <div class="stat-grid">
+            <div class="stat-box">
+              <span class="stat-num" id="stat-total">12</span>
+              <div class="stat-lbl">Total</div>
+            </div>
+            <div class="stat-box">
+              <span class="stat-num" id="stat-unread">5</span>
+              <div class="stat-lbl">Unread</div>
+            </div>
+            <div class="stat-box">
+              <span class="stat-num">3</span>
+              <div class="stat-lbl">Bookings</div>
+            </div>
+            <div class="stat-box">
+              <span class="stat-num">2</span>
+              <div class="stat-lbl">Payments</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Notification Settings -->
+        <div class="panel-card">
+          <div class="panel-title"><div class="panel-title-icon">🔔</div>Alert Settings</div>
+
+          <label class="toggle-row" onclick="toggleRow(this,'Email alerts enabled.','Email alerts disabled.')">
+            <div class="toggle-info">
+              <div class="toggle-name">Email Alerts</div>
+              <div class="toggle-desc">Receive updates via email</div>
+            </div>
+            <div class="toggle-sw"><input type="checkbox" checked><div class="toggle-track"></div></div>
+          </label>
+
+          <label class="toggle-row" onclick="toggleRow(this,'Push notifications enabled.','Push notifications disabled.')">
+            <div class="toggle-info">
+              <div class="toggle-name">Push Notifications</div>
+              <div class="toggle-desc">In-app and browser alerts</div>
+            </div>
+            <div class="toggle-sw"><input type="checkbox" checked><div class="toggle-track"></div></div>
+          </label>
+
+          <label class="toggle-row" onclick="toggleRow(this,'Booking reminders enabled.','Booking reminders disabled.')">
+            <div class="toggle-info">
+              <div class="toggle-name">Booking Reminders</div>
+              <div class="toggle-desc">24h before each service</div>
+            </div>
+            <div class="toggle-sw"><input type="checkbox" checked><div class="toggle-track"></div></div>
+          </label>
+
+          <label class="toggle-row" onclick="toggleRow(this,'Ministry digests enabled.','Ministry digests disabled.')">
+            <div class="toggle-info">
+              <div class="toggle-name">Ministry Digest</div>
+              <div class="toggle-desc">Weekly community roundup</div>
+            </div>
+            <div class="toggle-sw"><input type="checkbox"><div class="toggle-track"></div></div>
+          </label>
+
+          <label class="toggle-row" onclick="toggleRow(this,'Payment alerts enabled.','Payment alerts disabled.')">
+            <div class="toggle-info">
+              <div class="toggle-name">Payment Alerts</div>
+              <div class="toggle-desc">Confirmations & receipts</div>
+            </div>
+            <div class="toggle-sw"><input type="checkbox" checked><div class="toggle-track"></div></div>
+          </label>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="panel-card">
+          <div class="panel-title"><div class="panel-title-icon">⚡</div>Quick Actions</div>
+          <div class="quick-action" onclick="toast_('Archive','All notifications archived.')">
+            <div class="qa-icon" style="background:rgba(26,58,143,0.25);border:1px solid rgba(26,58,143,0.4);">📂</div>
+            <div class="qa-text"><div class="qa-title">Archive All</div><div class="qa-sub">Move to archive</div></div>
+            <div class="qa-arrow">›</div>
+          </div>
+          <div class="quick-action" onclick="toast_('Export','Exporting notification history...')">
+            <div class="qa-icon" style="background:rgba(201,168,76,0.12);border:1px solid rgba(201,168,76,0.25);">📥</div>
+            <div class="qa-text"><div class="qa-title">Export History</div><div class="qa-sub">Download as PDF</div></div>
+            <div class="qa-arrow">›</div>
+          </div>
+          <div class="quick-action" onclick="toast_('Do Not Disturb','Quiet hours activated until 8 AM.')">
+            <div class="qa-icon" style="background:rgba(155,89,182,0.15);border:1px solid rgba(155,89,182,0.3);">🌙</div>
+            <div class="qa-text"><div class="qa-title">Quiet Hours</div><div class="qa-sub">Pause until 8:00 AM</div></div>
+            <div class="qa-arrow">›</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+
+<script>
+// ── DATA ──────────────────────────────────────────────
+const ALL_NOTIFS = [
+  {
+    id:1, unread:true, type:'message', date:'Today',
+    icon:'💬', iconClass:'icon-msg', tagClass:'tag-msg', tagLabel:'Message',
+    sender:'Elder Samuel Boateng',
+    msg:'Your prayer request has been received and shared with our intercessory team. We will be lifting you up in our 6 AM prayer circle tomorrow morning.',
+    time:'Just now',
+    actions:['Reply','Archive']
+  },
+  {
+    id:2, unread:true, type:'booking', date:'Today',
+    icon:'✅', iconClass:'icon-book', tagClass:'tag-book', tagLabel:'Booking',
+    sender:'Booking Confirmed',
+    msg:'Your counselling session with Pastor Abena Osei is confirmed for Thursday, June 5 at 10:30 AM. A Zoom link has been sent to your email.',
+    time:'14 min ago',
+    actions:['View','Reschedule']
+  },
+  {
+    id:3, unread:true, type:'payment', date:'Today',
+    icon:'💳', iconClass:'icon-pay', tagClass:'tag-pay', tagLabel:'Payment',
+    sender:'Payment Received',
+    msg:'Your CLJN Pro subscription payment of $29.00 has been processed successfully. Your plan is active through July 12, 2026. Receipt sent to your email.',
+    time:'1 hr ago',
+    actions:['Receipt','Details']
+  },
+  {
+    id:4, unread:true, type:'reply', date:'Today',
+    icon:'🙏', iconClass:'icon-reply', tagClass:'tag-reply', tagLabel:'Reply',
+    sender:'Rev. Grace Mensah',
+    msg:'Replied to your post in the Intercessory Prayer group: "Amen! Standing in agreement with you, beloved. The Lord hears our prayers."',
+    time:'2 hrs ago',
+    actions:['View Post','Like']
+  },
+  {
+    id:5, unread:false, type:'booking', date:'Today',
+    icon:'📅', iconClass:'icon-book', tagClass:'tag-book', tagLabel:'Booking',
+    sender:'Booking Reminder',
+    msg:'Reminder: Your upcoming deliverance service with Apostle Kwame Asante is tomorrow at 9:00 AM. Please arrive 15 minutes early for registration.',
+    time:'3 hrs ago',
+    actions:['Confirm','Directions']
+  },
+  {
+    id:6, unread:false, type:'message', date:'Today',
+    icon:'💬', iconClass:'icon-msg', tagClass:'tag-msg', tagLabel:'Message',
+    sender:'Deaconess Abigail Mensah',
+    msg:'Sister Grace, the Ladies of Faith Fellowship is hosting a women\'s retreat next weekend. We would love for you to share a word of testimony.',
+    time:'5 hrs ago',
+    actions:['Reply','Archive']
+  },
+  {
+    id:7, unread:false, type:'subscription', date:'Yesterday',
+    icon:'⚡', iconClass:'icon-sub', tagClass:'tag-sub', tagLabel:'Subscription',
+    sender:'CLJN Pro',
+    msg:'Your CLJN Elite upgrade offer expires in 48 hours! Lock in your rate of $49/month and get unlimited ministry tools, analytics, and priority support.',
+    time:'Yesterday, 4:22 PM',
+    actions:['Upgrade Now','Dismiss']
+  },
+  {
+    id:8, unread:false, type:'reply', date:'Yesterday',
+    icon:'✉️', iconClass:'icon-reply', tagClass:'tag-reply', tagLabel:'Reply',
+    sender:'Pastor Emmanuel Darko',
+    msg:'Responded to your ministry enquiry: "Thank you for reaching out. I\'d be honoured to speak at your harvest service. Let\'s connect via the booking system."',
+    time:'Yesterday, 1:15 PM',
+    actions:['Book Now','View']
+  },
+  {
+    id:9, unread:false, type:'message', date:'Yesterday',
+    icon:'💬', iconClass:'icon-msg', tagClass:'tag-msg', tagLabel:'Message',
+    sender:'Bishop Nathan Okafor',
+    msg:'Your application to join the CLJN Ministry Leaders Network has been approved. Welcome to our family of over 2,400 anointed ministers!',
+    time:'Yesterday, 10:08 AM',
+    actions:['View Network','Accept']
+  },
+  {
+    id:10, unread:false, type:'booking', date:'This Week',
+    icon:'✅', iconClass:'icon-book', tagClass:'tag-book', tagLabel:'Booking',
+    sender:'New Booking Request',
+    msg:'Sister Priscilla Agyemang has requested a 60-minute prophetic counselling session with you on Saturday, June 7 at 3:00 PM. Awaiting your approval.',
+    time:'Mon, 9:45 AM',
+    actions:['Accept','Decline']
+  },
+  {
+    id:11, unread:false, type:'payment', date:'This Week',
+    icon:'💳', iconClass:'icon-pay', tagClass:'tag-pay', tagLabel:'Payment',
+    sender:'Payment Dispute Resolved',
+    msg:'Your payment dispute for booking #DC-4821 has been resolved in your favour. A refund of $15.00 has been credited to your Visa card ending in 4821.',
+    time:'Sun, 2:00 PM',
+    actions:['View Refund','OK']
+  },
+  {
+    id:12, unread:true, type:'message', date:'This Week',
+    icon:'📢', iconClass:'icon-system', tagClass:'tag-system', tagLabel:'Announcement',
+    sender:'CLJN Team',
+    msg:'We\'ve launched the new Prayer Chain feature! Join live 24/7 intercession rooms with believers around the world. Tap to explore this powerful new tool.',
+    time:'Sat, 11:00 AM',
+    actions:['Explore','Later']
+  },
+];
+
+let currentFilter = 'all';
+let searchQuery = '';
+let readSet = new Set(ALL_NOTIFS.filter(n=>!n.unread).map(n=>n.id));
+
+function getVisible(){
+  return ALL_NOTIFS.filter(n => {
+    const matchFilter =
+      currentFilter==='all' ? true :
+      currentFilter==='unread' ? !readSet.has(n.id) :
+      n.type===currentFilter;
+    const matchSearch = !searchQuery ||
+      n.sender.toLowerCase().includes(searchQuery) ||
+      n.msg.toLowerCase().includes(searchQuery);
+    return matchFilter && matchSearch;
+  });
+}
+
+function renderList(){
+  const list = document.getElementById('notifList');
+  const empty = document.getElementById('emptyState');
+  const loadWrap = document.getElementById('loadMoreWrap');
+  const visible = getVisible();
+  list.innerHTML='';
+  if(visible.length===0){
+    empty.classList.add('visible');
+    loadWrap.style.display='none';
+    return;
+  }
+  empty.classList.remove('visible');
+  loadWrap.style.display='';
+
+  let lastDate='';
+  visible.forEach((n,i)=>{
+    if(n.date!==lastDate){
+      lastDate=n.date;
+      const div=document.createElement('div');
+      div.className='date-divider';
+      div.style.animationDelay=(i*0.06)+'s';
+      div.innerHTML=`<div class="date-divider-line"></div><div class="date-divider-label">${n.date}</div><div class="date-divider-line"></div>`;
+      list.appendChild(div);
+    }
+    const isRead=readSet.has(n.id);
+    const card=document.createElement('div');
+    card.className='ncard'+(isRead?'':' unread');
+    card.dataset.id=n.id;
+    card.style.animationDelay=(i*0.06+0.04)+'s';
+    card.innerHTML=`
+      <div class="ncard-bar"></div>
+      <div class="ncard-icon-wrap ${n.iconClass}">${n.icon}</div>
+      <div class="ncard-content">
+        <div class="ncard-top">
+          <div class="ncard-sender">${n.sender}</div>
+          <div class="ncard-meta">
+            <div class="ncard-time">${n.time}</div>
+            ${!isRead?'<div class="unread-dot"></div>':''}
+          </div>
+        </div>
+        <div class="ncard-msg">${n.msg}</div>
+        <div class="ncard-tag ${n.tagClass}">${n.icon} ${n.tagLabel}</div>
+      </div>
+      <div class="ncard-actions">
+        <div class="ncard-action-btn" title="Mark as read" onclick="markRead(event,${n.id})">✓</div>
+        <div class="ncard-action-btn" title="Archive" onclick="archiveNotif(event,${n.id})">🗑</div>
+      </div>`;
+    card.addEventListener('click',()=>openNotif(n.id));
+    list.appendChild(card);
+  });
+  updateCounts();
+}
+
+function updateCounts(){
+  const unreadCount = ALL_NOTIFS.filter(n=>!readSet.has(n.id)).length;
+  document.getElementById('cnt-all').textContent=ALL_NOTIFS.length;
+  document.getElementById('cnt-unread').textContent=unreadCount;
+  document.getElementById('cnt-message').textContent=ALL_NOTIFS.filter(n=>n.type==='message').length;
+  document.getElementById('cnt-payment').textContent=ALL_NOTIFS.filter(n=>n.type==='payment').length;
+  document.getElementById('cnt-booking').textContent=ALL_NOTIFS.filter(n=>n.type==='booking').length;
+  document.getElementById('stat-total').textContent=ALL_NOTIFS.length;
+  document.getElementById('stat-unread').textContent=unreadCount;
+  // sidebar badge
+  const badge=document.querySelector('.s-badge');
+  if(badge) badge.style.display=unreadCount>0?'block':'none';
+}
+
+function setFilter(f,el){
+  currentFilter=f;
+  document.querySelectorAll('.filter-tab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  renderList();
+}
+
+function filterSearch(){
+  searchQuery=document.getElementById('searchInput').value.toLowerCase().trim();
+  renderList();
+}
+
+function markRead(e,id){
+  e.stopPropagation();
+  readSet.add(id);
+  toast_('Marked Read','Notification marked as read.');
+  renderList();
+}
+
+function archiveNotif(e,id){
+  e.stopPropagation();
+  const idx=ALL_NOTIFS.findIndex(n=>n.id===id);
+  if(idx>-1) ALL_NOTIFS.splice(idx,1);
+  toast_('Archived','Notification archived.');
+  renderList();
+}
+
+function openNotif(id){
+  readSet.add(id);
+  const n=ALL_NOTIFS.find(n=>n.id===id);
+  if(n) toast_(n.sender,'Opened: '+n.msg.substring(0,50)+'…');
+  renderList();
+}
+
+function markAllRead(){
+  ALL_NOTIFS.forEach(n=>readSet.add(n.id));
+  toast_('All Read','All notifications marked as read.');
+  renderList();
+}
+
+function loadMore(){
+  toast_('Loaded','Earlier notifications loaded.');
+}
+
+function toggleRow(el,onMsg,offMsg){
+  if(e&&e.target&&e.target.tagName==='INPUT') return;
+  const cb=el.querySelector('input[type="checkbox"]');
+  if(!cb) return;
+  setTimeout(()=>toast_(cb.checked?'Enabled':'Disabled',cb.checked?onMsg:offMsg),60);
+}
+
+// override toggleRow to work via label click
+document.querySelectorAll('.toggle-row').forEach(row=>{
+  row.addEventListener('click',function(e){
+    if(e.target.tagName==='INPUT') return;
+    const cb=this.querySelector('input');
+    if(!cb) return;
+    cb.checked=!cb.checked;
+    const onMsg=this.querySelector('.toggle-name').textContent+' enabled.';
+    const offMsg=this.querySelector('.toggle-name').textContent+' disabled.';
+    setTimeout(()=>toast_(cb.checked?'Enabled':'Disabled',cb.checked?onMsg:offMsg),60);
+    e.preventDefault();
+  });
+});
+
+let toastTmr;
+function toast_(ttl,msg,ic='✦'){
+  document.getElementById('toast-ttl').textContent=ttl;
+  document.getElementById('toast-msg').textContent=msg;
+  document.getElementById('toast-ic').textContent=ic;
+  const t=document.getElementById('toast');
+  clearTimeout(toastTmr);
+  t.classList.add('show');
+  toastTmr=setTimeout(()=>t.classList.remove('show'),3000);
+}
+
+// Init
+renderList();
+</script>
+</body>
+</html>

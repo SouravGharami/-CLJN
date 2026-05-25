@@ -1,0 +1,1758 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CLJN — Premium Digital Ministry Platform</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,600&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy: #0a0e1a;
+  --navy2: #0f1628;
+  --royal: #1a2a6c;
+  --royal2: #1e3388;
+  --gold: #c9a84c;
+  --gold2: #e8c56d;
+  --gold3: #f5dfa0;
+  --white: #ffffff;
+  --off-white: #f8f6f0;
+  --text-muted: #8b9ab5;
+  --glass: rgba(255,255,255,0.05);
+  --glass2: rgba(255,255,255,0.08);
+  --glass-border: rgba(201,168,76,0.2);
+  --card-bg: rgba(15,22,40,0.85);
+  --transition: all 0.35s cubic-bezier(0.4,0,0.2,1);
+  --shadow-gold: 0 0 40px rgba(201,168,76,0.15);
+  --shadow-card: 0 20px 60px rgba(0,0,0,0.4);
+  --radius: 18px;
+  --radius-sm: 10px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Outfit', sans-serif;
+  background: var(--navy);
+  color: var(--white);
+  overflow-x: hidden;
+  line-height: 1.6;
+}
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--navy2); }
+::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 3px; }
+
+/* ── UTILS ── */
+.serif { font-family: 'Cormorant Garamond', serif; }
+.gold { color: var(--gold); }
+.container { max-width: 1280px; margin: 0 auto; padding: 0 24px; }
+.section-tag {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: rgba(201,168,76,0.1); border: 1px solid var(--glass-border);
+  color: var(--gold2); font-size: 12px; font-weight: 600; letter-spacing: 2px;
+  text-transform: uppercase; padding: 6px 16px; border-radius: 30px;
+  margin-bottom: 20px;
+}
+.section-tag::before { content: '✦'; font-size: 10px; }
+.section-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(32px, 5vw, 52px);
+  font-weight: 600; line-height: 1.15;
+  color: var(--white); margin-bottom: 16px;
+}
+.section-title span { color: var(--gold); font-style: italic; }
+.section-subtitle { color: var(--text-muted); font-size: 17px; font-weight: 300; max-width: 560px; }
+.btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 12px 26px; border-radius: 50px; border: none;
+  font-family: 'Outfit', sans-serif; font-size: 14px; font-weight: 600;
+  cursor: pointer; transition: var(--transition); text-decoration: none;
+  letter-spacing: 0.5px; white-space: nowrap;
+}
+.btn-gold {
+  background: linear-gradient(135deg, var(--gold), var(--gold2));
+  color: var(--navy); box-shadow: 0 4px 20px rgba(201,168,76,0.35);
+}
+.btn-gold:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(201,168,76,0.5); }
+.btn-outline {
+  background: transparent; color: var(--gold);
+  border: 1.5px solid rgba(201,168,76,0.5);
+}
+.btn-outline:hover { background: rgba(201,168,76,0.1); border-color: var(--gold); transform: translateY(-2px); }
+.btn-ghost {
+  background: var(--glass2); color: var(--white);
+  border: 1px solid var(--glass-border); backdrop-filter: blur(10px);
+}
+.btn-ghost:hover { background: rgba(255,255,255,0.12); transform: translateY(-2px); }
+.btn-sm { padding: 8px 18px; font-size: 13px; }
+.btn-xs { padding: 6px 14px; font-size: 12px; }
+
+/* ── NAVBAR ── */
+#navbar {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+  padding: 0 24px; transition: var(--transition);
+}
+#navbar.scrolled {
+  background: rgba(10,14,26,0.92);
+  backdrop-filter: blur(20px) saturate(180%);
+  border-bottom: 1px solid var(--glass-border);
+  box-shadow: 0 4px 30px rgba(0,0,0,0.3);
+}
+.nav-inner {
+  max-width: 1280px; margin: 0 auto;
+  display: flex; align-items: center; justify-content: space-between;
+  height: 72px; gap: 20px;
+}
+.nav-logo {
+  display: flex; align-items: center; gap: 10px;
+  text-decoration: none; flex-shrink: 0;
+}
+.nav-logo-icon {
+  width: 38px; height: 38px;
+  background: linear-gradient(135deg, var(--gold), var(--gold2));
+  border-radius: 10px; display: flex; align-items: center; justify-content: center;
+  font-size: 18px; color: var(--navy); font-weight: 700;
+  box-shadow: 0 4px 15px rgba(201,168,76,0.4);
+}
+.nav-logo-text { font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 700; color: var(--white); }
+.nav-logo-text span { color: var(--gold); }
+.nav-menu {
+  display: flex; align-items: center; gap: 6px;
+  list-style: none;
+}
+.nav-menu a {
+  display: block; padding: 8px 14px; text-decoration: none;
+  color: rgba(255,255,255,0.75); font-size: 14px; font-weight: 500;
+  border-radius: 8px; transition: var(--transition); letter-spacing: 0.3px;
+}
+.nav-menu a:hover, .nav-menu a.active { color: var(--gold2); background: rgba(201,168,76,0.08); }
+.nav-actions { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+.hamburger {
+  display: none; flex-direction: column; gap: 5px;
+  background: none; border: none; cursor: pointer; padding: 6px;
+}
+.hamburger span {
+  display: block; width: 24px; height: 2px;
+  background: var(--gold); border-radius: 2px; transition: var(--transition);
+}
+.mobile-nav {
+  display: none; position: fixed; top: 72px; left: 0; right: 0; z-index: 999;
+  background: rgba(10,14,26,0.97); backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--glass-border);
+  padding: 20px 24px 28px; flex-direction: column; gap: 8px;
+}
+.mobile-nav.open { display: flex; }
+.mobile-nav a {
+  display: block; padding: 12px 16px; text-decoration: none;
+  color: rgba(255,255,255,0.8); font-size: 15px; font-weight: 500;
+  border-radius: 10px; transition: var(--transition);
+}
+.mobile-nav a:hover { background: rgba(201,168,76,0.1); color: var(--gold2); }
+.mobile-nav-actions { display: flex; gap: 10px; padding-top: 12px; border-top: 1px solid var(--glass-border); }
+
+/* ── HERO ── */
+#hero {
+  position: relative; min-height: 100vh;
+  display: flex; align-items: center;
+  padding: 100px 24px 60px;
+  overflow: hidden;
+}
+.hero-bg {
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse 80% 70% at 50% 0%, rgba(26,42,108,0.8) 0%, transparent 70%),
+              radial-gradient(ellipse 50% 50% at 80% 50%, rgba(201,168,76,0.08) 0%, transparent 60%),
+              linear-gradient(180deg, #0a0e1a 0%, #070b15 100%);
+}
+.hero-grid {
+  position: absolute; inset: 0; opacity: 0.04;
+  background-image: linear-gradient(rgba(201,168,76,0.5) 1px, transparent 1px),
+                    linear-gradient(90deg, rgba(201,168,76,0.5) 1px, transparent 1px);
+  background-size: 60px 60px;
+}
+.hero-orb {
+  position: absolute; border-radius: 50%;
+  filter: blur(80px); pointer-events: none;
+}
+.hero-orb-1 {
+  width: 600px; height: 600px; top: -200px; left: -100px;
+  background: radial-gradient(circle, rgba(26,42,108,0.6) 0%, transparent 70%);
+}
+.hero-orb-2 {
+  width: 400px; height: 400px; top: 20%; right: -100px;
+  background: radial-gradient(circle, rgba(201,168,76,0.12) 0%, transparent 70%);
+}
+.hero-inner {
+  position: relative; z-index: 1;
+  max-width: 1280px; margin: 0 auto; width: 100%;
+}
+.hero-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: rgba(201,168,76,0.1); border: 1px solid rgba(201,168,76,0.3);
+  padding: 8px 18px; border-radius: 50px; margin-bottom: 28px;
+  font-size: 13px; color: var(--gold2); font-weight: 500;
+  animation: fadeSlideDown 0.8s ease both;
+}
+.hero-badge-dot { width: 7px; height: 7px; background: #4ade80; border-radius: 50%; box-shadow: 0 0 8px #4ade80; }
+.hero-headline {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(42px, 7vw, 86px);
+  font-weight: 600; line-height: 1.05;
+  color: var(--white); margin-bottom: 24px;
+  animation: fadeSlideUp 0.8s 0.1s ease both;
+}
+.hero-headline .italic { font-style: italic; color: var(--gold); }
+.hero-headline .outline {
+  -webkit-text-stroke: 1.5px rgba(255,255,255,0.3);
+  color: transparent;
+}
+.hero-sub {
+  font-size: 18px; color: var(--text-muted); font-weight: 300;
+  max-width: 580px; margin-bottom: 48px; line-height: 1.7;
+  animation: fadeSlideUp 0.8s 0.2s ease both;
+}
+.hero-search-card {
+  background: rgba(15,22,40,0.8); backdrop-filter: blur(20px);
+  border: 1px solid var(--glass-border); border-radius: var(--radius);
+  padding: 28px 28px 24px;
+  box-shadow: var(--shadow-card), inset 0 1px 0 rgba(255,255,255,0.05);
+  margin-bottom: 36px; max-width: 860px;
+  animation: fadeSlideUp 0.8s 0.3s ease both;
+}
+.search-label {
+  font-size: 11px; font-weight: 600; letter-spacing: 1.5px;
+  text-transform: uppercase; color: var(--gold); margin-bottom: 14px;
+}
+.search-fields {
+  display: grid; grid-template-columns: repeat(4, 1fr) auto; gap: 12px;
+  align-items: end;
+}
+.search-field { display: flex; flex-direction: column; gap: 6px; }
+.search-field label { font-size: 12px; color: var(--text-muted); font-weight: 500; }
+.search-field input, .search-field select {
+  background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+  border-radius: var(--radius-sm); padding: 11px 14px;
+  color: var(--white); font-family: 'Outfit', sans-serif; font-size: 14px;
+  transition: var(--transition); outline: none; width: 100%;
+}
+.search-field select { appearance: none; cursor: pointer; }
+.search-field input:focus, .search-field select:focus {
+  border-color: var(--gold); background: rgba(201,168,76,0.05);
+  box-shadow: 0 0 0 3px rgba(201,168,76,0.1);
+}
+.search-field select option { background: var(--navy2); color: var(--white); }
+.search-btn {
+  background: linear-gradient(135deg, var(--gold), var(--gold2));
+  border: none; border-radius: var(--radius-sm); padding: 11px 22px;
+  color: var(--navy); font-weight: 700; font-size: 14px; cursor: pointer;
+  transition: var(--transition); white-space: nowrap; font-family: 'Outfit', sans-serif;
+}
+.search-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(201,168,76,0.4); }
+.hero-cta {
+  display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+  animation: fadeSlideUp 0.8s 0.4s ease both;
+}
+.hero-stats {
+  display: flex; gap: 40px; margin-top: 56px; flex-wrap: wrap;
+  animation: fadeSlideUp 0.8s 0.5s ease both;
+}
+.stat-item { text-align: center; }
+.stat-value { font-family: 'Cormorant Garamond', serif; font-size: 36px; font-weight: 700; color: var(--gold); line-height: 1; }
+.stat-label { font-size: 12px; color: var(--text-muted); font-weight: 500; margin-top: 4px; letter-spacing: 0.5px; }
+.stat-divider { width: 1px; background: var(--glass-border); }
+
+/* ── FEATURED MINISTERS ── */
+#ministers { padding: 100px 0; }
+.ministers-header { text-align: center; margin-bottom: 56px; }
+.ministers-header .section-subtitle { margin: 0 auto; }
+.ministers-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 24px;
+}
+.minister-card {
+  background: var(--card-bg); backdrop-filter: blur(20px);
+  border: 1px solid var(--glass-border); border-radius: var(--radius);
+  overflow: hidden; transition: var(--transition);
+  box-shadow: var(--shadow-card);
+  animation: fadeIn 0.6s ease both;
+}
+.minister-card:hover { transform: translateY(-6px); box-shadow: 0 30px 80px rgba(0,0,0,0.5), var(--shadow-gold); border-color: rgba(201,168,76,0.4); }
+.minister-card-header {
+  position: relative; padding: 24px 24px 0;
+  display: flex; gap: 16px; align-items: flex-start;
+}
+.minister-avatar {
+  width: 72px; height: 72px; border-radius: 50%;
+  object-fit: cover; flex-shrink: 0;
+  border: 2.5px solid var(--gold); box-shadow: 0 0 20px rgba(201,168,76,0.3);
+}
+.minister-status {
+  position: absolute; top: 24px; right: 24px;
+  display: flex; align-items: center; gap: 5px;
+  font-size: 11px; font-weight: 600; padding: 4px 10px; border-radius: 20px;
+}
+.status-online { background: rgba(74,222,128,0.15); color: #4ade80; border: 1px solid rgba(74,222,128,0.3); }
+.status-offline { background: rgba(156,163,175,0.15); color: #9ca3af; border: 1px solid rgba(156,163,175,0.2); }
+.status-dot { width: 6px; height: 6px; border-radius: 50%; }
+.status-online .status-dot { background: #4ade80; box-shadow: 0 0 6px #4ade80; }
+.status-offline .status-dot { background: #9ca3af; }
+.minister-info { flex: 1; padding-top: 2px; }
+.minister-name { font-family: 'Cormorant Garamond', serif; font-size: 20px; font-weight: 600; color: var(--white); line-height: 1.2; }
+.minister-title { font-size: 12px; color: var(--gold); font-weight: 500; margin-top: 3px; }
+.minister-specialty {
+  display: inline-block; margin-top: 6px;
+  background: rgba(26,42,108,0.6); border: 1px solid rgba(26,51,136,0.5);
+  color: #93c5fd; font-size: 11px; font-weight: 600;
+  padding: 3px 10px; border-radius: 20px; letter-spacing: 0.5px;
+}
+.minister-rating {
+  display: flex; align-items: center; gap: 4px; margin-top: 8px;
+  font-size: 13px; color: var(--gold); font-weight: 600;
+}
+.minister-rating span { color: var(--text-muted); font-weight: 400; font-size: 12px; }
+.minister-bio {
+  padding: 16px 24px; font-size: 13.5px;
+  color: var(--text-muted); line-height: 1.65; border-bottom: 1px solid var(--glass-border);
+}
+.minister-card-actions {
+  padding: 16px 24px;
+  display: grid; grid-template-columns: 1fr 1fr; gap: 8px;
+}
+.minister-card-actions-bottom {
+  padding: 0 24px 20px;
+  display: grid; grid-template-columns: 1fr 1fr; gap: 8px;
+}
+
+/* ── HOW IT WORKS ── */
+#how {
+  padding: 100px 0;
+  background: linear-gradient(180deg, transparent, rgba(26,42,108,0.1), transparent);
+}
+.how-header { text-align: center; margin-bottom: 64px; }
+.how-header .section-subtitle { margin: 0 auto; }
+.how-steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; position: relative; }
+.how-steps::before {
+  content: ''; position: absolute; top: 48px; left: calc(12.5% + 24px); right: calc(12.5% + 24px);
+  height: 1px; background: linear-gradient(90deg, transparent, var(--glass-border), var(--glass-border), transparent);
+}
+.how-step { text-align: center; position: relative; }
+.step-number {
+  width: 80px; height: 80px; border-radius: 50%; margin: 0 auto 24px;
+  background: rgba(26,42,108,0.5); border: 1.5px solid var(--glass-border);
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Cormorant Garamond', serif; font-size: 28px; font-weight: 700; color: var(--gold);
+  transition: var(--transition); position: relative; z-index: 1;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
+.how-step:hover .step-number {
+  background: linear-gradient(135deg, rgba(201,168,76,0.2), rgba(26,42,108,0.6));
+  border-color: var(--gold); transform: scale(1.1);
+  box-shadow: 0 15px 40px rgba(201,168,76,0.2);
+}
+.step-icon { font-size: 28px; }
+.step-title { font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 600; color: var(--white); margin-bottom: 10px; }
+.step-desc { font-size: 14px; color: var(--text-muted); line-height: 1.65; }
+
+/* ── CATEGORIES ── */
+#categories { padding: 100px 0; }
+.categories-header { margin-bottom: 56px; }
+.cat-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 16px; }
+.cat-card {
+  background: var(--card-bg); border: 1px solid var(--glass-border); border-radius: var(--radius);
+  padding: 32px 20px; text-align: center; cursor: pointer;
+  transition: var(--transition); backdrop-filter: blur(10px);
+}
+.cat-card:hover {
+  transform: translateY(-8px); border-color: var(--gold);
+  background: rgba(26,42,108,0.4); box-shadow: var(--shadow-gold);
+}
+.cat-icon { font-size: 36px; margin-bottom: 16px; display: block; }
+.cat-name { font-family: 'Cormorant Garamond', serif; font-size: 18px; font-weight: 600; color: var(--white); margin-bottom: 6px; }
+.cat-count { font-size: 12px; color: var(--gold); font-weight: 500; }
+
+/* ── TESTIMONIALS ── */
+#testimonials { padding: 100px 0; }
+.testimonials-header { text-align: center; margin-bottom: 56px; }
+.testimonials-header .section-subtitle { margin: 0 auto; }
+.slider-wrap { position: relative; overflow: hidden; }
+.slider-track { display: flex; gap: 24px; transition: transform 0.5s cubic-bezier(0.4,0,0.2,1); }
+.testimonial-card {
+  flex: 0 0 calc(33.333% - 16px); background: var(--card-bg);
+  backdrop-filter: blur(20px); border: 1px solid var(--glass-border);
+  border-radius: var(--radius); padding: 32px;
+  box-shadow: var(--shadow-card); transition: var(--transition);
+}
+.testimonial-card:hover { border-color: rgba(201,168,76,0.3); }
+.test-quote { font-family: 'Cormorant Garamond', serif; font-size: 52px; color: var(--gold); line-height: 0.5; margin-bottom: 16px; }
+.test-text { font-size: 15px; color: rgba(255,255,255,0.8); line-height: 1.75; margin-bottom: 24px; font-style: italic; }
+.test-footer { display: flex; align-items: center; gap: 14px; }
+.test-avatar { width: 48px; height: 48px; border-radius: 50%; object-fit: cover; border: 2px solid var(--glass-border); }
+.test-name { font-weight: 600; font-size: 14px; color: var(--white); }
+.test-role { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+.test-rating { margin-left: auto; color: var(--gold); font-size: 13px; }
+.slider-controls { display: flex; align-items: center; justify-content: center; gap: 12px; margin-top: 40px; }
+.slider-btn {
+  width: 42px; height: 42px; border-radius: 50%;
+  background: var(--glass2); border: 1px solid var(--glass-border);
+  color: var(--gold); font-size: 16px; cursor: pointer;
+  transition: var(--transition); display: flex; align-items: center; justify-content: center;
+}
+.slider-btn:hover { background: rgba(201,168,76,0.15); border-color: var(--gold); }
+.slider-dots { display: flex; gap: 6px; }
+.dot { width: 6px; height: 6px; border-radius: 50%; background: var(--glass-border); cursor: pointer; transition: var(--transition); }
+.dot.active { background: var(--gold); width: 20px; border-radius: 3px; }
+
+/* ── PRICING ── */
+#pricing { padding: 100px 0; }
+.pricing-header { text-align: center; margin-bottom: 56px; }
+.pricing-header .section-subtitle { margin: 0 auto; }
+.pricing-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+.price-card {
+  background: var(--card-bg); border: 1px solid var(--glass-border);
+  border-radius: var(--radius); padding: 40px 36px;
+  transition: var(--transition); position: relative; overflow: hidden;
+}
+.price-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--glass-border); }
+.price-card.featured { border-color: var(--gold); background: rgba(26,42,108,0.3); }
+.price-card.featured::before { background: linear-gradient(90deg, var(--gold), var(--gold2)); }
+.price-card:hover { transform: translateY(-6px); box-shadow: var(--shadow-card); }
+.price-badge {
+  position: absolute; top: 20px; right: 20px;
+  background: linear-gradient(135deg, var(--gold), var(--gold2));
+  color: var(--navy); font-size: 11px; font-weight: 700;
+  padding: 4px 12px; border-radius: 20px; letter-spacing: 0.5px;
+}
+.price-plan { font-size: 12px; font-weight: 600; color: var(--gold); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 12px; }
+.price-name { font-family: 'Cormorant Garamond', serif; font-size: 28px; font-weight: 600; color: var(--white); margin-bottom: 8px; }
+.price-desc { font-size: 14px; color: var(--text-muted); margin-bottom: 32px; line-height: 1.6; }
+.price-amount { margin-bottom: 32px; }
+.price-currency { font-size: 24px; color: var(--gold); font-weight: 700; vertical-align: top; line-height: 1.2; }
+.price-number { font-family: 'Cormorant Garamond', serif; font-size: 60px; font-weight: 700; color: var(--white); line-height: 1; }
+.price-period { font-size: 14px; color: var(--text-muted); }
+.price-features { list-style: none; margin-bottom: 32px; display: flex; flex-direction: column; gap: 12px; }
+.price-features li { display: flex; align-items: center; gap: 10px; font-size: 14px; color: rgba(255,255,255,0.8); }
+.price-features li::before { content: '✓'; width: 20px; height: 20px; border-radius: 50%; background: rgba(74,222,128,0.15); color: #4ade80; font-size: 11px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-weight: 700; }
+
+/* ── FAQ ── */
+#faq { padding: 100px 0; }
+.faq-header { text-align: center; margin-bottom: 56px; }
+.faq-header .section-subtitle { margin: 0 auto; }
+.faq-list { max-width: 780px; margin: 0 auto; display: flex; flex-direction: column; gap: 12px; }
+.faq-item {
+  background: var(--card-bg); border: 1px solid var(--glass-border);
+  border-radius: var(--radius-sm); overflow: hidden; transition: var(--transition);
+}
+.faq-item.open { border-color: rgba(201,168,76,0.3); }
+.faq-q {
+  padding: 20px 24px; display: flex; align-items: center; justify-content: space-between;
+  cursor: pointer; gap: 16px;
+}
+.faq-q-text { font-size: 15px; font-weight: 500; color: var(--white); }
+.faq-icon {
+  width: 28px; height: 28px; border-radius: 50%; flex-shrink: 0;
+  background: var(--glass); border: 1px solid var(--glass-border);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--gold); font-size: 16px; transition: var(--transition);
+}
+.faq-item.open .faq-icon { transform: rotate(45deg); background: rgba(201,168,76,0.15); }
+.faq-a {
+  padding: 0 24px; max-height: 0; overflow: hidden;
+  font-size: 14px; color: var(--text-muted); line-height: 1.75;
+  transition: max-height 0.4s ease, padding 0.3s ease;
+}
+.faq-item.open .faq-a { max-height: 200px; padding: 0 24px 20px; }
+
+/* ── NEWSLETTER ── */
+#newsletter {
+  padding: 80px 0; margin: 0 24px;
+  background: linear-gradient(135deg, rgba(26,42,108,0.6), rgba(15,22,40,0.9));
+  border: 1px solid var(--glass-border); border-radius: 24px;
+  backdrop-filter: blur(20px); text-align: center;
+  position: relative; overflow: hidden;
+  box-shadow: var(--shadow-card);
+  margin-bottom: 80px;
+}
+.newsletter-orb {
+  position: absolute; width: 500px; height: 500px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(201,168,76,0.08) 0%, transparent 70%);
+  top: 50%; left: 50%; transform: translate(-50%,-50%);
+}
+.newsletter-inner { position: relative; z-index: 1; }
+.newsletter-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(28px, 4vw, 44px); font-weight: 600; color: var(--white); margin-bottom: 12px; }
+.newsletter-sub { font-size: 16px; color: var(--text-muted); margin-bottom: 36px; }
+.newsletter-form { display: flex; gap: 12px; max-width: 480px; margin: 0 auto; }
+.newsletter-form input {
+  flex: 1; background: rgba(255,255,255,0.06); border: 1px solid var(--glass-border);
+  border-radius: 50px; padding: 14px 22px; color: var(--white);
+  font-family: 'Outfit', sans-serif; font-size: 15px; outline: none; transition: var(--transition);
+}
+.newsletter-form input:focus { border-color: var(--gold); background: rgba(201,168,76,0.05); }
+.newsletter-form input::placeholder { color: var(--text-muted); }
+
+/* ── FOOTER ── */
+footer {
+  background: var(--navy2); border-top: 1px solid var(--glass-border);
+  padding: 72px 24px 32px;
+}
+.footer-grid { max-width: 1280px; margin: 0 auto; display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 48px; margin-bottom: 48px; }
+.footer-brand p { font-size: 14px; color: var(--text-muted); line-height: 1.75; margin: 16px 0 24px; max-width: 280px; }
+.footer-socials { display: flex; gap: 10px; }
+.social-btn {
+  width: 38px; height: 38px; border-radius: 10px;
+  background: var(--glass); border: 1px solid var(--glass-border);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--text-muted); font-size: 15px; text-decoration: none;
+  transition: var(--transition); cursor: pointer;
+}
+.social-btn:hover { background: rgba(201,168,76,0.15); color: var(--gold); border-color: var(--gold); }
+.footer-col h4 { font-size: 13px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; color: var(--gold); margin-bottom: 20px; }
+.footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+.footer-col ul a { text-decoration: none; font-size: 14px; color: var(--text-muted); transition: var(--transition); }
+.footer-col ul a:hover { color: var(--gold2); transform: translateX(4px); display: inline-block; }
+.footer-contact-item { display: flex; gap: 10px; align-items: flex-start; font-size: 14px; color: var(--text-muted); margin-bottom: 12px; }
+.footer-contact-icon { color: var(--gold); flex-shrink: 0; margin-top: 2px; }
+.footer-bottom { max-width: 1280px; margin: 0 auto; padding-top: 24px; border-top: 1px solid var(--glass-border); display: flex; align-items: center; justify-content: space-between; flex-wrap: gap; }
+.footer-bottom p { font-size: 13px; color: var(--text-muted); }
+.footer-links { display: flex; gap: 24px; }
+.footer-links a { font-size: 13px; color: var(--text-muted); text-decoration: none; transition: var(--transition); }
+.footer-links a:hover { color: var(--gold); }
+
+/* ── MODALS ── */
+.modal-overlay {
+  position: fixed; inset: 0; z-index: 2000;
+  background: rgba(5,8,18,0.85); backdrop-filter: blur(8px);
+  display: flex; align-items: center; justify-content: center;
+  padding: 24px; opacity: 0; pointer-events: none; transition: opacity 0.3s ease;
+}
+.modal-overlay.active { opacity: 1; pointer-events: all; }
+.modal {
+  background: var(--navy2); border: 1px solid var(--glass-border);
+  border-radius: 20px; width: 100%; max-width: 520px;
+  max-height: 90vh; overflow-y: auto;
+  box-shadow: 0 40px 100px rgba(0,0,0,0.6);
+  transform: scale(0.95) translateY(20px); transition: var(--transition);
+}
+.modal-overlay.active .modal { transform: scale(1) translateY(0); }
+.modal-header {
+  padding: 28px 28px 0; display: flex; align-items: flex-start; justify-content: space-between;
+}
+.modal-title { font-family: 'Cormorant Garamond', serif; font-size: 28px; font-weight: 600; color: var(--white); }
+.modal-subtitle { font-size: 14px; color: var(--text-muted); margin-top: 4px; }
+.modal-close {
+  width: 36px; height: 36px; border-radius: 50%; background: var(--glass);
+  border: 1px solid var(--glass-border); color: var(--text-muted);
+  font-size: 18px; cursor: pointer; transition: var(--transition); flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center; line-height: 1;
+}
+.modal-close:hover { background: rgba(255,255,255,0.1); color: var(--white); }
+.modal-body { padding: 24px 28px 28px; }
+.form-group { margin-bottom: 18px; }
+.form-group label { display: block; font-size: 13px; font-weight: 500; color: var(--text-muted); margin-bottom: 8px; letter-spacing: 0.3px; }
+.form-group input, .form-group select, .form-group textarea {
+  width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+  border-radius: var(--radius-sm); padding: 12px 16px;
+  color: var(--white); font-family: 'Outfit', sans-serif; font-size: 14px;
+  transition: var(--transition); outline: none;
+}
+.form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+  border-color: var(--gold); background: rgba(201,168,76,0.05);
+  box-shadow: 0 0 0 3px rgba(201,168,76,0.1);
+}
+.form-group select option { background: var(--navy2); }
+.form-group textarea { resize: vertical; min-height: 100px; }
+.form-divider { display: flex; align-items: center; gap: 12px; margin: 20px 0; }
+.form-divider::before, .form-divider::after { content: ''; flex: 1; height: 1px; background: var(--glass-border); }
+.form-divider span { font-size: 12px; color: var(--text-muted); }
+.form-link { color: var(--gold); text-decoration: none; font-size: 14px; }
+.form-link:hover { text-decoration: underline; }
+.form-footer { text-align: center; margin-top: 16px; font-size: 14px; color: var(--text-muted); }
+
+/* Profile modal */
+.minister-modal-profile { display: flex; gap: 20px; align-items: flex-start; margin-bottom: 24px; }
+.minister-modal-img { width: 90px; height: 90px; border-radius: 50%; object-fit: cover; border: 3px solid var(--gold); box-shadow: 0 0 20px rgba(201,168,76,0.3); flex-shrink: 0; }
+.minister-modal-meta h3 { font-family: 'Cormorant Garamond', serif; font-size: 26px; font-weight: 600; color: var(--white); }
+.minister-modal-meta p { color: var(--gold); font-size: 13px; margin-top: 3px; }
+.minister-modal-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+.modal-tag { background: rgba(26,42,108,0.5); border: 1px solid rgba(26,51,136,0.4); color: #93c5fd; font-size: 11px; padding: 3px 10px; border-radius: 20px; }
+.minister-modal-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 20px; }
+.modal-stat { background: var(--glass); border: 1px solid var(--glass-border); border-radius: var(--radius-sm); padding: 14px; text-align: center; }
+.modal-stat-value { font-family: 'Cormorant Garamond', serif; font-size: 24px; font-weight: 700; color: var(--gold); }
+.modal-stat-label { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+
+/* Chat modal */
+.chat-messages { background: rgba(0,0,0,0.2); border-radius: var(--radius-sm); padding: 16px; height: 280px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; margin-bottom: 16px; }
+.chat-msg { max-width: 75%; }
+.chat-msg.received { align-self: flex-start; }
+.chat-msg.sent { align-self: flex-end; }
+.chat-bubble { padding: 10px 14px; border-radius: 14px; font-size: 14px; line-height: 1.5; }
+.chat-msg.received .chat-bubble { background: var(--glass2); color: rgba(255,255,255,0.85); border-bottom-left-radius: 4px; }
+.chat-msg.sent .chat-bubble { background: linear-gradient(135deg, var(--royal), var(--royal2)); color: var(--white); border-bottom-right-radius: 4px; }
+.chat-time { font-size: 11px; color: var(--text-muted); margin-top: 4px; padding: 0 4px; }
+.chat-input-row { display: flex; gap: 10px; }
+.chat-input-row input {
+  flex: 1; background: var(--glass); border: 1px solid var(--glass-border);
+  border-radius: 50px; padding: 12px 18px; color: var(--white);
+  font-family: 'Outfit', sans-serif; font-size: 14px; outline: none; transition: var(--transition);
+}
+.chat-input-row input:focus { border-color: var(--gold); }
+.chat-send { width: 42px; height: 42px; border-radius: 50%; background: linear-gradient(135deg, var(--gold), var(--gold2)); border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 16px; transition: var(--transition); }
+.chat-send:hover { transform: scale(1.1); }
+
+/* ── ANIMATIONS ── */
+@keyframes fadeSlideDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeSlideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.5; } }
+@keyframes shimmer { 0% { background-position: -200% center; } 100% { background-position: 200% center; } }
+.scroll-reveal { opacity: 0; transform: translateY(40px); transition: opacity 0.7s ease, transform 0.7s ease; }
+.scroll-reveal.revealed { opacity: 1; transform: translateY(0); }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 1024px) {
+  .nav-menu, .nav-actions .btn:not(.btn-ghost) { display: none; }
+  .hamburger { display: flex; }
+  .how-steps { grid-template-columns: repeat(2, 1fr); }
+  .how-steps::before { display: none; }
+  .cat-grid { grid-template-columns: repeat(3, 1fr); }
+  .footer-grid { grid-template-columns: 1fr 1fr; }
+  .testimonial-card { flex: 0 0 calc(50% - 12px); }
+}
+@media (max-width: 768px) {
+  .search-fields { grid-template-columns: 1fr 1fr; }
+  .search-btn { grid-column: 1 / -1; }
+  .ministers-grid { grid-template-columns: 1fr; }
+  .pricing-grid { grid-template-columns: 1fr; }
+  .cat-grid { grid-template-columns: repeat(2, 1fr); }
+  .footer-grid { grid-template-columns: 1fr; }
+  .testimonial-card { flex: 0 0 100%; }
+  .hero-stats { gap: 24px; }
+  .stat-divider { display: none; }
+  .newsletter-form { flex-direction: column; }
+  .footer-bottom { flex-direction: column; gap: 12px; text-align: center; }
+}
+@media (max-width: 480px) {
+  .search-fields { grid-template-columns: 1fr; }
+  .how-steps { grid-template-columns: 1fr; }
+  .hero-cta { flex-direction: column; align-items: flex-start; }
+  .minister-card-actions, .minister-card-actions-bottom { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav id="navbar">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">
+      <div class="nav-logo-icon">✦</div>
+      <span class="nav-logo-text">CLJN</span>
+    </a>
+    <ul class="nav-menu">
+      <li><a href="#hero" class="active">Home</a></li>
+      <li><a href="ministers.html">Ministers</a></li>
+      <li><a href="#how">About</a></li>
+      <li><a href="pricing.html">Pricing</a></li>
+      <li><a href="contact.html">Contact</a></li>
+      <li><a href="admin.html" style="color:#c9a84c;font-weight:600;">Admin</a></li>
+    </ul>
+    <div class="nav-actions">
+      <button class="btn btn-ghost btn-sm" onclick="window.location.href='auth.html'">Login</button>
+      <button class="btn btn-outline btn-sm" onclick="window.location.href='auth.html'">Register</button>
+      <button class="btn btn-gold btn-sm" onclick="document.getElementById('ministers').scrollIntoView({behavior:'smooth'})">Find a Minister</button>
+      <button class="hamburger" onclick="toggleMobileNav()" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<!-- MOBILE NAV -->
+<div class="mobile-nav" id="mobileNav">
+  <a href="#hero" onclick="closeMobileNav()">Home</a>
+  <a href="ministers.html" onclick="closeMobileNav()">Ministers</a>
+  <a href="#how" onclick="closeMobileNav()">About</a>
+  <a href="pricing.html" onclick="closeMobileNav()">Pricing</a>
+  <a href="contact.html" onclick="closeMobileNav()">Contact</a>
+  <a href="admin.html" onclick="closeMobileNav()" style="color:#c9a84c;font-weight:600;">Admin</a>
+  <div class="mobile-nav-actions">
+    <button class="btn btn-ghost btn-sm" onclick="window.location.href='auth.html'">Login</button>
+    <button class="btn btn-gold btn-sm" onclick="window.location.href='auth.html'">Register</button>
+  </div>
+</div>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+  <div class="hero-orb hero-orb-1"></div>
+  <div class="hero-orb hero-orb-2"></div>
+  <div class="hero-inner container">
+    <div class="hero-badge">
+      <span class="hero-badge-dot"></span>
+      Over 2,400 Ministers Online Now
+    </div>
+    <h1 class="hero-headline">
+      Connect with Your<br>
+      <span class="italic">Divine Guide</span> &amp;<br>
+      <span class="outline">Transform</span> Your Life
+    </h1>
+    <p class="hero-sub">The world's leading platform connecting believers with anointed ministers for prophecy, healing, prayer, and spiritual counsel — available 24/7 worldwide.</p>
+
+    <div class="hero-search-card">
+      <div class="search-label">Find Your Minister</div>
+      <div class="search-fields">
+        <div class="search-field">
+          <label>Minister Name</label>
+          <input type="text" placeholder="Search name…">
+        </div>
+        <div class="search-field">
+          <label>Specialty</label>
+          <select>
+            <option value="">All Specialties</option>
+            <option>Prophecy</option>
+            <option>Healing</option>
+            <option>Counseling</option>
+            <option>Deliverance</option>
+            <option>Prayer</option>
+            <option>Bible Teaching</option>
+          </select>
+        </div>
+        <div class="search-field">
+          <label>Country</label>
+          <select>
+            <option value="">All Countries</option>
+            <option>United States</option>
+            <option>Nigeria</option>
+            <option>United Kingdom</option>
+            <option>South Africa</option>
+            <option>Kenya</option>
+            <option>Ghana</option>
+            <option>Brazil</option>
+          </select>
+        </div>
+        <div class="search-field">
+          <label>Availability</label>
+          <select>
+            <option value="">Any Time</option>
+            <option>Available Now</option>
+            <option>Today</option>
+            <option>This Week</option>
+            <option>By Appointment</option>
+          </select>
+        </div>
+        <button class="search-btn">🔍 Search</button>
+      </div>
+    </div>
+
+    <div class="hero-cta">
+      <button class="btn btn-gold" onclick="document.getElementById('ministers').scrollIntoView({behavior:'smooth'})">
+        ✦ Explore Ministers
+      </button>
+      <button class="btn btn-outline" onclick="window.location.href='minister-register.html'">
+        Become a Minister →
+      </button>
+    </div>
+
+    <div class="hero-stats">
+      <div class="stat-item">
+        <div class="stat-value">12,400+</div>
+        <div class="stat-label">Registered Ministers</div>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat-item">
+        <div class="stat-value">98K+</div>
+        <div class="stat-label">Active Believers</div>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat-item">
+        <div class="stat-value">142</div>
+        <div class="stat-label">Countries Served</div>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat-item">
+        <div class="stat-value">4.9★</div>
+        <div class="stat-label">Average Rating</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURED MINISTERS -->
+<section id="ministers">
+  <div class="container">
+    <div class="ministers-header scroll-reveal">
+      <div class="section-tag">Anointed & Verified</div>
+      <h2 class="section-title">Featured <span>Ministers</span></h2>
+      <p class="section-subtitle">Hand-selected, background-verified ministers with proven track records of transforming lives through faith.</p>
+    </div>
+    <div class="ministers-grid">
+
+      <!-- Card 1 -->
+      <div class="minister-card scroll-reveal">
+        <div class="minister-card-header">
+          <img src="https://i.pravatar.cc/150?img=11" alt="Prophet Samuel" class="minister-avatar">
+          <div class="minister-info">
+            <div class="minister-name">Prophet Samuel Adeyemi</div>
+            <div class="minister-title">Grace Covenant Ministries</div>
+            <span class="minister-specialty">Prophecy</span>
+            <div class="minister-rating">★★★★★ <span>(4.97 · 1,240 reviews)</span></div>
+          </div>
+          <div class="minister-status status-online"><span class="status-dot"></span>Online</div>
+        </div>
+        <div class="minister-bio">A prophetic voice with over 20 years of ministry experience. Known for accurate prophetic words and powerful intercessory prayer that brings breakthrough.</div>
+        <div class="minister-card-actions">
+          <button class="btn btn-gold btn-sm" onclick="window.location.href='minister-profile.html'">View Profile</button>
+          <button class="btn btn-outline btn-sm" onclick="window.location.href='pricing.html'">Subscribe</button>
+        </div>
+        <div class="minister-card-actions-bottom">
+          <button class="btn btn-ghost btn-sm" onclick="openModal('chatModal')">💬 Quick Chat</button>
+          <button class="btn btn-ghost btn-sm" onclick="saveAndRedirect(this)">🔖 Save</button>
+        </div>
+      </div>
+
+      <!-- Card 2 -->
+      <div class="minister-card scroll-reveal">
+        <div class="minister-card-header">
+          <img src="https://i.pravatar.cc/150?img=5" alt="Pastor Grace" class="minister-avatar">
+          <div class="minister-info">
+            <div class="minister-name">Pastor Grace Okonkwo</div>
+            <div class="minister-title">Healing Waters International</div>
+            <span class="minister-specialty">Healing</span>
+            <div class="minister-rating">★★★★★ <span>(4.95 · 876 reviews)</span></div>
+          </div>
+          <div class="minister-status status-online"><span class="status-dot"></span>Online</div>
+        </div>
+        <div class="minister-bio">Ordained healing minister with testimonies of miraculous healings across 47 nations. Her gentle spirit and strong faith create an atmosphere of divine encounter.</div>
+        <div class="minister-card-actions">
+          <button class="btn btn-gold btn-sm" onclick="window.location.href='minister-profile.html'">View Profile</button>
+          <button class="btn btn-outline btn-sm" onclick="window.location.href='pricing.html'">Subscribe</button>
+        </div>
+        <div class="minister-card-actions-bottom">
+          <button class="btn btn-ghost btn-sm" onclick="openModal('chatModal')">💬 Quick Chat</button>
+          <button class="btn btn-ghost btn-sm" onclick="saveAndRedirect(this)">🔖 Save</button>
+        </div>
+      </div>
+
+      <!-- Card 3 -->
+      <div class="minister-card scroll-reveal">
+        <div class="minister-card-header">
+          <img src="https://i.pravatar.cc/150?img=33" alt="Bishop David" class="minister-avatar">
+          <div class="minister-info">
+            <div class="minister-name">Bishop David Mensah</div>
+            <div class="minister-title">Word & Spirit Church</div>
+            <span class="minister-specialty">Bible Teaching</span>
+            <div class="minister-rating">★★★★☆ <span>(4.88 · 2,100 reviews)</span></div>
+          </div>
+          <div class="minister-status status-offline"><span class="status-dot"></span>Offline</div>
+        </div>
+        <div class="minister-bio">PhD in Theology from Oxford. Renowned expositor of Scripture whose teachings have equipped thousands of believers worldwide with deep biblical foundations.</div>
+        <div class="minister-card-actions">
+          <button class="btn btn-gold btn-sm" onclick="window.location.href='minister-profile.html'">View Profile</button>
+          <button class="btn btn-outline btn-sm" onclick="window.location.href='pricing.html'">Subscribe</button>
+        </div>
+        <div class="minister-card-actions-bottom">
+          <button class="btn btn-ghost btn-sm" onclick="openModal('chatModal')">💬 Quick Chat</button>
+          <button class="btn btn-ghost btn-sm" onclick="saveAndRedirect(this)">🔖 Save</button>
+        </div>
+      </div>
+
+      <!-- Card 4 -->
+      <div class="minister-card scroll-reveal">
+        <div class="minister-card-header">
+          <img src="https://i.pravatar.cc/150?img=44" alt="Apostle Ruth" class="minister-avatar">
+          <div class="minister-info">
+            <div class="minister-name">Apostle Ruth Kamau</div>
+            <div class="minister-title">Deliverance & Restoration Centre</div>
+            <span class="minister-specialty">Deliverance</span>
+            <div class="minister-rating">★★★★★ <span>(4.93 · 654 reviews)</span></div>
+          </div>
+          <div class="minister-status status-online"><span class="status-dot"></span>Online</div>
+        </div>
+        <div class="minister-bio">A warrior in the spirit realm. Apostle Ruth's deliverance ministry has set thousands free from generational curses, addictions, and spiritual bondage.</div>
+        <div class="minister-card-actions">
+          <button class="btn btn-gold btn-sm" onclick="window.location.href='minister-profile.html'">View Profile</button>
+          <button class="btn btn-outline btn-sm" onclick="window.location.href='pricing.html'">Subscribe</button>
+        </div>
+        <div class="minister-card-actions-bottom">
+          <button class="btn btn-ghost btn-sm" onclick="openModal('chatModal')">💬 Quick Chat</button>
+          <button class="btn btn-ghost btn-sm" onclick="saveAndRedirect(this)">🔖 Save</button>
+        </div>
+      </div>
+
+      <!-- Card 5 -->
+      <div class="minister-card scroll-reveal">
+        <div class="minister-card-header">
+          <img src="https://i.pravatar.cc/150?img=60" alt="Pastor James" class="minister-avatar">
+          <div class="minister-info">
+            <div class="minister-name">Pastor James Thornton</div>
+            <div class="minister-title">Living Faith Assembly</div>
+            <span class="minister-specialty">Counseling</span>
+            <div class="minister-rating">★★★★★ <span>(4.91 · 487 reviews)</span></div>
+          </div>
+          <div class="minister-status status-online"><span class="status-dot"></span>Online</div>
+        </div>
+        <div class="minister-bio">Licensed Christian counselor and ordained pastor. Specializes in marriage restoration, family healing, grief counseling, and emotional wholeness through Christ.</div>
+        <div class="minister-card-actions">
+          <button class="btn btn-gold btn-sm" onclick="window.location.href='minister-profile.html'">View Profile</button>
+          <button class="btn btn-outline btn-sm" onclick="window.location.href='pricing.html'">Subscribe</button>
+        </div>
+        <div class="minister-card-actions-bottom">
+          <button class="btn btn-ghost btn-sm" onclick="openModal('chatModal')">💬 Quick Chat</button>
+          <button class="btn btn-ghost btn-sm" onclick="saveAndRedirect(this)">🔖 Save</button>
+        </div>
+      </div>
+
+      <!-- Card 6 -->
+      <div class="minister-card scroll-reveal">
+        <div class="minister-card-header">
+          <img src="https://i.pravatar.cc/150?img=25" alt="Evangelist Mary" class="minister-avatar">
+          <div class="minister-info">
+            <div class="minister-name">Evangelist Mary Osei</div>
+            <div class="minister-title">Fire & Rain Ministries</div>
+            <span class="minister-specialty">Prayer</span>
+            <div class="minister-rating">★★★★★ <span>(4.99 · 932 reviews)</span></div>
+          </div>
+          <div class="minister-status status-offline"><span class="status-dot"></span>Offline</div>
+        </div>
+        <div class="minister-bio">Intercession specialist with a proven prayer ministry. Known for leading powerful corporate prayer sessions and teaching believers how to develop a vibrant prayer life.</div>
+        <div class="minister-card-actions">
+          <button class="btn btn-gold btn-sm" onclick="window.location.href='minister-profile.html'">View Profile</button>
+          <button class="btn btn-outline btn-sm" onclick="window.location.href='pricing.html'">Subscribe</button>
+        </div>
+        <div class="minister-card-actions-bottom">
+          <button class="btn btn-ghost btn-sm" onclick="openModal('chatModal')">💬 Quick Chat</button>
+          <button class="btn btn-ghost btn-sm" onclick="saveAndRedirect(this)">🔖 Save</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section id="how">
+  <div class="container">
+    <div class="how-header scroll-reveal">
+      <div class="section-tag">Simple Process</div>
+      <h2 class="section-title">How <span>It Works</span></h2>
+      <p class="section-subtitle">Get connected to your spiritual guide in four simple steps and begin your transformation journey.</p>
+    </div>
+    <div class="how-steps">
+      <div class="how-step scroll-reveal">
+        <div class="step-number"><span class="step-icon">👤</span></div>
+        <div class="step-title">Create Account</div>
+        <p class="step-desc">Sign up in minutes with your email or social login. Verify your identity and set your spiritual preferences and needs.</p>
+      </div>
+      <div class="how-step scroll-reveal">
+        <div class="step-number"><span class="step-icon">🔍</span></div>
+        <div class="step-title">Find Minister</div>
+        <p class="step-desc">Browse our verified directory. Filter by specialty, denomination, language, country, and availability to find your perfect match.</p>
+      </div>
+      <div class="how-step scroll-reveal">
+        <div class="step-number"><span class="step-icon">⭐</span></div>
+        <div class="step-title">Subscribe</div>
+        <p class="step-desc">Choose a subscription plan that fits your needs. Access unlimited teachings, prayer requests, and direct messaging.</p>
+      </div>
+      <div class="how-step scroll-reveal">
+        <div class="step-number"><span class="step-icon">🕊️</span></div>
+        <div class="step-title">Start Consultation</div>
+        <p class="step-desc">Begin your spiritual journey through live video, voice, or chat sessions. Experience transformation at your own pace.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CATEGORIES -->
+<section id="categories">
+  <div class="container">
+    <div class="categories-header scroll-reveal">
+      <div class="section-tag">Explore Ministries</div>
+      <h2 class="section-title">Ministry <span>Categories</span></h2>
+      <p class="section-subtitle">Find ministers specialized in your specific spiritual need.</p>
+    </div>
+    <div class="cat-grid">
+      <div class="cat-card scroll-reveal" onclick="document.getElementById('ministers').scrollIntoView({behavior:'smooth'})">
+        <span class="cat-icon">🔮</span>
+        <div class="cat-name">Prophecy</div>
+        <div class="cat-count">384 Ministers</div>
+      </div>
+      <div class="cat-card scroll-reveal" onclick="document.getElementById('ministers').scrollIntoView({behavior:'smooth'})">
+        <span class="cat-icon">🙌</span>
+        <div class="cat-name">Healing</div>
+        <div class="cat-count">521 Ministers</div>
+      </div>
+      <div class="cat-card scroll-reveal" onclick="document.getElementById('ministers').scrollIntoView({behavior:'smooth'})">
+        <span class="cat-icon">💬</span>
+        <div class="cat-name">Counseling</div>
+        <div class="cat-count">712 Ministers</div>
+      </div>
+      <div class="cat-card scroll-reveal" onclick="document.getElementById('ministers').scrollIntoView({behavior:'smooth'})">
+        <span class="cat-icon">⚔️</span>
+        <div class="cat-name">Deliverance</div>
+        <div class="cat-count">296 Ministers</div>
+      </div>
+      <div class="cat-card scroll-reveal" onclick="document.getElementById('ministers').scrollIntoView({behavior:'smooth'})">
+        <span class="cat-icon">🙏</span>
+        <div class="cat-name">Prayer</div>
+        <div class="cat-count">948 Ministers</div>
+      </div>
+      <div class="cat-card scroll-reveal" onclick="document.getElementById('ministers').scrollIntoView({behavior:'smooth'})">
+        <span class="cat-icon">📖</span>
+        <div class="cat-name">Bible Teaching</div>
+        <div class="cat-count">1,204 Ministers</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section id="testimonials">
+  <div class="container">
+    <div class="testimonials-header scroll-reveal">
+      <div class="section-tag">Community Stories</div>
+      <h2 class="section-title">Lives <span>Transformed</span></h2>
+      <p class="section-subtitle">Real testimonies from believers whose lives have been forever changed through CLJN.</p>
+    </div>
+    <div class="slider-wrap scroll-reveal">
+      <div class="slider-track" id="sliderTrack">
+
+        <div class="testimonial-card">
+          <div class="test-quote">"</div>
+          <p class="test-text">Prophet Samuel spoke directly into my situation with no prior knowledge. His word of prophecy confirmed exactly what God had been speaking to my heart. My marriage was restored within 3 months!</p>
+          <div class="test-footer">
+            <img src="https://i.pravatar.cc/80?img=47" alt="" class="test-avatar">
+            <div>
+              <div class="test-name">Jennifer Adebayo</div>
+              <div class="test-role">Lagos, Nigeria</div>
+            </div>
+            <div class="test-rating">★★★★★</div>
+          </div>
+        </div>
+
+        <div class="testimonial-card">
+          <div class="test-quote">"</div>
+          <p class="test-text">After years of battling chronic illness, a single prayer session with Pastor Grace changed everything. Three weeks later my doctor couldn't explain what happened. Glory to God!</p>
+          <div class="test-footer">
+            <img src="https://i.pravatar.cc/80?img=32" alt="" class="test-avatar">
+            <div>
+              <div class="test-name">Michael Thompson</div>
+              <div class="test-role">Atlanta, Georgia</div>
+            </div>
+            <div class="test-rating">★★★★★</div>
+          </div>
+        </div>
+
+        <div class="testimonial-card">
+          <div class="test-quote">"</div>
+          <p class="test-text">Bishop David's Bible teaching series transformed how I read Scripture. I've been a Christian 15 years but felt like I was hearing the Word for the first time. My faith is unshakeable now.</p>
+          <div class="test-footer">
+            <img src="https://i.pravatar.cc/80?img=12" alt="" class="test-avatar">
+            <div>
+              <div class="test-name">Sarah Mitchell</div>
+              <div class="test-role">London, UK</div>
+            </div>
+            <div class="test-rating">★★★★★</div>
+          </div>
+        </div>
+
+        <div class="testimonial-card">
+          <div class="test-quote">"</div>
+          <p class="test-text">Apostle Ruth's deliverance sessions broke chains I didn't even know were there. Generational patterns that plagued my family for decades were broken in one powerful session. I am free!</p>
+          <div class="test-footer">
+            <img src="https://i.pravatar.cc/80?img=21" alt="" class="test-avatar">
+            <div>
+              <div class="test-name">Emmanuel Osei</div>
+              <div class="test-role">Accra, Ghana</div>
+            </div>
+            <div class="test-rating">★★★★★</div>
+          </div>
+        </div>
+
+        <div class="testimonial-card">
+          <div class="test-quote">"</div>
+          <p class="test-text">CLJN is a godsend for those of us in remote areas. I live 4 hours from any church but now I have access to anointed ministers 24/7. This platform has become my spiritual lifeline.</p>
+          <div class="test-footer">
+            <img src="https://i.pravatar.cc/80?img=56" alt="" class="test-avatar">
+            <div>
+              <div class="test-name">Amara Diallo</div>
+              <div class="test-role">Nairobi, Kenya</div>
+            </div>
+            <div class="test-rating">★★★★★</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+    <div class="slider-controls">
+      <button class="slider-btn" onclick="slideLeft()">←</button>
+      <div class="slider-dots" id="sliderDots"></div>
+      <button class="slider-btn" onclick="slideRight()">→</button>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section id="pricing">
+  <div class="container">
+    <div class="pricing-header scroll-reveal">
+      <div class="section-tag">Transparent Pricing</div>
+      <h2 class="section-title">Choose Your <span>Access Plan</span></h2>
+      <p class="section-subtitle">Flexible plans designed to fit every believer's journey and budget.</p>
+    </div>
+    <div class="pricing-grid">
+
+      <div class="price-card scroll-reveal">
+        <div class="price-plan">Free</div>
+        <div class="price-name">Free Access</div>
+        <div class="price-desc">Begin your spiritual journey with core access to our growing community.</div>
+        <div class="price-amount">
+          <span class="price-currency">$</span>
+          <span class="price-number">0</span>
+          <span class="price-period"> /forever</span>
+        </div>
+        <ul class="price-features">
+          <li>Browse minister profiles</li>
+          <li>View 5 teachings per month</li>
+          <li>Submit 2 prayer requests</li>
+          <li>Join community forums</li>
+          <li>Access devotional content</li>
+        </ul>
+        <button class="btn btn-outline" style="width:100%" onclick="window.location.href='auth.html'">Get Started Free</button>
+      </div>
+
+      <div class="price-card featured scroll-reveal">
+        <div class="price-badge">MOST POPULAR</div>
+        <div class="price-plan">Premium</div>
+        <div class="price-name">Minister Subscription</div>
+        <div class="price-desc">Subscribe to one or more ministers for unlimited spiritual access and guidance.</div>
+        <div class="price-amount">
+          <span class="price-currency">$</span>
+          <span class="price-number">29</span>
+          <span class="price-period"> /month per minister</span>
+        </div>
+        <ul class="price-features">
+          <li>Unlimited teaching access</li>
+          <li>Unlimited prayer requests</li>
+          <li>Direct messaging</li>
+          <li>Monthly group sessions</li>
+          <li>Exclusive content library</li>
+          <li>Priority response time</li>
+        </ul>
+        <button class="btn btn-gold" style="width:100%" onclick="window.location.href='pricing.html'">Subscribe Now</button>
+      </div>
+
+      <div class="price-card scroll-reveal">
+        <div class="price-plan">Elite</div>
+        <div class="price-name">Premium Consultation</div>
+        <div class="price-desc">One-on-one live sessions with top-tier ministers for breakthrough experiences.</div>
+        <div class="price-amount">
+          <span class="price-currency">$</span>
+          <span class="price-number">99</span>
+          <span class="price-period"> /session</span>
+        </div>
+        <ul class="price-features">
+          <li>60-min 1-on-1 live session</li>
+          <li>Video, voice, or chat</li>
+          <li>Session recording provided</li>
+          <li>Follow-up prayer coverage</li>
+          <li>Personalized action plan</li>
+          <li>Certificate of consultation</li>
+        </ul>
+        <button class="btn btn-outline" style="width:100%" onclick="window.location.href='minister-profile.html'">Book Session</button>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section id="faq">
+  <div class="container">
+    <div class="faq-header scroll-reveal">
+      <div class="section-tag">Got Questions?</div>
+      <h2 class="section-title">Frequently Asked <span>Questions</span></h2>
+      <p class="section-subtitle">Everything you need to know about CLJN.</p>
+    </div>
+    <div class="faq-list scroll-reveal">
+      <div class="faq-item" onclick="toggleFaq(this)">
+        <div class="faq-q">
+          <span class="faq-q-text">How are ministers verified on CLJN?</span>
+          <span class="faq-icon">+</span>
+        </div>
+        <div class="faq-a">All ministers go through a rigorous multi-step verification process including credential checks, background verification, reference reviews, and a theological assessment. We also monitor ongoing reviews and ratings from the community to maintain quality standards.</div>
+      </div>
+      <div class="faq-item" onclick="toggleFaq(this)">
+        <div class="faq-q">
+          <span class="faq-q-text">Can I cancel my subscription at any time?</span>
+          <span class="faq-icon">+</span>
+        </div>
+        <div class="faq-a">Absolutely. You have complete control over your subscriptions. You can cancel, pause, or switch ministers at any time from your dashboard with no penalty fees. Cancellations take effect at the end of the current billing period.</div>
+      </div>
+      <div class="faq-item" onclick="toggleFaq(this)">
+        <div class="faq-q">
+          <span class="faq-q-text">What denominations are represented on the platform?</span>
+          <span class="faq-icon">+</span>
+        </div>
+        <div class="faq-a">CLJN is interdenominational and welcomes ministers from Baptist, Pentecostal, Catholic, Anglican, Methodist, Charismatic, Non-denominational, and many other Christian traditions. We celebrate diversity in the Body of Christ.</div>
+      </div>
+      <div class="faq-item" onclick="toggleFaq(this)">
+        <div class="faq-q">
+          <span class="faq-q-text">Is my personal information and sessions kept confidential?</span>
+          <span class="faq-icon">+</span>
+        </div>
+        <div class="faq-a">Yes, completely. All sessions are private and encrypted. We have a strict no-sharing policy with third parties. Ministers are bound by a confidentiality covenant. Your spiritual journey is deeply personal and we treat it as such.</div>
+      </div>
+      <div class="faq-item" onclick="toggleFaq(this)">
+        <div class="faq-q">
+          <span class="faq-q-text">How do I become a minister on CLJN?</span>
+          <span class="faq-icon">+</span>
+        </div>
+        <div class="faq-a">Apply through our "Become a Minister" portal. Submit your credentials, ministry details, and references. Our team reviews applications within 5-7 business days. Once approved, you'll receive onboarding support and tools to launch your digital ministry.</div>
+      </div>
+      <div class="faq-item" onclick="toggleFaq(this)">
+        <div class="faq-q">
+          <span class="faq-q-text">Are sessions available in languages other than English?</span>
+          <span class="faq-icon">+</span>
+        </div>
+        <div class="faq-a">Yes! We have ministers who conduct sessions in over 35 languages including Spanish, French, Portuguese, Swahili, Yoruba, Igbo, Hausa, Hindi, and many more. Use the language filter when searching for ministers to find your match.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- NEWSLETTER -->
+<div class="container">
+  <section id="newsletter" class="scroll-reveal">
+    <div class="newsletter-orb"></div>
+    <div class="newsletter-inner">
+      <div class="section-tag" style="margin:0 auto 16px">Stay Inspired</div>
+      <h2 class="newsletter-title">Receive Daily <span class="gold">Spiritual Insights</span></h2>
+      <p class="newsletter-sub">Join 45,000+ believers receiving weekly devotionals, minister spotlights, and exclusive content.</p>
+      <div class="newsletter-form">
+        <input type="email" placeholder="Enter your email address…">
+        <button class="btn btn-gold" onclick="subscribeNewsletter()">Subscribe ✦</button>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <a href="index.html" class="nav-logo" style="text-decoration:none">
+        <div class="nav-logo-icon">✦</div>
+        <span class="nav-logo-text">CLJN</span>
+      </a>
+      <p>The world's most trusted digital ministry platform. Connecting believers with anointed ministers for spiritual transformation, healing, and spiritual counsel.</p>
+      <div class="footer-socials">
+        <a class="social-btn" title="Facebook">f</a>
+        <a class="social-btn" title="Twitter">𝕏</a>
+        <a class="social-btn" title="Instagram">▣</a>
+        <a class="social-btn" title="YouTube">▶</a>
+        <a class="social-btn" title="TikTok">♪</a>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h4>Quick Links</h4>
+      <ul>
+        <li><a href="#hero">Home</a></li>
+        <li><a href="ministers.html">Find Ministers</a></li>
+        <li><a href="index.html#how">How It Works</a></li>
+        <li><a href="pricing.html">Pricing</a></li>
+        <li><a href="faq.html">FAQ</a></li>
+        <li><a href="minister-register.html">Become a Minister</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Ministry Types</h4>
+      <ul>
+        <li><a href="ministers.html">Prophecy</a></li>
+        <li><a href="ministers.html">Healing</a></li>
+        <li><a href="ministers.html">Counseling</a></li>
+        <li><a href="ministers.html">Deliverance</a></li>
+        <li><a href="ministers.html">Intercessory Prayer</a></li>
+        <li><a href="ministers.html">Bible Teaching</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Contact Us</h4>
+      <div class="footer-contact-item"><span class="footer-contact-icon">📍</span>123 Grace Avenue, Suite 400<br>Atlanta, GA 30303</div>
+      <div class="footer-contact-item"><span class="footer-contact-icon">📞</span>+1 (800) 555-DIVINE</div>
+      <div class="footer-contact-item"><span class="footer-contact-icon">✉️</span>support@cljn.com</div>
+      <div class="footer-contact-item"><span class="footer-contact-icon">🕐</span>24/7 Prayer Support Available</div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2026 CLJN. All rights reserved. Made with ✦ for the Kingdom.</p>
+    <div class="footer-links">
+      <a href="terms.html">Privacy Policy</a>
+      <a href="terms.html">Terms of Service</a>
+      <a href="terms.html">Cookie Policy</a>
+    </div>
+  </div>
+</footer>
+
+<!-- ═══════════════ MODALS ═══════════════ -->
+
+<!-- Login Modal -->
+<div class="modal-overlay" id="loginModal" onclick="closeModalOutside(event, 'loginModal')">
+  <div class="modal">
+    <div class="modal-header">
+      <div>
+        <div class="modal-title">Welcome Back</div>
+        <div class="modal-subtitle">Sign in to your CLJN account</div>
+      </div>
+      <button class="modal-close" onclick="closeModal('loginModal')">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label>Email Address</label>
+        <input type="email" placeholder="you@example.com">
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" placeholder="••••••••">
+      </div>
+      <div style="text-align:right; margin-bottom:20px">
+        <a href="#" class="form-link" style="font-size:13px">Forgot password?</a>
+      </div>
+      <button class="btn btn-gold" style="width:100%;justify-content:center" onclick="showToast('Welcome back! Signing you in…')">Sign In</button>
+      <div class="form-divider"><span>or continue with</span></div>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:20px">
+        <button class="btn btn-ghost" style="justify-content:center" onclick="showToast('Google login coming soon')">🔵 Google</button>
+        <button class="btn btn-ghost" style="justify-content:center" onclick="showToast('Facebook login coming soon')">🔷 Facebook</button>
+      </div>
+      <div class="form-footer">Don't have an account? <a href="#" class="form-link" onclick="switchModal('loginModal','registerModal')">Register here</a></div>
+    </div>
+  </div>
+</div>
+
+<!-- Register Modal -->
+<div class="modal-overlay" id="registerModal" onclick="closeModalOutside(event, 'registerModal')">
+  <div class="modal">
+    <div class="modal-header">
+      <div>
+        <div class="modal-title">Create Account</div>
+        <div class="modal-subtitle">Join 98,000+ believers on CLJN</div>
+      </div>
+      <button class="modal-close" onclick="closeModal('registerModal')">×</button>
+    </div>
+    <div class="modal-body">
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px">
+        <div class="form-group">
+          <label>First Name</label>
+          <input type="text" placeholder="John">
+        </div>
+        <div class="form-group">
+          <label>Last Name</label>
+          <input type="text" placeholder="Doe">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Email Address</label>
+        <input type="email" placeholder="you@example.com">
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" placeholder="Create a strong password">
+      </div>
+      <div class="form-group">
+        <label>Primary Spiritual Need</label>
+        <select>
+          <option>Select your need…</option>
+          <option>Prophetic Guidance</option>
+          <option>Healing Prayer</option>
+          <option>Spiritual Counseling</option>
+          <option>Deliverance</option>
+          <option>Bible Study</option>
+          <option>General Prayer</option>
+        </select>
+      </div>
+      <button class="btn btn-gold" style="width:100%;justify-content:center;margin-top:8px" onclick="showToast('Account created! Welcome to CLJN 🙏')">Create My Account</button>
+      <div class="form-footer" style="margin-top:14px">Already have an account? <a href="#" class="form-link" onclick="switchModal('registerModal','loginModal')">Sign in</a></div>
+    </div>
+  </div>
+</div>
+
+<!-- Become a Minister Modal -->
+<div class="modal-overlay" id="becomeModal" onclick="closeModalOutside(event, 'becomeModal')">
+  <div class="modal">
+    <div class="modal-header">
+      <div>
+        <div class="modal-title">Become a Minister</div>
+        <div class="modal-subtitle">Apply to join our verified minister network</div>
+      </div>
+      <button class="modal-close" onclick="closeModal('becomeModal')">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label>Full Name</label>
+        <input type="text" placeholder="Rev. Your Name">
+      </div>
+      <div class="form-group">
+        <label>Email Address</label>
+        <input type="email" placeholder="minister@church.org">
+      </div>
+      <div class="form-group">
+        <label>Ministry / Church Name</label>
+        <input type="text" placeholder="Your Ministry Name">
+      </div>
+      <div class="form-group">
+        <label>Primary Specialty</label>
+        <select>
+          <option>Select specialty…</option>
+          <option>Prophecy</option>
+          <option>Healing</option>
+          <option>Counseling</option>
+          <option>Deliverance</option>
+          <option>Prayer & Intercession</option>
+          <option>Bible Teaching</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Years of Ministry</label>
+        <select>
+          <option>Select…</option>
+          <option>1–3 years</option>
+          <option>3–7 years</option>
+          <option>7–15 years</option>
+          <option>15+ years</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Brief Bio</label>
+        <textarea placeholder="Tell us about your ministry calling and experience…"></textarea>
+      </div>
+      <button class="btn btn-gold" style="width:100%;justify-content:center" onclick="showToast('Application submitted! We'll review within 5-7 days. 🙏')">Submit Application</button>
+    </div>
+  </div>
+</div>
+
+<!-- Minister Profile Modal -->
+<div class="modal-overlay" id="profileModal" onclick="closeModalOutside(event, 'profileModal')">
+  <div class="modal" style="max-width:580px">
+    <div class="modal-header">
+      <div class="modal-title">Minister Profile</div>
+      <button class="modal-close" onclick="closeModal('profileModal')">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="minister-modal-profile">
+        <img src="https://i.pravatar.cc/150?img=11" alt="Prophet Samuel" class="minister-modal-img">
+        <div class="minister-modal-meta">
+          <h3>Prophet Samuel Adeyemi</h3>
+          <p>Grace Covenant Ministries · Lagos, Nigeria</p>
+          <div class="minister-status status-online" style="display:inline-flex;margin-top:8px"><span class="status-dot"></span>Available for sessions</div>
+          <div class="minister-modal-tags">
+            <span class="modal-tag">Prophecy</span>
+            <span class="modal-tag">Intercession</span>
+            <span class="modal-tag">Healing</span>
+            <span class="modal-tag">Deliverance</span>
+          </div>
+        </div>
+      </div>
+      <div class="minister-modal-stats">
+        <div class="modal-stat"><div class="modal-stat-value">4.97</div><div class="modal-stat-label">Rating</div></div>
+        <div class="modal-stat"><div class="modal-stat-value">1,240</div><div class="modal-stat-label">Reviews</div></div>
+        <div class="modal-stat"><div class="modal-stat-value">20+</div><div class="modal-stat-label">Yrs Ministry</div></div>
+      </div>
+      <div class="form-group">
+        <label>About This Minister</label>
+        <div style="background:rgba(255,255,255,0.04);border:1px solid var(--glass-border);border-radius:10px;padding:14px;font-size:14px;color:rgba(255,255,255,0.75);line-height:1.7">
+          Prophet Samuel Adeyemi is a seasoned prophetic minister with over two decades of ministry experience. He has ministered in 38 nations and is known for his remarkably accurate prophetic words that bring clarity, direction, and breakthrough. His intercessory ministry has touched thousands of lives globally.
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px">
+        <button class="btn btn-gold btn-sm" style="justify-content:center" onclick="openModal('subscribeModal');closeModal('profileModal')">Subscribe</button>
+        <button class="btn btn-outline btn-sm" style="justify-content:center" onclick="openModal('chatModal');closeModal('profileModal')">💬 Chat</button>
+        <button class="btn btn-ghost btn-sm" style="justify-content:center" onclick="showToast('Session booking opening soon!')">📅 Book</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Subscribe Modal -->
+<div class="modal-overlay" id="subscribeModal" onclick="closeModalOutside(event, 'subscribeModal')">
+  <div class="modal">
+    <div class="modal-header">
+      <div>
+        <div class="modal-title">Subscribe to Minister</div>
+        <div class="modal-subtitle">Choose your subscription plan</div>
+      </div>
+      <button class="modal-close" onclick="closeModal('subscribeModal')">×</button>
+    </div>
+    <div class="modal-body">
+      <div style="display:flex;flex-direction:column;gap:12px;margin-bottom:20px">
+        <label style="display:flex;align-items:center;gap:14px;background:rgba(201,168,76,0.08);border:1.5px solid var(--gold);border-radius:12px;padding:16px;cursor:pointer">
+          <input type="radio" name="plan" value="basic" checked style="accent-color:var(--gold)">
+          <div>
+            <div style="font-weight:600;color:var(--white)">Monthly Access — $29/mo</div>
+            <div style="font-size:13px;color:var(--text-muted);margin-top:2px">Unlimited teachings, messaging & group sessions</div>
+          </div>
+        </label>
+        <label style="display:flex;align-items:center;gap:14px;background:var(--glass);border:1px solid var(--glass-border);border-radius:12px;padding:16px;cursor:pointer">
+          <input type="radio" name="plan" value="annual" style="accent-color:var(--gold)">
+          <div>
+            <div style="font-weight:600;color:var(--white)">Annual Access — $249/yr <span style="background:rgba(74,222,128,0.15);color:#4ade80;font-size:11px;padding:2px 8px;border-radius:20px;margin-left:4px">Save 28%</span></div>
+            <div style="font-size:13px;color:var(--text-muted);margin-top:2px">All monthly benefits + bonus consultation session</div>
+          </div>
+        </label>
+        <label style="display:flex;align-items:center;gap:14px;background:var(--glass);border:1px solid var(--glass-border);border-radius:12px;padding:16px;cursor:pointer">
+          <input type="radio" name="plan" value="premium" style="accent-color:var(--gold)">
+          <div>
+            <div style="font-weight:600;color:var(--white)">Premium Session — $99</div>
+            <div style="font-size:13px;color:var(--text-muted);margin-top:2px">60-min live 1-on-1 session with recording</div>
+          </div>
+        </label>
+      </div>
+      <div class="form-group">
+        <label>Card Number</label>
+        <input type="text" placeholder="4242 4242 4242 4242">
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        <div class="form-group">
+          <label>Expiry</label>
+          <input type="text" placeholder="MM / YY">
+        </div>
+        <div class="form-group">
+          <label>CVC</label>
+          <input type="text" placeholder="•••">
+        </div>
+      </div>
+      <button class="btn btn-gold" style="width:100%;justify-content:center" onclick="showToast('Subscription activated! God bless you 🙏')">Confirm Subscription</button>
+      <div style="text-align:center;margin-top:12px;font-size:12px;color:var(--text-muted)">🔒 Secured by 256-bit SSL encryption. Cancel anytime.</div>
+    </div>
+  </div>
+</div>
+
+<!-- Chat Modal -->
+<div class="modal-overlay" id="chatModal" onclick="closeModalOutside(event, 'chatModal')">
+  <div class="modal">
+    <div class="modal-header">
+      <div style="display:flex;align-items:center;gap:12px">
+        <img src="https://i.pravatar.cc/150?img=11" alt="" style="width:42px;height:42px;border-radius:50%;border:2px solid var(--gold)">
+        <div>
+          <div class="modal-title" style="font-size:20px">Prophet Samuel</div>
+          <div style="font-size:12px;color:#4ade80">● Online · Typically replies in minutes</div>
+        </div>
+      </div>
+      <button class="modal-close" onclick="closeModal('chatModal')">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="chat-messages" id="chatMessages">
+        <div class="chat-msg received">
+          <div class="chat-bubble">Peace be unto you, beloved. How may I minister to you today?</div>
+          <div class="chat-time">Prophet Samuel · Just now</div>
+        </div>
+        <div class="chat-msg sent">
+          <div class="chat-bubble">Good day Prophet! I've been seeking direction about a major life decision.</div>
+          <div class="chat-time">You · Just now</div>
+        </div>
+        <div class="chat-msg received">
+          <div class="chat-bubble">The Lord sees your heart, beloved. Tell me what decision you're facing, and let us seek His face together. 🙏</div>
+          <div class="chat-time">Prophet Samuel · Just now</div>
+        </div>
+      </div>
+      <div class="chat-input-row">
+        <input type="text" id="chatInput" placeholder="Type your message…" onkeypress="if(event.key==='Enter') sendChat()">
+        <button class="chat-send" onclick="sendChat()">➤</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div id="toast" style="
+  position:fixed; bottom:32px; left:50%; transform:translateX(-50%) translateY(20px);
+  background:linear-gradient(135deg, rgba(26,42,108,0.95), rgba(15,22,40,0.98));
+  border:1px solid var(--glass-border); color:var(--white); padding:14px 24px;
+  border-radius:50px; font-size:14px; font-weight:500; z-index:9999;
+  opacity:0; transition:all 0.35s ease; box-shadow:var(--shadow-card);
+  backdrop-filter:blur(20px); pointer-events:none; white-space:nowrap;
+"></div>
+
+<script>
+// ── NAVBAR ──
+const navbar = document.getElementById('navbar');
+window.addEventListener('scroll', () => {
+  navbar.classList.toggle('scrolled', window.scrollY > 30);
+  const sections = ['hero','ministers','how','categories','testimonials','pricing','faq'];
+  sections.forEach(id => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    const rect = el.getBoundingClientRect();
+    if (rect.top <= 80 && rect.bottom > 80) {
+      document.querySelectorAll('.nav-menu a').forEach(a => a.classList.remove('active'));
+      const link = document.querySelector(`.nav-menu a[href="#${id}"]`);
+      if (link) link.classList.add('active');
+    }
+  });
+});
+
+// ── MOBILE NAV ──
+function toggleMobileNav() {
+  document.getElementById('mobileNav').classList.toggle('open');
+}
+function closeMobileNav() {
+  document.getElementById('mobileNav').classList.remove('open');
+}
+
+// ── MODALS ──
+function openModal(id) {
+  document.getElementById(id).classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+function closeModal(id) {
+  document.getElementById(id).classList.remove('active');
+  document.body.style.overflow = '';
+}
+function closeModalOutside(e, id) {
+  if (e.target.id === id) closeModal(id);
+}
+function switchModal(from, to) {
+  closeModal(from);
+  setTimeout(() => openModal(to), 300);
+}
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    document.querySelectorAll('.modal-overlay.active').forEach(m => {
+      m.classList.remove('active');
+    });
+    document.body.style.overflow = '';
+  }
+});
+
+// ── TOAST ──
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.style.opacity = '1';
+  t.style.transform = 'translateX(-50%) translateY(0)';
+  setTimeout(() => {
+    t.style.opacity = '0';
+    t.style.transform = 'translateX(-50%) translateY(20px)';
+  }, 3000);
+}
+
+// ── SAVE MINISTER ──
+function saveMinister(btn) {
+  const saved = btn.getAttribute('data-saved');
+  if (saved) {
+    btn.textContent = '🔖 Save';
+    btn.removeAttribute('data-saved');
+    showToast('Minister removed from saved list');
+  } else {
+    btn.textContent = '🔖 Saved ✓';
+    btn.setAttribute('data-saved', 'true');
+    btn.style.color = 'var(--gold)';
+    showToast('Minister saved to your list! ✦');
+  }
+}
+
+// ── FAQ ──
+function toggleFaq(item) {
+  const isOpen = item.classList.contains('open');
+  document.querySelectorAll('.faq-item').forEach(f => f.classList.remove('open'));
+  if (!isOpen) item.classList.add('open');
+}
+
+// ── NEWSLETTER ──
+function subscribeNewsletter() {
+  const input = document.querySelector('.newsletter-form input');
+  if (input.value && input.value.includes('@')) {
+    showToast('Subscribed! Daily blessings incoming 🙏✦');
+    input.value = '';
+  } else {
+    showToast('Please enter a valid email address');
+  }
+}
+
+// ── TESTIMONIALS SLIDER ──
+let slideIndex = 0;
+const track = document.getElementById('sliderTrack');
+const cards = track.querySelectorAll('.testimonial-card');
+const dotsContainer = document.getElementById('sliderDots');
+
+function getVisibleCount() {
+  return window.innerWidth < 768 ? 1 : window.innerWidth < 1024 ? 2 : 3;
+}
+
+function createDots() {
+  dotsContainer.innerHTML = '';
+  const count = Math.ceil(cards.length / getVisibleCount());
+  for (let i = 0; i < count; i++) {
+    const d = document.createElement('div');
+    d.className = 'dot' + (i === 0 ? ' active' : '');
+    d.onclick = () => goToSlide(i);
+    dotsContainer.appendChild(d);
+  }
+}
+
+function goToSlide(i) {
+  const visible = getVisibleCount();
+  const maxIndex = Math.ceil(cards.length / visible) - 1;
+  slideIndex = Math.max(0, Math.min(i, maxIndex));
+  const cardWidth = cards[0].offsetWidth + 24;
+  track.style.transform = `translateX(-${slideIndex * visible * cardWidth}px)`;
+  dotsContainer.querySelectorAll('.dot').forEach((d, j) => d.classList.toggle('active', j === slideIndex));
+}
+
+function slideLeft() { goToSlide(slideIndex - 1); }
+function slideRight() { goToSlide(slideIndex + 1); }
+
+createDots();
+window.addEventListener('resize', () => { createDots(); goToSlide(0); });
+
+// Auto-advance
+let autoSlide = setInterval(() => slideRight(), 5000);
+track.addEventListener('mouseenter', () => clearInterval(autoSlide));
+track.addEventListener('mouseleave', () => { autoSlide = setInterval(() => slideRight(), 5000); });
+
+// ── CHAT ──
+const chatReplies = [
+  "The Spirit of the Lord is moving on your behalf right now. 🙏",
+  "I'm receiving a strong word for you — press in and believe!",
+  "Let us pray together: Lord, grant clarity and peace to this dear soul...",
+  "Your breakthrough is near, beloved. Do not give up!",
+  "I sense the Lord saying 'I have not forgotten you — I am working behind the scenes.'"
+];
+let replyIndex = 0;
+
+function sendChat() {
+  const input = document.getElementById('chatInput');
+  const msg = input.value.trim();
+  if (!msg) return;
+  const messages = document.getElementById('chatMessages');
+  messages.innerHTML += `<div class="chat-msg sent"><div class="chat-bubble">${msg}</div><div class="chat-time">You · Just now</div></div>`;
+  input.value = '';
+  messages.scrollTop = messages.scrollHeight;
+  setTimeout(() => {
+    messages.innerHTML += `<div class="chat-msg received"><div class="chat-bubble">${chatReplies[replyIndex % chatReplies.length]}</div><div class="chat-time">Prophet Samuel · Just now</div></div>`;
+    replyIndex++;
+    messages.scrollTop = messages.scrollHeight;
+  }, 1200);
+}
+
+// ── SCROLL REVEAL ──
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach((entry, i) => {
+    if (entry.isIntersecting) {
+      setTimeout(() => entry.target.classList.add('revealed'), i * 80);
+    }
+  });
+}, { threshold: 0.1 });
+
+document.querySelectorAll('.scroll-reveal').forEach(el => observer.observe(el));
+
+function saveAndRedirect(btn) {
+  saveMinister(btn);
+  setTimeout(function(){ window.location.href='bookmarks.html'; }, 600);
+}
+</script>
+</body>
+</html>

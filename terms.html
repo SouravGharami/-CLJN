@@ -1,0 +1,2293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Terms & Privacy — CLJN Digital Ministry</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700;900&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Crimson+Pro:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════════
+   CSS CUSTOM PROPERTIES — DIVINECONNECT SYSTEM
+═══════════════════════════════════════════════ */
+:root {
+  --navy-950:  #020810;
+  --navy-900:  #050d1a;
+  --navy-800:  #091526;
+  --navy-700:  #0d1f3c;
+  --navy-600:  #122650;
+  --navy-500:  #1a3068;
+  --royal:     #1e3a8a;
+  --royal-lt:  #2548a8;
+  --blue-glow: #3b82f6;
+
+  --gold-deep: #92600a;
+  --gold-mid:  #b8832c;
+  --gold:      #c9a84c;
+  --gold-lt:   #e0bc6e;
+  --gold-pale: #f5e0a0;
+  --gold-glow: #f0c96b;
+
+  --text-prim:  #f0e8d5;
+  --text-sec:   #b8a989;
+  --text-mute:  #6e5f4a;
+  --text-gold:  #d4a847;
+
+  --glass-bg:   rgba(9, 21, 38, 0.72);
+  --glass-bd:   rgba(201, 168, 76, 0.18);
+  --glass-hover:rgba(201, 168, 76, 0.10);
+
+  --shadow-gold: 0 0 40px rgba(201,168,76,0.15);
+  --shadow-deep: 0 24px 64px rgba(2,8,16,0.8);
+
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 22px;
+  --radius-xl: 32px;
+
+  --transition: all 0.35s cubic-bezier(0.4,0,0.2,1);
+  --transition-fast: all 0.18s ease;
+}
+
+/* ═══════════════════════════════════════════════
+   RESET & BASE
+═══════════════════════════════════════════════ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html {
+  scroll-behavior: smooth;
+  font-size: 16px;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--navy-900); }
+::-webkit-scrollbar-thumb { background: var(--gold-mid); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--gold-lt); }
+
+body {
+  background: var(--navy-950);
+  color: var(--text-prim);
+  font-family: 'Crimson Pro', 'Cormorant Garamond', serif;
+  font-weight: 300;
+  line-height: 1.75;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ═══════════════════════════════════════════════
+   BACKGROUND MESH
+═══════════════════════════════════════════════ */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 80% 60% at 20% 10%, rgba(30,58,138,0.35) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 50% at 80% 90%, rgba(13,31,60,0.5) 0%, transparent 55%),
+    radial-gradient(ellipse 40% 40% at 60% 40%, rgba(201,168,76,0.04) 0%, transparent 50%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ═══════════════════════════════════════════════
+   NAVBAR
+═══════════════════════════════════════════════ */
+.navbar {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 1000;
+  padding: 0 2rem;
+  height: 72px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(2, 8, 16, 0.88);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(201,168,76,0.14);
+  transition: var(--transition);
+}
+
+.navbar.scrolled {
+  height: 64px;
+  background: rgba(2, 8, 16, 0.96);
+  box-shadow: 0 4px 32px rgba(2,8,16,0.6);
+}
+
+.nav-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+  flex-shrink: 0;
+}
+
+.nav-brand-icon {
+  width: 40px; height: 40px;
+  background: linear-gradient(135deg, var(--gold-mid), var(--gold-lt));
+  border-radius: 10px;
+  display: grid;
+  place-items: center;
+  font-size: 20px;
+  box-shadow: 0 0 16px rgba(201,168,76,0.4);
+  flex-shrink: 0;
+}
+
+.nav-brand-text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.1;
+}
+
+.nav-brand-name {
+  font-family: 'Cinzel', serif;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--gold-lt);
+  letter-spacing: 0.06em;
+}
+
+.nav-brand-sub {
+  font-size: 0.6rem;
+  color: var(--text-sec);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  list-style: none;
+}
+
+.nav-links a {
+  display: block;
+  padding: 0.45rem 0.9rem;
+  color: var(--text-sec);
+  text-decoration: none;
+  font-family: 'Cinzel', serif;
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  border-radius: var(--radius-sm);
+  transition: var(--transition-fast);
+  position: relative;
+}
+
+.nav-links a::after {
+  content: '';
+  position: absolute;
+  bottom: 4px; left: 50%; right: 50%;
+  height: 1px;
+  background: var(--gold);
+  transition: var(--transition-fast);
+}
+
+.nav-links a:hover { color: var(--gold-lt); }
+.nav-links a:hover::after { left: 12px; right: 12px; }
+
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-shrink: 0;
+}
+
+.btn-nav-outline {
+  padding: 0.42rem 1.1rem;
+  background: transparent;
+  border: 1px solid var(--glass-bd);
+  color: var(--text-sec);
+  border-radius: var(--radius-sm);
+  font-family: 'Cinzel', serif;
+  font-size: 0.68rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: var(--transition-fast);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.btn-nav-outline:hover {
+  border-color: var(--gold-mid);
+  color: var(--gold-lt);
+  background: rgba(201,168,76,0.06);
+}
+
+.btn-nav-gold {
+  padding: 0.42rem 1.2rem;
+  background: linear-gradient(135deg, var(--gold-mid), var(--gold-lt));
+  border: none;
+  color: var(--navy-900);
+  border-radius: var(--radius-sm);
+  font-family: 'Cinzel', serif;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: var(--transition-fast);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 0 0 16px rgba(201,168,76,0.25);
+}
+.btn-nav-gold:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 0 24px rgba(201,168,76,0.45);
+  background: linear-gradient(135deg, var(--gold-lt), var(--gold-glow));
+}
+
+.hamburger {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  cursor: pointer;
+  padding: 6px;
+  border: none;
+  background: none;
+}
+.hamburger span {
+  display: block;
+  width: 22px; height: 2px;
+  background: var(--gold);
+  border-radius: 2px;
+  transition: var(--transition-fast);
+}
+.hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.hamburger.open span:nth-child(2) { opacity: 0; }
+.hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+.mobile-menu {
+  display: none;
+  position: fixed;
+  top: 72px; left: 0; right: 0;
+  background: rgba(2,8,16,0.97);
+  border-bottom: 1px solid var(--glass-bd);
+  backdrop-filter: blur(24px);
+  padding: 1.5rem 2rem;
+  z-index: 999;
+  flex-direction: column;
+  gap: 0.5rem;
+  animation: slideDown 0.25s ease;
+}
+.mobile-menu.open { display: flex; }
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.mobile-menu a {
+  padding: 0.75rem 1rem;
+  color: var(--text-sec);
+  text-decoration: none;
+  font-family: 'Cinzel', serif;
+  font-size: 0.8rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  border-radius: var(--radius-sm);
+  transition: var(--transition-fast);
+}
+.mobile-menu a:hover { color: var(--gold-lt); background: rgba(201,168,76,0.06); }
+
+.mobile-menu-actions {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 0.75rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--glass-bd);
+}
+
+/* ═══════════════════════════════════════════════
+   HERO SECTION
+═══════════════════════════════════════════════ */
+.hero {
+  position: relative;
+  min-height: 56vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 8rem 2rem 5rem;
+  overflow: hidden;
+  z-index: 1;
+}
+
+.hero-bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.hero-bg::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 70% 80% at 50% 30%, rgba(30,58,138,0.5) 0%, transparent 65%),
+    radial-gradient(ellipse 50% 60% at 20% 80%, rgba(201,168,76,0.08) 0%, transparent 55%),
+    radial-gradient(ellipse 40% 50% at 80% 20%, rgba(201,168,76,0.06) 0%, transparent 50%);
+}
+
+/* Decorative rings */
+.hero-ring {
+  position: absolute;
+  border-radius: 50%;
+  border: 1px solid rgba(201,168,76,0.08);
+  animation: ringPulse 6s ease-in-out infinite;
+}
+.hero-ring:nth-child(1) { width: 400px; height: 400px; top: 50%; left: 50%; transform: translate(-50%,-60%); animation-delay: 0s; }
+.hero-ring:nth-child(2) { width: 600px; height: 600px; top: 50%; left: 50%; transform: translate(-50%,-50%); animation-delay: 1s; border-color: rgba(201,168,76,0.05); }
+.hero-ring:nth-child(3) { width: 800px; height: 800px; top: 50%; left: 50%; transform: translate(-50%,-45%); animation-delay: 2s; border-color: rgba(201,168,76,0.03); }
+
+@keyframes ringPulse {
+  0%, 100% { opacity: 0.5; transform: translate(-50%,-60%) scale(1); }
+  50%       { opacity: 1;   transform: translate(-50%,-60%) scale(1.02); }
+}
+
+/* Particles canvas */
+#heroCanvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 2;
+  max-width: 780px;
+}
+
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 18px;
+  background: rgba(201,168,76,0.1);
+  border: 1px solid rgba(201,168,76,0.25);
+  border-radius: 100px;
+  font-size: 0.7rem;
+  font-family: 'Cinzel', serif;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--gold-lt);
+  margin-bottom: 1.5rem;
+  animation: fadeInUp 0.7s ease both;
+}
+
+.hero-badge::before {
+  content: '';
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--gold);
+  box-shadow: 0 0 8px var(--gold);
+}
+
+.hero-title {
+  font-family: 'Cinzel', serif;
+  font-size: clamp(2.8rem, 6vw, 5.5rem);
+  font-weight: 700;
+  line-height: 1.05;
+  letter-spacing: 0.02em;
+  margin-bottom: 1.25rem;
+  animation: fadeInUp 0.7s 0.1s ease both;
+}
+
+.hero-title-main {
+  display: block;
+  background: linear-gradient(135deg, #f0e8d5 0%, var(--gold-lt) 40%, var(--gold-pale) 70%, #f0e8d5 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(0 0 30px rgba(201,168,76,0.3));
+}
+
+.hero-title-amp {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: 0.7em;
+  color: var(--gold);
+  -webkit-text-fill-color: var(--gold);
+  display: block;
+  margin: -0.2em 0;
+  opacity: 0.8;
+}
+
+.hero-subtitle {
+  font-size: 1.2rem;
+  color: var(--text-sec);
+  max-width: 560px;
+  margin: 0 auto 1rem;
+  font-style: italic;
+  animation: fadeInUp 0.7s 0.2s ease both;
+}
+
+.hero-updated {
+  font-size: 0.78rem;
+  color: var(--text-mute);
+  letter-spacing: 0.08em;
+  margin-bottom: 2.5rem;
+  animation: fadeInUp 0.7s 0.3s ease both;
+}
+
+.hero-updated span {
+  color: var(--gold-mid);
+  font-family: 'Cinzel', serif;
+}
+
+.hero-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  animation: fadeInUp 0.7s 0.4s ease both;
+}
+
+.btn-hero-gold {
+  padding: 0.85rem 2.2rem;
+  background: linear-gradient(135deg, var(--gold-mid), var(--gold-lt));
+  border: none;
+  color: var(--navy-900);
+  border-radius: var(--radius-md);
+  font-family: 'Cinzel', serif;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: var(--transition);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 0 24px rgba(201,168,76,0.3), 0 8px 24px rgba(2,8,16,0.4);
+}
+.btn-hero-gold:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 40px rgba(201,168,76,0.5), 0 12px 32px rgba(2,8,16,0.5);
+}
+
+.btn-hero-ghost {
+  padding: 0.85rem 2.2rem;
+  background: rgba(9,21,38,0.6);
+  border: 1px solid rgba(201,168,76,0.3);
+  color: var(--gold-lt);
+  border-radius: var(--radius-md);
+  font-family: 'Cinzel', serif;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: var(--transition);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  backdrop-filter: blur(10px);
+}
+.btn-hero-ghost:hover {
+  background: rgba(201,168,76,0.1);
+  border-color: var(--gold-lt);
+  transform: translateY(-2px);
+  box-shadow: 0 0 24px rgba(201,168,76,0.15);
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Divider */
+.section-divider {
+  width: 100%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold-mid), transparent);
+  opacity: 0.25;
+  position: relative;
+  z-index: 1;
+}
+
+/* ═══════════════════════════════════════════════
+   MAIN LAYOUT — 2 COLUMN
+═══════════════════════════════════════════════ */
+.page-layout {
+  position: relative;
+  z-index: 1;
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: 3rem 2rem 4rem;
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 2.5rem;
+  align-items: start;
+}
+
+/* ═══════════════════════════════════════════════
+   SIDEBAR
+═══════════════════════════════════════════════ */
+.sidebar {
+  position: sticky;
+  top: 88px;
+  max-height: calc(100vh - 110px);
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.sidebar::-webkit-scrollbar { width: 3px; }
+.sidebar::-webkit-scrollbar-thumb { background: rgba(201,168,76,0.2); }
+
+.sidebar-card {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-bd);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem 1.25rem;
+  backdrop-filter: blur(20px);
+  box-shadow: var(--shadow-deep), var(--shadow-gold);
+}
+
+.sidebar-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 1.25rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--glass-bd);
+}
+
+.sidebar-header-icon {
+  width: 32px; height: 32px;
+  background: linear-gradient(135deg, var(--gold-mid), var(--gold-lt));
+  border-radius: 8px;
+  display: grid;
+  place-items: center;
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+.sidebar-header-text {
+  font-family: 'Cinzel', serif;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--gold-lt);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.sidebar-nav { list-style: none; display: flex; flex-direction: column; gap: 2px; }
+
+.sidebar-nav li a {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0.65rem 0.85rem;
+  border-radius: var(--radius-sm);
+  color: var(--text-sec);
+  text-decoration: none;
+  font-size: 0.88rem;
+  transition: var(--transition-fast);
+  position: relative;
+  border-left: 2px solid transparent;
+}
+
+.sidebar-nav li a .nav-dot {
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: var(--text-mute);
+  flex-shrink: 0;
+  transition: var(--transition-fast);
+}
+
+.sidebar-nav li a:hover,
+.sidebar-nav li a.active {
+  color: var(--gold-lt);
+  background: rgba(201,168,76,0.08);
+  border-left-color: var(--gold);
+}
+
+.sidebar-nav li a:hover .nav-dot,
+.sidebar-nav li a.active .nav-dot {
+  background: var(--gold);
+  box-shadow: 0 0 6px var(--gold);
+}
+
+.sidebar-nav li a .nav-icon { font-size: 0.9rem; opacity: 0.7; flex-shrink: 0; }
+
+.sidebar-group-label {
+  font-family: 'Cinzel', serif;
+  font-size: 0.62rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--text-mute);
+  padding: 0.75rem 0.85rem 0.3rem;
+}
+
+/* Mobile sidebar toggle */
+.sidebar-toggle {
+  display: none;
+  width: 100%;
+  padding: 0.85rem 1.25rem;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-bd);
+  border-radius: var(--radius-md);
+  color: var(--gold-lt);
+  font-family: 'Cinzel', serif;
+  font-size: 0.78rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  text-align: left;
+  display: none;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+  backdrop-filter: blur(20px);
+}
+
+.sidebar-toggle svg { transition: var(--transition-fast); }
+.sidebar-toggle.open svg { transform: rotate(180deg); }
+
+/* ═══════════════════════════════════════════════
+   CONTENT AREA
+═══════════════════════════════════════════════ */
+.content-area { min-width: 0; }
+
+/* Section wrapper */
+.legal-section {
+  margin-bottom: 3rem;
+  animation: fadeInUp 0.6s ease both;
+}
+
+.section-heading {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--glass-bd);
+}
+
+.section-heading-icon {
+  width: 44px; height: 44px;
+  background: linear-gradient(135deg, rgba(201,168,76,0.15), rgba(201,168,76,0.05));
+  border: 1px solid rgba(201,168,76,0.2);
+  border-radius: var(--radius-md);
+  display: grid;
+  place-items: center;
+  font-size: 20px;
+  flex-shrink: 0;
+}
+
+.section-heading h2 {
+  font-family: 'Cinzel', serif;
+  font-size: 1.45rem;
+  font-weight: 600;
+  color: var(--gold-lt);
+  letter-spacing: 0.04em;
+}
+
+.section-heading .section-num {
+  font-size: 0.68rem;
+  color: var(--text-mute);
+  letter-spacing: 0.15em;
+  font-family: 'Cinzel', serif;
+  display: block;
+  margin-bottom: 2px;
+}
+
+/* Glass Card */
+.glass-card {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-bd);
+  border-radius: var(--radius-lg);
+  padding: 2rem 2.25rem;
+  backdrop-filter: blur(20px);
+  box-shadow: var(--shadow-deep);
+  transition: var(--transition);
+  margin-bottom: 1.25rem;
+}
+.glass-card:hover {
+  border-color: rgba(201,168,76,0.28);
+  box-shadow: var(--shadow-deep), 0 0 32px rgba(201,168,76,0.06);
+}
+
+.glass-card h3 {
+  font-family: 'Cinzel', serif;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text-prim);
+  letter-spacing: 0.06em;
+  margin-bottom: 0.85rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.glass-card h3 .card-icon { font-size: 1rem; }
+
+.glass-card p {
+  color: var(--text-sec);
+  font-size: 1rem;
+  margin-bottom: 0.75rem;
+  line-height: 1.8;
+}
+.glass-card p:last-child { margin-bottom: 0; }
+
+.glass-card ul {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  color: var(--text-sec);
+}
+
+.glass-card ul li {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  font-size: 0.97rem;
+  line-height: 1.7;
+}
+
+.glass-card ul li::before {
+  content: '◆';
+  color: var(--gold);
+  font-size: 0.45rem;
+  margin-top: 0.55em;
+  flex-shrink: 0;
+  opacity: 0.7;
+}
+
+/* Card variants */
+.card-gold {
+  border-color: rgba(201,168,76,0.28);
+  background: linear-gradient(135deg, rgba(201,168,76,0.06) 0%, rgba(9,21,38,0.8) 100%);
+}
+
+.card-info {
+  border-color: rgba(59,130,246,0.25);
+  background: linear-gradient(135deg, rgba(59,130,246,0.07) 0%, rgba(9,21,38,0.8) 100%);
+}
+
+.card-warning {
+  border-color: rgba(251,146,60,0.3);
+  background: linear-gradient(135deg, rgba(251,146,60,0.07) 0%, rgba(9,21,38,0.8) 100%);
+}
+
+.card-success {
+  border-color: rgba(52,211,153,0.25);
+  background: linear-gradient(135deg, rgba(52,211,153,0.07) 0%, rgba(9,21,38,0.8) 100%);
+}
+
+.card-danger {
+  border-color: rgba(248,113,113,0.25);
+  background: linear-gradient(135deg, rgba(248,113,113,0.07) 0%, rgba(9,21,38,0.8) 100%);
+}
+
+/* Alert boxes */
+.alert-box {
+  display: flex;
+  gap: 14px;
+  padding: 1.1rem 1.4rem;
+  border-radius: var(--radius-md);
+  margin-bottom: 1.25rem;
+  border-left: 3px solid;
+}
+
+.alert-box.info { background: rgba(59,130,246,0.08); border-color: rgba(59,130,246,0.5); }
+.alert-box.warning { background: rgba(251,146,60,0.08); border-color: rgba(251,146,60,0.5); }
+.alert-box.success { background: rgba(52,211,153,0.08); border-color: rgba(52,211,153,0.5); }
+.alert-box.danger { background: rgba(248,113,113,0.08); border-color: rgba(248,113,113,0.5); }
+
+.alert-box .alert-icon { font-size: 1.2rem; flex-shrink: 0; margin-top: 1px; }
+.alert-box .alert-text { font-size: 0.93rem; color: var(--text-sec); line-height: 1.7; }
+.alert-box .alert-text strong { color: var(--text-prim); }
+
+/* Highlight cards for policies */
+.policy-highlight {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.policy-item {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-bd);
+  border-radius: var(--radius-md);
+  padding: 1.25rem;
+  backdrop-filter: blur(16px);
+  transition: var(--transition);
+}
+.policy-item:hover { border-color: rgba(201,168,76,0.28); transform: translateY(-2px); }
+
+.policy-item-icon { font-size: 1.5rem; margin-bottom: 0.6rem; }
+.policy-item-label {
+  font-family: 'Cinzel', serif;
+  font-size: 0.7rem;
+  color: var(--gold-mid);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  margin-bottom: 0.3rem;
+}
+.policy-item-value {
+  font-size: 0.9rem;
+  color: var(--text-prim);
+}
+
+/* Privacy badges */
+.badge-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+}
+
+.privacy-badge {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 0.45rem 1rem;
+  background: rgba(9,21,38,0.7);
+  border: 1px solid var(--glass-bd);
+  border-radius: 100px;
+  font-size: 0.8rem;
+  color: var(--text-sec);
+  transition: var(--transition-fast);
+}
+.privacy-badge:hover { border-color: var(--gold-mid); color: var(--gold-lt); }
+.privacy-badge .badge-icon { font-size: 0.9rem; }
+
+/* ═══════════════════════════════════════════════
+   CONTACT LEGAL SECTION
+═══════════════════════════════════════════════ */
+.contact-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+
+.contact-card {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-bd);
+  border-radius: var(--radius-lg);
+  padding: 1.75rem 1.5rem;
+  backdrop-filter: blur(20px);
+  text-align: center;
+  transition: var(--transition);
+  cursor: pointer;
+}
+.contact-card:hover {
+  border-color: rgba(201,168,76,0.3);
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-gold);
+}
+
+.contact-card-icon {
+  width: 52px; height: 52px;
+  margin: 0 auto 1rem;
+  background: linear-gradient(135deg, rgba(201,168,76,0.15), rgba(201,168,76,0.05));
+  border: 1px solid rgba(201,168,76,0.25);
+  border-radius: var(--radius-md);
+  display: grid;
+  place-items: center;
+  font-size: 22px;
+}
+
+.contact-card h4 {
+  font-family: 'Cinzel', serif;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--gold-lt);
+  letter-spacing: 0.08em;
+  margin-bottom: 0.4rem;
+}
+
+.contact-card p {
+  font-size: 0.85rem;
+  color: var(--text-sec);
+  margin-bottom: 1.1rem;
+}
+
+.contact-card-email {
+  font-family: 'Cinzel', serif;
+  font-size: 0.72rem;
+  color: var(--gold-mid);
+  letter-spacing: 0.06em;
+  margin-bottom: 1.25rem;
+  display: block;
+}
+
+.btn-contact {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0.5rem 1.2rem;
+  border: 1px solid rgba(201,168,76,0.3);
+  background: transparent;
+  color: var(--gold-lt);
+  border-radius: var(--radius-sm);
+  font-family: 'Cinzel', serif;
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: var(--transition-fast);
+  text-decoration: none;
+}
+.btn-contact:hover { background: rgba(201,168,76,0.1); border-color: var(--gold-lt); }
+
+/* ═══════════════════════════════════════════════
+   ACCEPT TERMS SECTION
+═══════════════════════════════════════════════ */
+.accept-card {
+  background: linear-gradient(135deg, rgba(30,58,138,0.25) 0%, rgba(9,21,38,0.85) 100%);
+  border: 1px solid rgba(201,168,76,0.25);
+  border-radius: var(--radius-xl);
+  padding: 2.5rem;
+  backdrop-filter: blur(24px);
+  box-shadow: var(--shadow-deep), var(--shadow-gold);
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.accept-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 50%; transform: translateX(-50%);
+  width: 60%; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold-lt), transparent);
+}
+
+.accept-card h3 {
+  font-family: 'Cinzel', serif;
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--gold-lt);
+  letter-spacing: 0.06em;
+  margin-bottom: 0.75rem;
+}
+
+.accept-card p { color: var(--text-sec); font-size: 1rem; margin-bottom: 1.75rem; max-width: 520px; margin-left: auto; margin-right: auto; }
+
+.checkbox-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 1.75rem;
+  cursor: pointer;
+}
+
+.checkbox-wrapper input[type="checkbox"] { display: none; }
+
+.custom-checkbox {
+  width: 22px; height: 22px;
+  border: 2px solid var(--gold-mid);
+  border-radius: 5px;
+  background: transparent;
+  transition: var(--transition-fast);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 12px;
+  color: var(--navy-900);
+}
+
+.checkbox-wrapper input:checked + .custom-checkbox {
+  background: var(--gold-mid);
+  border-color: var(--gold-lt);
+}
+
+.checkbox-wrapper label {
+  font-size: 0.95rem;
+  color: var(--text-sec);
+  cursor: pointer;
+  user-select: none;
+}
+.checkbox-wrapper label a { color: var(--gold-lt); text-decoration: underline; }
+
+.accept-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.btn-agree {
+  padding: 0.85rem 2.5rem;
+  background: linear-gradient(135deg, var(--gold-mid), var(--gold-lt));
+  border: none;
+  color: var(--navy-900);
+  border-radius: var(--radius-md);
+  font-family: 'Cinzel', serif;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: var(--transition);
+  box-shadow: 0 0 24px rgba(201,168,76,0.3);
+}
+.btn-agree:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 40px rgba(201,168,76,0.5);
+}
+.btn-agree:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+
+.btn-download {
+  padding: 0.85rem 2rem;
+  background: transparent;
+  border: 1px solid rgba(201,168,76,0.3);
+  color: var(--gold-lt);
+  border-radius: var(--radius-md);
+  font-family: 'Cinzel', serif;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: var(--transition);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.btn-download:hover {
+  background: rgba(201,168,76,0.08);
+  border-color: var(--gold-lt);
+  transform: translateY(-2px);
+}
+
+/* Success state */
+.accept-success {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem;
+  animation: scaleIn 0.4s cubic-bezier(0.34,1.56,0.64,1) both;
+}
+.accept-success.show { display: flex; }
+.accept-form.hide { display: none; }
+
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.85); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+.success-icon {
+  width: 64px; height: 64px;
+  background: linear-gradient(135deg, rgba(52,211,153,0.2), rgba(52,211,153,0.05));
+  border: 2px solid rgba(52,211,153,0.4);
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: 28px;
+  box-shadow: 0 0 32px rgba(52,211,153,0.2);
+}
+
+.success-title {
+  font-family: 'Cinzel', serif;
+  font-size: 1.1rem;
+  color: #6ee7b7;
+  letter-spacing: 0.06em;
+}
+
+.success-text { color: var(--text-sec); font-size: 0.9rem; }
+
+/* ═══════════════════════════════════════════════
+   CTA SECTION
+═══════════════════════════════════════════════ */
+.cta-section {
+  position: relative;
+  z-index: 1;
+  padding: 4rem 2rem;
+  text-align: center;
+  overflow: hidden;
+}
+
+.cta-inner {
+  max-width: 760px;
+  margin: 0 auto;
+  background: linear-gradient(135deg, rgba(30,58,138,0.2) 0%, rgba(9,21,38,0.7) 100%);
+  border: 1px solid rgba(201,168,76,0.2);
+  border-radius: var(--radius-xl);
+  padding: 3.5rem 3rem;
+  backdrop-filter: blur(24px);
+  position: relative;
+  overflow: hidden;
+}
+
+.cta-inner::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 60% 50% at 50% 0%, rgba(201,168,76,0.08) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+.cta-icon { font-size: 3rem; margin-bottom: 1rem; display: block; }
+.cta-title {
+  font-family: 'Cinzel', serif;
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--gold-lt);
+  letter-spacing: 0.04em;
+  margin-bottom: 0.75rem;
+}
+.cta-sub { color: var(--text-sec); font-size: 1.05rem; margin-bottom: 2.25rem; }
+.cta-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+/* ═══════════════════════════════════════════════
+   FOOTER
+═══════════════════════════════════════════════ */
+.footer {
+  position: relative;
+  z-index: 1;
+  background: rgba(2,8,16,0.95);
+  border-top: 1px solid rgba(201,168,76,0.12);
+  padding: 4rem 2rem 2rem;
+}
+
+.footer-inner {
+  max-width: 1320px;
+  margin: 0 auto;
+}
+
+.footer-top {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr 1fr 1fr 1.3fr;
+  gap: 2.5rem;
+  margin-bottom: 3rem;
+  padding-bottom: 3rem;
+  border-bottom: 1px solid rgba(201,168,76,0.1);
+}
+
+.footer-brand-col {}
+
+.footer-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 1rem;
+  text-decoration: none;
+}
+
+.footer-logo-icon {
+  width: 38px; height: 38px;
+  background: linear-gradient(135deg, var(--gold-mid), var(--gold-lt));
+  border-radius: 9px;
+  display: grid;
+  place-items: center;
+  font-size: 18px;
+  box-shadow: 0 0 12px rgba(201,168,76,0.3);
+  flex-shrink: 0;
+}
+
+.footer-logo-name {
+  font-family: 'Cinzel', serif;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--gold-lt);
+  letter-spacing: 0.06em;
+}
+
+.footer-tagline { color: var(--text-mute); font-size: 0.9rem; line-height: 1.7; margin-bottom: 1.25rem; }
+
+.footer-contact-info { display: flex; flex-direction: column; gap: 0.4rem; margin-bottom: 1.25rem; }
+.footer-contact-info a {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-mute);
+  text-decoration: none;
+  font-size: 0.84rem;
+  transition: var(--transition-fast);
+}
+.footer-contact-info a:hover { color: var(--gold-lt); }
+
+.social-row { display: flex; gap: 0.5rem; }
+.social-btn {
+  width: 34px; height: 34px;
+  border-radius: 8px;
+  background: rgba(201,168,76,0.06);
+  border: 1px solid var(--glass-bd);
+  display: grid;
+  place-items: center;
+  font-size: 14px;
+  cursor: pointer;
+  transition: var(--transition-fast);
+  text-decoration: none;
+  color: var(--text-mute);
+}
+.social-btn:hover { background: rgba(201,168,76,0.12); border-color: var(--gold-mid); color: var(--gold-lt); }
+
+.footer-col-title {
+  font-family: 'Cinzel', serif;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--gold-mid);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  margin-bottom: 1.1rem;
+}
+
+.footer-links { list-style: none; display: flex; flex-direction: column; gap: 0.6rem; }
+.footer-links a {
+  color: var(--text-mute);
+  text-decoration: none;
+  font-size: 0.88rem;
+  transition: var(--transition-fast);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.footer-links a:hover { color: var(--gold-lt); padding-left: 4px; }
+
+/* Newsletter */
+.newsletter-form {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+}
+.newsletter-input {
+  flex: 1;
+  padding: 0.6rem 1rem;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--glass-bd);
+  border-radius: var(--radius-sm);
+  color: var(--text-prim);
+  font-family: 'Crimson Pro', serif;
+  font-size: 0.88rem;
+  outline: none;
+  transition: var(--transition-fast);
+}
+.newsletter-input:focus { border-color: var(--gold-mid); background: rgba(201,168,76,0.04); }
+.newsletter-input::placeholder { color: var(--text-mute); }
+.newsletter-submit {
+  padding: 0.6rem 1rem;
+  background: linear-gradient(135deg, var(--gold-mid), var(--gold-lt));
+  border: none;
+  color: var(--navy-900);
+  border-radius: var(--radius-sm);
+  font-family: 'Cinzel', serif;
+  font-size: 0.7rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: var(--transition-fast);
+  white-space: nowrap;
+}
+.newsletter-submit:hover { transform: translateY(-1px); box-shadow: 0 0 16px rgba(201,168,76,0.3); }
+
+.footer-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.footer-copy {
+  font-size: 0.8rem;
+  color: var(--text-mute);
+}
+.footer-copy a { color: var(--gold-mid); text-decoration: none; }
+
+.footer-legal-links {
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+.footer-legal-links a {
+  font-size: 0.78rem;
+  color: var(--text-mute);
+  text-decoration: none;
+  transition: var(--transition-fast);
+  font-family: 'Cinzel', serif;
+  letter-spacing: 0.06em;
+}
+.footer-legal-links a:hover { color: var(--gold-lt); }
+
+/* ═══════════════════════════════════════════════
+   SECTION PROGRESS BAR
+═══════════════════════════════════════════════ */
+.reading-progress {
+  position: fixed;
+  top: 0; left: 0;
+  height: 2px;
+  width: 0%;
+  background: linear-gradient(90deg, var(--gold-mid), var(--gold-lt));
+  z-index: 9999;
+  transition: width 0.1s linear;
+  box-shadow: 0 0 8px rgba(201,168,76,0.6);
+}
+
+/* ═══════════════════════════════════════════════
+   RESPONSIVE
+═══════════════════════════════════════════════ */
+@media (max-width: 1100px) {
+  .footer-top { grid-template-columns: 1fr 1fr 1fr; }
+  .footer-brand-col { grid-column: 1 / -1; }
+}
+
+@media (max-width: 900px) {
+  .page-layout {
+    grid-template-columns: 1fr;
+    padding: 2rem 1.25rem;
+  }
+  .sidebar {
+    position: static;
+    max-height: none;
+    display: none;
+  }
+  .sidebar.mobile-open { display: block; }
+  .sidebar-toggle { display: flex; }
+  .nav-links, .nav-actions { display: none; }
+  .hamburger { display: flex; }
+  .footer-top { grid-template-columns: 1fr 1fr; }
+}
+
+@media (max-width: 600px) {
+  .navbar { padding: 0 1.25rem; }
+  .hero { padding: 7rem 1.25rem 4rem; min-height: auto; }
+  .footer-top { grid-template-columns: 1fr; }
+  .policy-highlight { grid-template-columns: 1fr 1fr; }
+  .cta-inner { padding: 2.5rem 1.5rem; }
+  .glass-card { padding: 1.5rem; }
+  .page-layout { padding: 1.75rem 1rem; }
+  .hero-title { font-size: 2.4rem; }
+}
+</style>
+</head>
+<body>
+<a href="index.html" style="display:inline-flex;align-items:center;gap:6px;color:var(--gold-lt,#c9a227);text-decoration:none;font-size:13px;padding:8px 16px;opacity:0.85;transition:opacity .2s" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.85">← Back to Home</a>
+
+<!-- Reading Progress Bar -->
+<div class="reading-progress" id="readingProgress"></div>
+
+<!-- ═══════════════════════════ NAVBAR ═══════════════════════════ -->
+<nav class="navbar" id="navbar">
+  <a href="index.html" class="nav-brand">
+    <div class="nav-brand-icon">✦</div>
+    <div class="nav-brand-text">
+      <span class="nav-brand-name">CLJN</span>
+      <span class="nav-brand-sub">Digital Ministry Platform</span>
+    </div>
+  </a>
+
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="ministers.html">Ministers</a></li>
+    <li><a href="pricing.html">Pricing</a></li>
+    <li><a href="#">About</a></li>
+    <li><a href="contact.html">Contact</a></li>
+  </ul>
+
+  <div class="nav-actions">
+    <a href="#" class="btn-nav-outline">⟶ Login</a>
+    <a href="#" class="btn-nav-gold">✦ Dashboard</a>
+  </div>
+
+  <button class="hamburger" id="hamburger" aria-label="Toggle menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- Mobile Menu -->
+<div class="mobile-menu" id="mobileMenu">
+  <a href="index.html">Home</a>
+  <a href="ministers.html">Ministers</a>
+  <a href="pricing.html">Pricing</a>
+  <a href="#">About</a>
+  <a href="contact.html">Contact</a>
+  <div class="mobile-menu-actions">
+    <a href="#" class="btn-nav-outline" style="flex:1;justify-content:center">Login</a>
+    <a href="#" class="btn-nav-gold" style="flex:1;justify-content:center">Dashboard</a>
+  </div>
+</div>
+
+<!-- ═══════════════════════════ HERO ═══════════════════════════ -->
+<section class="hero" id="home">
+  <div class="hero-bg">
+    <div class="hero-ring"></div>
+    <div class="hero-ring"></div>
+    <div class="hero-ring"></div>
+  </div>
+  <canvas id="heroCanvas"></canvas>
+
+  <div class="hero-content">
+    <div class="hero-badge">⚖ Legal & Privacy Documentation</div>
+    <h1 class="hero-title">
+      <span class="hero-title-main">Terms</span>
+      <span class="hero-title-amp">&amp;</span>
+      <span class="hero-title-main">Privacy</span>
+    </h1>
+    <p class="hero-subtitle">Sacred commitments between CLJN and every soul in our community — crafted with transparency, integrity, and divine purpose.</p>
+    <p class="hero-updated">Last Updated: <span>January 15, 2025</span> &nbsp;·&nbsp; Version 3.2 &nbsp;·&nbsp; Effective Immediately</p>
+    <div class="hero-actions">
+      <a href="#terms-of-service" class="btn-hero-gold">📜 Read Terms</a>
+      <a href="#privacy-policy" class="btn-hero-ghost">🔒 Privacy Policy</a>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- ═══════════════════════════ MAIN LAYOUT ═══════════════════════════ -->
+<div class="page-layout">
+
+  <!-- ══════════ SIDEBAR ══════════ -->
+  <aside>
+    <button class="sidebar-toggle" id="sidebarToggle">
+      <span>📋 Navigate Sections</span>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+    </button>
+
+    <div class="sidebar" id="sidebar">
+      <div class="sidebar-card">
+        <div class="sidebar-header">
+          <div class="sidebar-header-icon">📋</div>
+          <span class="sidebar-header-text">Contents</span>
+        </div>
+
+        <ul class="sidebar-nav" id="sidebarNav">
+          <li class="sidebar-group-label">Overview</li>
+          <li><a href="#introduction" data-section="introduction"><span class="nav-icon">✦</span><span class="nav-dot"></span>Introduction</a></li>
+
+          <li class="sidebar-group-label">Terms of Service</li>
+          <li><a href="#terms-of-service" data-section="terms-of-service"><span class="nav-icon">📜</span><span class="nav-dot"></span>Terms of Service</a></li>
+          <li><a href="#user-responsibilities" data-section="user-responsibilities"><span class="nav-icon">👤</span><span class="nav-dot"></span>User Responsibilities</a></li>
+          <li><a href="#subscription-policy" data-section="subscription-policy"><span class="nav-icon">💳</span><span class="nav-dot"></span>Subscription Policy</a></li>
+          <li><a href="#refund-policy" data-section="refund-policy"><span class="nav-icon">↩</span><span class="nav-dot"></span>Refund Policy</a></li>
+          <li><a href="#consultation-rules" data-section="consultation-rules"><span class="nav-icon">🕊</span><span class="nav-dot"></span>Consultation Rules</a></li>
+
+          <li class="sidebar-group-label">Privacy</li>
+          <li><a href="#privacy-policy" data-section="privacy-policy"><span class="nav-icon">🔒</span><span class="nav-dot"></span>Privacy Policy</a></li>
+          <li><a href="#data-collection" data-section="data-collection"><span class="nav-icon">📊</span><span class="nav-dot"></span>Data Collection</a></li>
+          <li><a href="#payment-security" data-section="payment-security"><span class="nav-icon">🛡</span><span class="nav-dot"></span>Payment Security</a></li>
+          <li><a href="#cookies-policy" data-section="cookies-policy"><span class="nav-icon">🍪</span><span class="nav-dot"></span>Cookies Policy</a></li>
+
+          <li class="sidebar-group-label">Support</li>
+          <li><a href="#contact-support" data-section="contact-support"><span class="nav-icon">✉</span><span class="nav-dot"></span>Contact & Support</a></li>
+        </ul>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ══════════ CONTENT ══════════ -->
+  <main class="content-area" id="mainContent">
+
+    <!-- INTRODUCTION -->
+    <section class="legal-section" id="introduction">
+      <div class="section-heading">
+        <div class="section-heading-icon">✦</div>
+        <div>
+          <span class="section-num">Section 01</span>
+          <h2>Introduction</h2>
+        </div>
+      </div>
+
+      <div class="glass-card card-gold">
+        <h3><span class="card-icon">🕊</span> Welcome to CLJN</h3>
+        <p>Welcome to CLJN Digital Ministry Platform ("CLJN," "we," "our," or "us"). These Terms of Service and Privacy Policy constitute a legally binding agreement between you ("User," "Member," or "you") and CLJN Inc., governing your access to and use of our digital ministry platform, services, and all related applications.</p>
+        <p>By accessing, registering for, or using any feature of the CLJN platform — including our web application, mobile app, minister consultation services, live sessions, digital content, and community features — you acknowledge that you have read, understood, and agree to be bound by these terms in their entirety.</p>
+        <p>CLJN is a faith-based SaaS platform designed to connect individuals seeking spiritual guidance with verified and certified digital ministers. Our mission is to bridge the spiritual and digital worlds in a manner that honors the sanctity of faith while upholding the highest standards of user privacy, security, and trust.</p>
+      </div>
+
+      <div class="alert-box info">
+        <span class="alert-icon">ℹ️</span>
+        <div class="alert-text"><strong>Please note:</strong> These terms are subject to periodic updates. Continued use of the platform following any amendments constitutes acceptance of the revised terms. We will notify you via email and in-app notification of any material changes at least 14 days prior to their effective date.</div>
+      </div>
+    </section>
+
+    <!-- TERMS OF SERVICE -->
+    <section class="legal-section" id="terms-of-service">
+      <div class="section-heading">
+        <div class="section-heading-icon">📜</div>
+        <div>
+          <span class="section-num">Section 02</span>
+          <h2>Terms of Service</h2>
+        </div>
+      </div>
+
+      <div class="glass-card">
+        <h3><span class="card-icon">🏛</span> Platform Usage Agreement</h3>
+        <p>Access to the CLJN platform is granted solely for lawful, personal, and non-commercial purposes unless you hold an active Professional Minister Subscription. You agree not to use the platform in any manner that violates applicable laws, infringes upon the rights of others, or disrupts the spiritual integrity of the ministry community.</p>
+        <ul>
+          <li>You must be at least 18 years of age to register for a CLJN account. Minors under 18 may access certain features only with verified parental or guardian consent and supervision.</li>
+          <li>You agree to provide accurate, current, and complete information during the registration process and to maintain the accuracy of your profile at all times.</li>
+          <li>You are solely responsible for maintaining the confidentiality of your account credentials and for all activity that occurs under your account.</li>
+          <li>Multiple accounts for the same individual are strictly prohibited. Detected duplicate accounts will be subject to immediate suspension without refund.</li>
+          <li>Commercial use of minister profiles, session recordings, or community content without explicit written authorization from CLJN is expressly forbidden.</li>
+        </ul>
+      </div>
+
+      <div class="glass-card">
+        <h3><span class="card-icon">👥</span> Minister Responsibilities & Verification</h3>
+        <p>All ministers listed on the CLJN platform undergo a comprehensive verification process, including credential validation, background review, and community endorsement. However, CLJN does not guarantee, warrant, or represent the accuracy, completeness, or theological correctness of any minister's teachings or guidance.</p>
+        <ul>
+          <li>Ministers must maintain current ordained status or recognized ministry credentials throughout their active listing period.</li>
+          <li>Ministers are prohibited from soliciting personal relationships, financial contributions outside the platform, or any form of coercive spiritual influence.</li>
+          <li>All consultation sessions conducted through CLJN are governed by our Community Code of Conduct and Ministry Ethics Charter.</li>
+          <li>Ministers found in violation of platform policies face immediate account termination, forfeiture of pending payouts, and potential referral to relevant ecclesiastical authorities.</li>
+        </ul>
+      </div>
+
+      <div class="glass-card">
+        <h3><span class="card-icon">🏛</span> Community Rules & Standards</h3>
+        <ul>
+          <li>Respectful, faith-affirming discourse is required in all community spaces, live sessions, and messaging features.</li>
+          <li>Hate speech, discrimination based on denomination, faith tradition, race, gender, sexual orientation, or nationality is strictly prohibited.</li>
+          <li>Users may not share, reproduce, or distribute any session content, minister teachings, or platform materials without explicit written consent.</li>
+          <li>Automated scraping, data harvesting, or any unauthorized data extraction from the platform is forbidden and may result in civil and criminal liability.</li>
+        </ul>
+      </div>
+
+      <div class="glass-card">
+        <h3><span class="card-icon">⚖</span> Content Ownership & Intellectual Property</h3>
+        <p>All content created, uploaded, or shared by users on CLJN ("User Content") remains the intellectual property of the respective creator. By posting User Content, you grant CLJN a non-exclusive, worldwide, royalty-free license to display, distribute, and promote your content solely within the platform for service delivery purposes.</p>
+        <p>CLJN retains full ownership of its platform interface, branding, proprietary algorithms, minister matching systems, and all documentation. Any unauthorized reproduction or distribution of CLJN's intellectual property will be prosecuted to the fullest extent permitted by law.</p>
+      </div>
+
+      <div class="alert-box warning">
+        <span class="alert-icon">⚠️</span>
+        <div class="alert-text"><strong>Account Suspension Policy:</strong> CLJN reserves the right to suspend, restrict, or terminate any account at its sole discretion if the user is found to be in violation of these Terms of Service, engaging in fraudulent activity, or creating an unsafe environment for other platform members.</div>
+      </div>
+    </section>
+
+    <!-- USER RESPONSIBILITIES -->
+    <section class="legal-section" id="user-responsibilities">
+      <div class="section-heading">
+        <div class="section-heading-icon">👤</div>
+        <div>
+          <span class="section-num">Section 03</span>
+          <h2>User Responsibilities</h2>
+        </div>
+      </div>
+
+      <div class="glass-card">
+        <h3><span class="card-icon">✅</span> Your Obligations as a Member</h3>
+        <p>As a member of the CLJN community, you carry both legal and ethical responsibilities to uphold the sanctity and safety of this sacred digital space. Your actions on the platform impact thousands of individuals seeking genuine spiritual connection and guidance.</p>
+        <ul>
+          <li>Maintain respectful, constructive communication in all interactions with ministers, fellow members, and support staff.</li>
+          <li>Use consultation sessions exclusively for lawful spiritual guidance and refrain from using sessions as a substitute for emergency medical, legal, or psychological services.</li>
+          <li>Report any suspicious activity, inappropriate conduct, or suspected fraud immediately via our Trust & Safety portal.</li>
+          <li>Comply with all applicable local, state, national, and international laws while using the platform.</li>
+          <li>Protect the privacy of ministers and fellow community members, including refraining from sharing identifying information without explicit consent.</li>
+        </ul>
+      </div>
+
+      <div class="policy-highlight">
+        <div class="policy-item">
+          <div class="policy-item-icon">🔐</div>
+          <div class="policy-item-label">Account Security</div>
+          <div class="policy-item-value">Two-factor auth recommended for all accounts</div>
+        </div>
+        <div class="policy-item">
+          <div class="policy-item-icon">📵</div>
+          <div class="policy-item-label">No Recording</div>
+          <div class="policy-item-value">Sessions may not be recorded without consent</div>
+        </div>
+        <div class="policy-item">
+          <div class="policy-item-icon">🚫</div>
+          <div class="policy-item-label">No Solicitation</div>
+          <div class="policy-item-value">Unsolicited commercial messages are prohibited</div>
+        </div>
+        <div class="policy-item">
+          <div class="policy-item-icon">🤝</div>
+          <div class="policy-item-label">Good Faith</div>
+          <div class="policy-item-value">All interactions must be conducted in good faith</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SUBSCRIPTION POLICY -->
+    <section class="legal-section" id="subscription-policy">
+      <div class="section-heading">
+        <div class="section-heading-icon">💳</div>
+        <div>
+          <span class="section-num">Section 04</span>
+          <h2>Subscription Policy</h2>
+        </div>
+      </div>
+
+      <div class="policy-highlight">
+        <div class="policy-item">
+          <div class="policy-item-icon">🌱</div>
+          <div class="policy-item-label">Seeker Plan</div>
+          <div class="policy-item-value">$9.99 / month — 2 sessions included</div>
+        </div>
+        <div class="policy-item">
+          <div class="policy-item-icon">✨</div>
+          <div class="policy-item-label">Blessed Plan</div>
+          <div class="policy-item-value">$29.99 / month — 8 sessions included</div>
+        </div>
+        <div class="policy-item">
+          <div class="policy-item-icon">👑</div>
+          <div class="policy-item-label">CLJN Plan</div>
+          <div class="policy-item-value">$79.99 / month — Unlimited sessions</div>
+        </div>
+        <div class="policy-item">
+          <div class="policy-item-icon">⛪</div>
+          <div class="policy-item-label">Ministry Plan</div>
+          <div class="policy-item-value">$199.99 / month — Full minister access</div>
+        </div>
+      </div>
+
+      <div class="glass-card">
+        <h3><span class="card-icon">📅</span> Billing Cycle & Renewal</h3>
+        <p>All CLJN subscription plans are billed on a recurring monthly or annual basis, beginning on the date of initial purchase. Subscriptions automatically renew at the end of each billing period unless cancelled at least 24 hours before the renewal date.</p>
+        <ul>
+          <li>Billing occurs on the same calendar date each month or year corresponding to your original subscription activation date.</li>
+          <li>Annual subscriptions are billed in full at the start of each annual term and are not prorated for cancellations made mid-term.</li>
+          <li>Users will receive an email reminder 7 days before each renewal, detailing the upcoming charge amount and renewal date.</li>
+          <li>Price changes will be communicated with a minimum of 30 days' advance notice before taking effect on your account.</li>
+        </ul>
+      </div>
+
+      <div class="glass-card card-info">
+        <h3><span class="card-icon">⬆</span> Plan Upgrades & Downgrades</h3>
+        <p>You may upgrade your subscription plan at any time, with changes taking effect immediately. The cost difference will be prorated for the remaining billing period. Downgrading your plan takes effect at the start of your next billing cycle, and no refund is issued for the difference in the current period.</p>
+        <p>Minister subscription accounts may be upgraded to include additional consultation slots, premium placement in the minister directory, and advanced analytics dashboards at any time without disruption to existing session bookings.</p>
+      </div>
+
+      <div class="alert-box info">
+        <span class="alert-icon">💡</span>
+        <div class="alert-text"><strong>Free Trial:</strong> New users are eligible for a 7-day free trial on Seeker and Blessed plans. Payment information is required at sign-up but will not be charged until the trial period concludes. Cancel anytime before the trial ends to avoid charges.</div>
+      </div>
+    </section>
+
+    <!-- REFUND POLICY -->
+    <section class="legal-section" id="refund-policy">
+      <div class="section-heading">
+        <div class="section-heading-icon">↩</div>
+        <div>
+          <span class="section-num">Section 05</span>
+          <h2>Refund Policy</h2>
+        </div>
+      </div>
+
+      <div class="glass-card">
+        <h3><span class="card-icon">💰</span> Subscription Refunds</h3>
+        <p>CLJN operates a fair and transparent refund policy. New subscribers who have not accessed any premium content or booked any sessions may request a full refund within 48 hours of their initial payment. After this window, refunds are issued at CLJN's sole discretion based on the circumstances presented.</p>
+        <ul>
+          <li>Refund requests must be submitted through your account settings or via billing@cljn.com within the eligible window.</li>
+          <li>Approved refunds are processed within 5–10 business days and returned to the original payment method.</li>
+          <li>Annual plan refunds are calculated on a prorated basis less any sessions used, minus a $15 administrative processing fee.</li>
+          <li>Promotional, discounted, or bundle subscription purchases are non-refundable unless required by applicable consumer protection laws in your jurisdiction.</li>
+        </ul>
+      </div>
+
+      <div class="glass-card card-warning">
+        <h3><span class="card-icon">❌</span> Session Cancellation Policy</h3>
+        <p>Individual consultation sessions may be cancelled or rescheduled without penalty up to 4 hours before the scheduled start time. Cancellations made within 4 hours of a session will forfeit the session credit. No-shows forfeit the session credit and may incur a $5 no-show fee on Pay-Per-Session bookings.</p>
+        <ul>
+          <li>Session credits expire 90 days after the billing period in which they were included.</li>
+          <li>Minister-initiated cancellations result in automatic session credit restoration and a priority rebooking slot.</li>
+          <li>Technical failures caused by platform infrastructure will be reviewed and compensated with replacement session credits within 24 hours.</li>
+        </ul>
+      </div>
+
+      <div class="alert-box danger">
+        <span class="alert-icon">🚫</span>
+        <div class="alert-text"><strong>Failed Payment Handling:</strong> If a payment fails, we will attempt to process the charge up to 3 times over a 7-day period. After the final failed attempt, your account will be suspended. Access will be restored immediately upon successful payment. We recommend keeping your payment details current to avoid service interruptions.</div>
+      </div>
+    </section>
+
+    <!-- CONSULTATION RULES -->
+    <section class="legal-section" id="consultation-rules">
+      <div class="section-heading">
+        <div class="section-heading-icon">🕊</div>
+        <div>
+          <span class="section-num">Section 06</span>
+          <h2>Consultation Rules & Disclaimer</h2>
+        </div>
+      </div>
+
+      <div class="glass-card card-warning">
+        <h3><span class="card-icon">⚠️</span> Spiritual Guidance Disclaimer</h3>
+        <p>Consultations and guidance provided by ministers on the CLJN platform are intended exclusively for spiritual, pastoral, and faith-based support. Nothing communicated during a CLJN session constitutes, or should be construed as, professional medical advice, psychological therapy, legal counsel, financial planning, or crisis intervention.</p>
+        <p>CLJN ministers are spiritual advisors, not licensed therapists, physicians, attorneys, or financial advisors. If you are experiencing a medical emergency, mental health crisis, legal matter, or financial hardship requiring professional intervention, please contact the appropriate licensed professionals and emergency services immediately.</p>
+      </div>
+
+      <div class="alert-box danger">
+        <span class="alert-icon">🆘</span>
+        <div class="alert-text"><strong>Emergency Services:</strong> If you or someone you know is in immediate danger or experiencing a mental health crisis, please contact emergency services (911 in the US) or the National Crisis Hotline (988) immediately. CLJN ministers are not equipped to provide emergency response services.</div>
+      </div>
+
+      <div class="glass-card">
+        <h3><span class="card-icon">🎙</span> Session Recording Policy</h3>
+        <p>To protect the privacy and spiritual intimacy of all consultation sessions, recording of any kind — including screen capture, audio recording, or transcription via third-party tools — is strictly prohibited without the express written consent of both the minister and CLJN.</p>
+        <ul>
+          <li>CLJN may, with user consent, record sessions for quality assurance, minister training, and platform improvement purposes.</li>
+          <li>Users who consent to session recording will be notified at the start of each recorded session and may revoke consent at any time.</li>
+          <li>Session recordings retained by CLJN are stored in encrypted format for no more than 90 days, after which they are permanently deleted.</li>
+          <li>Unauthorized recording of sessions may result in immediate account termination and potential legal action under applicable wiretapping and privacy laws.</li>
+        </ul>
+      </div>
+
+      <div class="glass-card">
+        <h3><span class="card-icon">📋</span> User Responsibility Notice</h3>
+        <p>You acknowledge that spiritual guidance is deeply personal and subjective in nature. CLJN does not guarantee any specific spiritual outcome, transformation, or result from consultations. Your spiritual journey remains your personal responsibility, and the platform's role is solely to facilitate connection with qualified spiritual advisors.</p>
+      </div>
+    </section>
+
+    <!-- PRIVACY POLICY -->
+    <section class="legal-section" id="privacy-policy">
+      <div class="section-heading">
+        <div class="section-heading-icon">🔒</div>
+        <div>
+          <span class="section-num">Section 07</span>
+          <h2>Privacy Policy</h2>
+        </div>
+      </div>
+
+      <div class="badge-row">
+        <div class="privacy-badge"><span class="badge-icon">🔐</span>End-to-End Encrypted</div>
+        <div class="privacy-badge"><span class="badge-icon">🛡</span>GDPR Compliant</div>
+        <div class="privacy-badge"><span class="badge-icon">🔏</span>CCPA Compliant</div>
+        <div class="privacy-badge"><span class="badge-icon">🏆</span>SOC 2 Type II Certified</div>
+        <div class="privacy-badge"><span class="badge-icon">✅</span>ISO 27001 Certified</div>
+        <div class="privacy-badge"><span class="badge-icon">🌐</span>Privacy Shield</div>
+      </div>
+
+      <div class="glass-card card-gold">
+        <h3><span class="card-icon">🔒</span> Our Privacy Commitment</h3>
+        <p>At CLJN, the privacy of your faith journey is sacred to us. We understand that spiritual exploration is deeply personal, and we are committed to protecting your personal information with the highest standards of data security and privacy governance.</p>
+        <p>This Privacy Policy explains what information we collect, why we collect it, how we use and protect it, and your rights regarding your personal data. We never sell your personal data to third parties, and we will never monetize your spiritual journey for advertising purposes.</p>
+      </div>
+
+      <div class="glass-card">
+        <h3><span class="card-icon">💬</span> Chat & Communication Protection</h3>
+        <p>All messages exchanged within the CLJN platform — including session chats, direct messages, and community posts — are protected by 256-bit AES encryption in transit and at rest. Chat communications are stored on geographically distributed, SOC 2 Type II certified servers with redundant failover.</p>
+        <ul>
+          <li>Direct messages between users and ministers are end-to-end encrypted and accessible only to the respective parties.</li>
+          <li>CLJN support staff may access communications solely when investigating a reported violation or safety concern, and only with documented authorization.</li>
+          <li>Chat histories may be retained for up to 12 months for dispute resolution purposes and are then permanently deleted from our systems.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- DATA COLLECTION -->
+    <section class="legal-section" id="data-collection">
+      <div class="section-heading">
+        <div class="section-heading-icon">📊</div>
+        <div>
+          <span class="section-num">Section 08</span>
+          <h2>Data Collection & Usage</h2>
+        </div>
+      </div>
+
+      <div class="glass-card">
+        <h3><span class="card-icon">📋</span> Information We Collect</h3>
+        <p>We collect information you provide directly to us, information generated through your use of the platform, and limited information from trusted third-party partners.</p>
+        <ul>
+          <li><strong style="color:var(--text-prim)">Registration Data:</strong> Name, email address, phone number, date of birth, and denomination or faith tradition preference.</li>
+          <li><strong style="color:var(--text-prim)">Profile Data:</strong> Profile photo, biography, spiritual preferences, and communication settings.</li>
+          <li><strong style="color:var(--text-prim)">Session Data:</strong> Booking history, session duration, minister ratings, and feedback forms.</li>
+          <li><strong style="color:var(--text-prim)">Usage Data:</strong> Pages visited, features used, click patterns, and time spent on the platform — collected via anonymized analytics.</li>
+          <li><strong style="color:var(--text-prim)">Device Data:</strong> IP address, browser type, operating system, and device identifiers for security and fraud prevention purposes.</li>
+        </ul>
+      </div>
+
+      <div class="glass-card card-info">
+        <h3><span class="card-icon">🎯</span> How We Use Your Information</h3>
+        <ul>
+          <li>To deliver, maintain, and improve the CLJN platform and its services.</li>
+          <li>To match users with compatible ministers based on spiritual preferences, session history, and availability.</li>
+          <li>To process payments, manage subscriptions, and prevent fraudulent transactions.</li>
+          <li>To send service updates, booking confirmations, and important policy notifications.</li>
+          <li>To comply with our legal obligations and enforce our Terms of Service.</li>
+          <li>To conduct anonymized, aggregate analytics to improve platform performance and user experience — never for individual profiling or targeted advertising.</li>
+        </ul>
+      </div>
+
+      <div class="alert-box success">
+        <span class="alert-icon">✅</span>
+        <div class="alert-text"><strong>Your Data Rights:</strong> Under GDPR, CCPA, and applicable privacy laws, you have the right to access, correct, export, or delete your personal data at any time. Submit a data request through your Account Settings or contact privacy@cljn.com. We will respond within 30 days.</div>
+      </div>
+    </section>
+
+    <!-- PAYMENT SECURITY -->
+    <section class="legal-section" id="payment-security">
+      <div class="section-heading">
+        <div class="section-heading-icon">🛡</div>
+        <div>
+          <span class="section-num">Section 09</span>
+          <h2>Payment Security</h2>
+        </div>
+      </div>
+
+      <div class="policy-highlight">
+        <div class="policy-item">
+          <div class="policy-item-icon">💳</div>
+          <div class="policy-item-label">PCI DSS</div>
+          <div class="policy-item-value">Level 1 Compliant processing</div>
+        </div>
+        <div class="policy-item">
+          <div class="policy-item-icon">🔒</div>
+          <div class="policy-item-label">SSL/TLS 1.3</div>
+          <div class="policy-item-value">All transactions encrypted</div>
+        </div>
+        <div class="policy-item">
+          <div class="policy-item-icon">🏦</div>
+          <div class="policy-item-label">Stripe Secure</div>
+          <div class="policy-item-value">Bank-grade payment processing</div>
+        </div>
+        <div class="policy-item">
+          <div class="policy-item-icon">👁</div>
+          <div class="policy-item-label">Fraud Detection</div>
+          <div class="policy-item-value">Real-time AI fraud monitoring</div>
+        </div>
+      </div>
+
+      <div class="glass-card card-success">
+        <h3><span class="card-icon">🛡</span> Encrypted Payment Processing</h3>
+        <p>CLJN partners exclusively with Stripe, a globally recognized PCI DSS Level 1 compliant payment processor, to handle all financial transactions. CLJN never stores, processes, or transmits your complete credit card number, CVV, or banking details on our own servers.</p>
+        <ul>
+          <li>All payment data is tokenized at the point of entry and transmitted directly to Stripe's secure vaults via TLS 1.3 encryption.</li>
+          <li>Stored payment methods are represented solely by secure tokens — your actual card details are never accessible to CLJN employees.</li>
+          <li>Suspicious transactions are flagged by our real-time fraud detection system powered by Stripe Radar, and potentially compromised accounts are immediately locked pending verification.</li>
+          <li>Transaction receipts and billing history are retained securely for 7 years in compliance with financial record-keeping regulations.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- COOKIES POLICY -->
+    <section class="legal-section" id="cookies-policy">
+      <div class="section-heading">
+        <div class="section-heading-icon">🍪</div>
+        <div>
+          <span class="section-num">Section 10</span>
+          <h2>Cookies Policy</h2>
+        </div>
+      </div>
+
+      <div class="glass-card">
+        <h3><span class="card-icon">🍪</span> How We Use Cookies</h3>
+        <p>CLJN uses cookies and similar tracking technologies (such as pixels, web beacons, and local storage) to enhance your platform experience, maintain session security, and analyze usage patterns. This policy explains the types of cookies we use and your options for managing them.</p>
+      </div>
+
+      <div class="policy-highlight">
+        <div class="policy-item">
+          <div class="policy-item-icon">🔑</div>
+          <div class="policy-item-label">Essential Cookies</div>
+          <div class="policy-item-value">Required for authentication and security — cannot be disabled</div>
+        </div>
+        <div class="policy-item">
+          <div class="policy-item-icon">📈</div>
+          <div class="policy-item-label">Analytics Cookies</div>
+          <div class="policy-item-value">Anonymized usage data to improve platform features</div>
+        </div>
+        <div class="policy-item">
+          <div class="policy-item-icon">⚙</div>
+          <div class="policy-item-label">Preference Cookies</div>
+          <div class="policy-item-value">Store your language, theme, and notification preferences</div>
+        </div>
+        <div class="policy-item">
+          <div class="policy-item-icon">🚫</div>
+          <div class="policy-item-label">No Ad Cookies</div>
+          <div class="policy-item-value">We do not use advertising or retargeting cookies</div>
+        </div>
+      </div>
+
+      <div class="glass-card">
+        <h3><span class="card-icon">🔧</span> Third-Party Services & Integrations</h3>
+        <p>CLJN integrates with a carefully vetted selection of third-party services to deliver platform functionality. These include Stripe (payments), SendGrid (email communications), Twilio (SMS notifications), and anonymized analytics providers. Each third-party partner is bound by data processing agreements that prohibit the use of your data for any purpose other than the delivery of their designated service.</p>
+        <ul>
+          <li>We do not share your personal data with social media platforms for advertising purposes.</li>
+          <li>All third-party integrations are audited annually for security compliance and data handling practices.</li>
+          <li>You may request a full list of our current third-party data processors by contacting privacy@cljn.com.</li>
+        </ul>
+      </div>
+
+      <div class="alert-box info">
+        <span class="alert-icon">🍪</span>
+        <div class="alert-text"><strong>Cookie Preferences:</strong> You can manage your cookie preferences at any time through your Account Settings → Privacy Controls, or via your browser settings. Note that disabling non-essential cookies will not affect your access to core platform features.</div>
+      </div>
+    </section>
+
+    <!-- CONTACT SUPPORT -->
+    <section class="legal-section" id="contact-support">
+      <div class="section-heading">
+        <div class="section-heading-icon">✉</div>
+        <div>
+          <span class="section-num">Section 11</span>
+          <h2>Contact & Legal Support</h2>
+        </div>
+      </div>
+
+      <div class="contact-cards">
+        <div class="contact-card">
+          <div class="contact-card-icon">⚖</div>
+          <h4>Legal Support</h4>
+          <p>For terms inquiries, legal notices, or compliance questions.</p>
+          <span class="contact-card-email">legal@cljn.com</span>
+          <a href="mailto:legal@cljn.com" class="btn-contact">✉ Contact Legal</a>
+        </div>
+
+        <div class="contact-card">
+          <div class="contact-card-icon">🔒</div>
+          <h4>Privacy Team</h4>
+          <p>Data rights requests, privacy inquiries, and GDPR/CCPA matters.</p>
+          <span class="contact-card-email">privacy@cljn.com</span>
+          <a href="mailto:privacy@cljn.com" class="btn-contact">✉ Email Privacy Team</a>
+        </div>
+
+        <div class="contact-card">
+          <div class="contact-card-icon">💳</div>
+          <h4>Billing Support</h4>
+          <p>Subscription queries, payment issues, and refund processing.</p>
+          <span class="contact-card-email">billing@cljn.com</span>
+          <a href="mailto:billing@cljn.com" class="btn-contact">✉ Billing Help</a>
+        </div>
+      </div>
+
+      <div class="glass-card">
+        <h3><span class="card-icon">🏛</span> Registered Address & Governing Law</h3>
+        <p>CLJN Inc. is incorporated in the State of Delaware, United States. These Terms of Service and Privacy Policy are governed by and construed in accordance with the laws of the State of Delaware, without regard to its conflict of law provisions.</p>
+        <p>Any disputes arising from or relating to these terms shall be resolved through binding arbitration in accordance with the American Arbitration Association's Commercial Arbitration Rules, except where prohibited by applicable law in your jurisdiction.</p>
+        <p style="color:var(--text-mute);font-size:0.85rem;margin-top:1rem;">CLJN Inc. · 1209 Orange Street, Wilmington, Delaware 19801, USA · Registered: #7482019-DC</p>
+      </div>
+    </section>
+
+    <!-- ACCEPT TERMS -->
+    <section class="legal-section" id="accept-terms">
+      <div class="accept-card">
+        <div class="accept-form" id="acceptForm">
+          <span style="font-size:2.5rem;display:block;margin-bottom:1rem">✦</span>
+          <h3>Accept Terms & Privacy Policy</h3>
+          <p>By checking the box below and clicking "I Agree," you confirm that you have read, understood, and consent to be bound by CLJN's Terms of Service, Privacy Policy, and all related policies as outlined in this document.</p>
+
+          <label class="checkbox-wrapper">
+            <input type="checkbox" id="agreeCheckbox">
+            <div class="custom-checkbox" id="customCheckbox">✓</div>
+            <label for="agreeCheckbox">I have read and agree to the <a href="terms.html">Terms of Service</a> and <a href="terms.html">Privacy Policy</a></label>
+          </label>
+
+          <div class="accept-actions">
+            <button class="btn-agree" id="agreeBtn" disabled>✦ I Agree & Accept</button>
+            <button class="btn-download">⬇ Download PDF</button>
+          </div>
+        </div>
+
+        <div class="accept-success" id="acceptSuccess">
+          <div class="success-icon">✓</div>
+          <div class="success-title">Terms Accepted Successfully</div>
+          <div class="success-text">Your agreement has been recorded. Welcome to the CLJN community.</div>
+          <a href="#" class="btn-hero-gold" style="margin-top:0.5rem">✦ Continue to Dashboard</a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<!-- ═══════════════════════════ CTA ═══════════════════════════ -->
+<section class="cta-section">
+  <div class="cta-inner">
+    <span class="cta-icon">🕊</span>
+    <h2 class="cta-title">Need Help?</h2>
+    <p class="cta-sub">Our dedicated support team is available 7 days a week to assist with any questions about our terms, privacy practices, or platform features.</p>
+    <div class="cta-actions">
+      <a href="#contact-support" class="btn-hero-gold">✉ Contact Support</a>
+      <a href="#" class="btn-hero-ghost">👥 Browse Ministers</a>
+      <a href="#" class="btn-hero-ghost" style="border-color:rgba(52,211,153,0.35);color:#6ee7b7">🚀 Go to Dashboard</a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════ FOOTER ═══════════════════════════ -->
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-top">
+      <!-- Brand col -->
+      <div class="footer-brand-col">
+        <a href="index.html" class="footer-logo">
+          <div class="footer-logo-icon">✦</div>
+          <span class="footer-logo-name">CLJN</span>
+        </a>
+        <p class="footer-tagline">Bridging faith and the digital world. Connecting souls with certified ministers for genuine spiritual guidance, prayer, and community.</p>
+        <div class="footer-contact-info">
+          <a href="mailto:hello@cljn.com">✉ hello@cljn.com</a>
+          <a href="tel:+18005551234">📞 +1 (800) 555-1234</a>
+          <a href="#">📍 Wilmington, Delaware, USA</a>
+        </div>
+        <div class="social-row">
+          <a href="#" class="social-btn">𝕏</a>
+          <a href="#" class="social-btn">in</a>
+          <a href="#" class="social-btn">f</a>
+          <a href="#" class="social-btn">▶</a>
+          <a href="#" class="social-btn">📷</a>
+        </div>
+      </div>
+
+      <!-- Platform -->
+      <div>
+        <div class="footer-col-title">Platform</div>
+        <ul class="footer-links">
+          <li><a href="#">✦ Browse Ministers</a></li>
+          <li><a href="#">✦ Book a Session</a></li>
+          <li><a href="#">✦ Community</a></li>
+          <li><a href="#">✦ Live Events</a></li>
+          <li><a href="#">✦ Devotionals</a></li>
+        </ul>
+      </div>
+
+      <!-- Company -->
+      <div>
+        <div class="footer-col-title">Company</div>
+        <ul class="footer-links">
+          <li><a href="#">✦ About Us</a></li>
+          <li><a href="#">✦ Our Mission</a></li>
+          <li><a href="#">✦ Pricing</a></li>
+          <li><a href="#">✦ Careers</a></li>
+          <li><a href="#">✦ Press Kit</a></li>
+        </ul>
+      </div>
+
+      <!-- Support -->
+      <div>
+        <div class="footer-col-title">Support</div>
+        <ul class="footer-links">
+          <li><a href="#">✦ Help Center</a></li>
+          <li><a href="#">✦ Contact Us</a></li>
+          <li><a href="#">✦ Report an Issue</a></li>
+          <li><a href="#">✦ Minister Portal</a></li>
+          <li><a href="#">✦ Accessibility</a></li>
+        </ul>
+      </div>
+
+      <!-- Newsletter -->
+      <div>
+        <div class="footer-col-title">Newsletter</div>
+        <p style="color:var(--text-mute);font-size:0.86rem;margin-bottom:0.85rem;line-height:1.6">Receive weekly spiritual insights, platform updates, and featured minister spotlights.</p>
+        <div class="newsletter-form">
+          <input class="newsletter-input" type="email" placeholder="Your email address">
+          <button class="newsletter-submit">Subscribe</button>
+        </div>
+        <p style="color:var(--text-mute);font-size:0.75rem;margin-top:0.6rem">By subscribing, you agree to our Privacy Policy. Unsubscribe anytime.</p>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <div class="footer-copy">
+        © 2025 <a href="#">CLJN Inc.</a> All rights reserved. Registered in Delaware, USA.
+      </div>
+      <div class="footer-legal-links">
+        <a href="terms.html">Terms of Service</a>
+        <a href="terms.html">Privacy Policy</a>
+        <a href="#">Cookie Policy</a>
+        <a href="#">Accessibility</a>
+        <a href="#">Sitemap</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- ═══════════════════════════ SCRIPTS ═══════════════════════════ -->
+<script>
+/* ── Navbar scroll ── */
+const navbar = document.getElementById('navbar');
+window.addEventListener('scroll', () => {
+  navbar.classList.toggle('scrolled', window.scrollY > 40);
+});
+
+/* ── Hamburger / Mobile Menu ── */
+const hamburger = document.getElementById('hamburger');
+const mobileMenu = document.getElementById('mobileMenu');
+hamburger.addEventListener('click', () => {
+  hamburger.classList.toggle('open');
+  mobileMenu.classList.toggle('open');
+});
+
+/* ── Sidebar Toggle (mobile) ── */
+const sidebarToggle = document.getElementById('sidebarToggle');
+const sidebar = document.getElementById('sidebar');
+if (sidebarToggle) {
+  sidebarToggle.addEventListener('click', () => {
+    sidebar.classList.toggle('mobile-open');
+    sidebarToggle.classList.toggle('open');
+  });
+}
+
+/* ── Reading Progress ── */
+const progressBar = document.getElementById('readingProgress');
+window.addEventListener('scroll', () => {
+  const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+  const progress = (window.scrollY / docHeight) * 100;
+  progressBar.style.width = progress + '%';
+});
+
+/* ── Active sidebar link on scroll ── */
+const sections = document.querySelectorAll('.legal-section[id]');
+const navLinks = document.querySelectorAll('#sidebarNav a');
+
+function updateActiveLink() {
+  const scrollPos = window.scrollY + 120;
+  let currentSection = '';
+
+  sections.forEach(sec => {
+    if (sec.offsetTop <= scrollPos) {
+      currentSection = sec.id;
+    }
+  });
+
+  navLinks.forEach(link => {
+    link.classList.remove('active');
+    if (link.getAttribute('data-section') === currentSection) {
+      link.classList.add('active');
+    }
+  });
+}
+
+window.addEventListener('scroll', updateActiveLink);
+updateActiveLink();
+
+/* ── Smooth scroll for sidebar links ── */
+navLinks.forEach(link => {
+  link.addEventListener('click', e => {
+    e.preventDefault();
+    const target = document.querySelector(link.getAttribute('href'));
+    if (target) {
+      window.scrollTo({ top: target.offsetTop - 96, behavior: 'smooth' });
+      // Close mobile sidebar after click
+      sidebar.classList.remove('mobile-open');
+      sidebarToggle && sidebarToggle.classList.remove('open');
+    }
+  });
+});
+
+/* ── Hero CTA smooth scroll ── */
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  if (!a.closest('#sidebarNav')) {
+    a.addEventListener('click', e => {
+      const target = document.querySelector(a.getAttribute('href'));
+      if (target) {
+        e.preventDefault();
+        window.scrollTo({ top: target.offsetTop - 96, behavior: 'smooth' });
+      }
+    });
+  }
+});
+
+/* ── Accept Terms checkbox ── */
+const agreeCheckbox = document.getElementById('agreeCheckbox');
+const agreeBtn = document.getElementById('agreeBtn');
+const customCheckbox = document.getElementById('customCheckbox');
+const acceptForm = document.getElementById('acceptForm');
+const acceptSuccess = document.getElementById('acceptSuccess');
+
+agreeCheckbox.addEventListener('change', () => {
+  agreeBtn.disabled = !agreeCheckbox.checked;
+});
+
+// Also allow clicking the custom checkbox
+customCheckbox.addEventListener('click', () => {
+  agreeCheckbox.checked = !agreeCheckbox.checked;
+  agreeCheckbox.dispatchEvent(new Event('change'));
+});
+
+agreeBtn.addEventListener('click', () => {
+  acceptForm.classList.add('hide');
+  acceptSuccess.classList.add('show');
+});
+
+/* ── Hero Particle Canvas ── */
+const canvas = document.getElementById('heroCanvas');
+const ctx = canvas.getContext('2d');
+
+function resize() {
+  canvas.width = canvas.offsetWidth;
+  canvas.height = canvas.offsetHeight;
+}
+resize();
+window.addEventListener('resize', resize);
+
+const particles = Array.from({length: 55}, () => ({
+  x: Math.random() * canvas.width,
+  y: Math.random() * canvas.height,
+  r: Math.random() * 2.5 + 0.4,
+  vx: (Math.random() - 0.5) * 0.4,
+  vy: (Math.random() - 0.5) * 0.4,
+  alpha: Math.random() * 0.6 + 0.2,
+  pulse: Math.random() * Math.PI * 2,
+  pulseSpeed: 0.01 + Math.random() * 0.02,
+  type: Math.random() < 0.2 ? 'orb' : 'dot',
+}));
+
+function drawParticles() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  particles.forEach(p => {
+    p.pulse += p.pulseSpeed;
+    const alpha = p.alpha * (0.6 + 0.4 * Math.sin(p.pulse));
+
+    if (p.type === 'orb') {
+      const grad = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r * 6);
+      grad.addColorStop(0, `rgba(201,168,76,${alpha * 0.5})`);
+      grad.addColorStop(1, 'rgba(201,168,76,0)');
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r * 6, 0, Math.PI * 2);
+      ctx.fillStyle = grad;
+      ctx.fill();
+    }
+
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(201,168,76,${alpha})`;
+    ctx.fill();
+
+    p.x += p.vx;
+    p.y += p.vy;
+    if (p.x < 0) p.x = canvas.width;
+    if (p.x > canvas.width) p.x = 0;
+    if (p.y < 0) p.y = canvas.height;
+    if (p.y > canvas.height) p.y = 0;
+  });
+
+  requestAnimationFrame(drawParticles);
+}
+drawParticles();
+
+/* ── Intersection Observer for card animations ── */
+const cards = document.querySelectorAll('.glass-card, .contact-card, .policy-item');
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach((entry, i) => {
+    if (entry.isIntersecting) {
+      setTimeout(() => {
+        entry.target.style.opacity = '1';
+        entry.target.style.transform = 'translateY(0)';
+      }, i * 60);
+      observer.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.1 });
+
+cards.forEach(card => {
+  card.style.opacity = '0';
+  card.style.transform = 'translateY(20px)';
+  card.style.transition = 'opacity 0.5s ease, transform 0.5s ease, border-color 0.35s ease, box-shadow 0.35s ease';
+  observer.observe(card);
+});
+</script>
+</body>
+</html>

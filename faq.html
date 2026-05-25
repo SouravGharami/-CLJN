@@ -1,0 +1,793 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>CLJN — FAQ & Help Center</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --navy:#050d1f;
+  --navy-mid:#091428;
+  --navy-card:#0d1c3a;
+  --royal:#1a3f8f;
+  --royal-bright:#2554c7;
+  --royal-glow:#3a6de8;
+  --gold:#c9a227;
+  --gold-light:#e8c04a;
+  --gold-pale:#f8e9b0;
+  --gold-dim:rgba(201,162,39,0.18);
+  --glass:rgba(255,255,255,0.04);
+  --glass-border:rgba(201,162,39,0.22);
+  --glass-hover:rgba(201,162,39,0.12);
+  --text:#e8eaf6;
+  --text-muted:rgba(232,234,246,0.58);
+  --text-faint:rgba(232,234,246,0.32);
+  --radius-sm:10px;
+  --radius-md:16px;
+  --radius-lg:22px;
+  --radius-xl:32px;
+}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',sans-serif;background:var(--navy);color:var(--text);min-height:100vh;overflow-x:hidden}
+
+/* ─── SCROLLBAR ─── */
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-track{background:var(--navy)}
+::-webkit-scrollbar-thumb{background:var(--royal);border-radius:3px}
+
+/* ─── CANVAS PARTICLES ─── */
+#particles-canvas{position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.55}
+
+/* ─── NAVBAR ─── */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:0 2rem;height:72px;display:flex;align-items:center;justify-content:space-between;background:rgba(5,13,31,0.82);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border-bottom:1px solid rgba(201,162,39,0.12);transition:.35s}
+.nav-logo{display:flex;align-items:center;gap:11px;text-decoration:none;cursor:pointer}
+.nav-logo-icon{width:38px;height:38px;background:linear-gradient(135deg,var(--royal),var(--royal-bright));border-radius:10px;display:flex;align-items:center;justify-content:center;position:relative}
+.nav-logo-icon::after{content:'✦';font-size:17px;color:var(--gold-light)}
+.nav-logo-text{font-family:'Cinzel',serif;font-size:1.1rem;font-weight:600;color:#fff;letter-spacing:.8px;line-height:1}
+.nav-logo-sub{font-size:9px;color:var(--gold);letter-spacing:2px;text-transform:uppercase;margin-top:1px}
+.nav-links{display:flex;align-items:center;gap:.25rem}
+.nav-link{font-size:13px;font-weight:500;color:var(--text-muted);text-decoration:none;padding:8px 14px;border-radius:8px;transition:.2s;cursor:pointer;letter-spacing:.3px}
+.nav-link:hover,.nav-link.active{color:#fff;background:rgba(255,255,255,0.06)}
+.nav-link.active{color:var(--gold-light)}
+.nav-actions{display:flex;align-items:center;gap:10px}
+.btn-ghost{background:transparent;border:1px solid rgba(201,162,39,0.3);color:var(--gold-light);font-size:13px;font-weight:500;padding:8px 18px;border-radius:50px;cursor:pointer;transition:.2s;font-family:'Inter',sans-serif}
+.btn-ghost:hover{background:var(--gold-dim);border-color:var(--gold)}
+.btn-nav-cta{background:linear-gradient(135deg,var(--gold) 0%,#b8881e 100%);border:none;color:#0a0700;font-size:13px;font-weight:600;padding:8px 20px;border-radius:50px;cursor:pointer;transition:.2s;font-family:'Inter',sans-serif;letter-spacing:.3px}
+.btn-nav-cta:hover{transform:translateY(-1px);box-shadow:0 6px 22px rgba(201,162,39,0.38)}
+.hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:4px}
+.hamburger span{width:22px;height:1.5px;background:var(--text);border-radius:2px;transition:.3s}
+
+/* ─── HERO ─── */
+.hero{position:relative;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:120px 1.5rem 80px;overflow:hidden;z-index:1}
+.hero-bg{position:absolute;inset:0;background:radial-gradient(ellipse 70% 60% at 50% 30%,rgba(42,84,199,0.22) 0%,transparent 65%),radial-gradient(ellipse 40% 35% at 50% 40%,rgba(201,162,39,0.12) 0%,transparent 60%),linear-gradient(180deg,var(--navy-mid) 0%,var(--navy) 100%);z-index:-1}
+.hero-glow{position:absolute;top:18%;left:50%;transform:translateX(-50%);width:600px;height:300px;background:radial-gradient(ellipse,rgba(201,162,39,0.16) 0%,transparent 70%);pointer-events:none;animation:pulseGlow 5s ease-in-out infinite}
+@keyframes pulseGlow{0%,100%{opacity:.7;transform:translateX(-50%) scale(1)}50%{opacity:1;transform:translateX(-50%) scale(1.08)}}
+.orb{position:absolute;border-radius:50%;pointer-events:none;animation:floatOrb linear infinite}
+@keyframes floatOrb{0%{transform:translateY(0) translateX(0) scale(1);opacity:.6}33%{transform:translateY(-40px) translateX(20px) scale(1.1);opacity:.9}66%{transform:translateY(-20px) translateX(-15px) scale(.95);opacity:.5}100%{transform:translateY(0) translateX(0) scale(1);opacity:.6}}
+
+.hero-eyebrow{display:inline-flex;align-items:center;gap:8px;background:rgba(201,162,39,0.12);border:1px solid rgba(201,162,39,0.35);border-radius:50px;padding:7px 20px;font-size:11px;font-weight:600;color:var(--gold-light);letter-spacing:2.5px;text-transform:uppercase;margin-bottom:2rem;animation:fadeUp .8s ease both .1s}
+.hero-eyebrow span{width:4px;height:4px;background:var(--gold);border-radius:50%;display:inline-block}
+
+.hero h1{font-family:'Cinzel',serif;font-size:clamp(2.8rem,6vw,5.2rem);font-weight:700;line-height:1.08;margin-bottom:1.5rem;animation:fadeUp .8s ease both .25s}
+.hero h1 .line1{display:block;color:#fff;letter-spacing:.5px}
+.hero h1 .line2{display:block;background:linear-gradient(135deg,var(--gold-pale) 0%,var(--gold-light) 50%,var(--gold) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;letter-spacing:1px}
+
+.hero-sub{font-family:'Cormorant Garamond',serif;font-size:clamp(1.1rem,2vw,1.45rem);font-weight:300;font-style:italic;color:var(--text-muted);max-width:520px;line-height:1.65;margin-bottom:2.75rem;animation:fadeUp .8s ease both .4s}
+
+.search-wrap{position:relative;width:100%;max-width:540px;animation:fadeUp .8s ease both .55s}
+.search-wrap svg{position:absolute;left:18px;top:50%;transform:translateY(-50%);color:var(--gold);pointer-events:none;width:18px;height:18px}
+.search-input{width:100%;background:rgba(255,255,255,0.055);backdrop-filter:blur(12px);border:1px solid rgba(201,162,39,0.28);border-radius:50px;padding:16px 24px 16px 50px;color:#fff;font-size:15px;font-family:'Inter',sans-serif;outline:none;transition:.3s}
+.search-input::placeholder{color:rgba(255,255,255,0.35)}
+.search-input:focus{background:rgba(255,255,255,0.085);border-color:rgba(201,162,39,0.65);box-shadow:0 0 0 4px rgba(201,162,39,0.1),0 0 30px rgba(201,162,39,0.12)}
+.search-btn{position:absolute;right:7px;top:50%;transform:translateY(-50%);background:linear-gradient(135deg,var(--gold),#b8881e);border:none;color:#0a0700;font-size:12px;font-weight:700;padding:9px 20px;border-radius:50px;cursor:pointer;letter-spacing:.5px;font-family:'Inter',sans-serif;transition:.2s}
+.search-btn:hover{transform:translateY(-50%) scale(1.03)}
+
+.hero-stats{display:flex;gap:2.5rem;margin-top:3rem;animation:fadeUp .8s ease both .7s;flex-wrap:wrap;justify-content:center}
+.hstat{text-align:center}
+.hstat-n{font-family:'Cinzel',serif;font-size:1.6rem;font-weight:600;color:var(--gold-light)}
+.hstat-l{font-size:10px;color:var(--text-faint);letter-spacing:1.5px;text-transform:uppercase;margin-top:2px}
+
+/* ─── MAIN WRAP ─── */
+main{position:relative;z-index:1}
+.container{max-width:1040px;margin:0 auto;padding:0 1.5rem}
+.section{padding:5rem 0}
+.section-label{font-size:10px;font-weight:600;color:var(--gold);letter-spacing:3px;text-transform:uppercase;margin-bottom:1rem}
+.section-title{font-family:'Cinzel',serif;font-size:clamp(1.7rem,3vw,2.4rem);font-weight:600;color:#fff;margin-bottom:.6rem;line-height:1.2}
+.section-sub{font-family:'Cormorant Garamond',serif;font-size:1.15rem;font-style:italic;color:var(--text-muted);max-width:480px;line-height:1.55}
+.section-head{margin-bottom:3rem}
+.section-head.centered{text-align:center}
+.section-head.centered .section-sub{margin:0 auto}
+
+/* ─── CATEGORY CARDS ─── */
+.cat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(148px,1fr));gap:14px;margin-top:2rem}
+.cat-card{background:var(--glass);border:1px solid rgba(255,255,255,0.07);border-radius:var(--radius-md);padding:24px 18px 20px;text-align:center;cursor:pointer;transition:.25s;position:relative;overflow:hidden}
+.cat-card::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,var(--gold-dim),transparent);opacity:0;transition:.25s;border-radius:var(--radius-md)}
+.cat-card:hover,.cat-card.active{border-color:rgba(201,162,39,0.5);transform:translateY(-3px);box-shadow:0 14px 36px rgba(0,0,0,0.35)}
+.cat-card:hover::before,.cat-card.active::before{opacity:1}
+.cat-card.active{background:rgba(201,162,39,0.1);border-color:rgba(201,162,39,0.55)}
+.cat-icon{width:50px;height:50px;border-radius:14px;background:rgba(201,162,39,0.12);border:1px solid rgba(201,162,39,0.25);display:flex;align-items:center;justify-content:center;margin:0 auto 14px;font-size:22px;transition:.25s;position:relative;z-index:1}
+.cat-card:hover .cat-icon,.cat-card.active .cat-icon{background:rgba(201,162,39,0.22);border-color:rgba(201,162,39,0.5)}
+.cat-name{font-size:13px;font-weight:600;color:var(--text);letter-spacing:.3px;position:relative;z-index:1;transition:.2s}
+.cat-count{font-size:11px;color:var(--text-faint);margin-top:4px;position:relative;z-index:1}
+.cat-card:hover .cat-name,.cat-card.active .cat-name{color:var(--gold-light)}
+
+/* ─── DIVIDER ─── */
+.gold-divider{height:1px;background:linear-gradient(90deg,transparent,rgba(201,162,39,0.4),transparent);margin:0 auto;max-width:320px;margin-bottom:3.5rem}
+
+/* ─── ACCORDION ─── */
+.faq-block{margin-bottom:3.5rem}
+.faq-block-title{font-family:'Cinzel',serif;font-size:1rem;font-weight:600;color:var(--gold-light);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:1.25rem;display:flex;align-items:center;gap:12px}
+.faq-block-title::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,rgba(201,162,39,0.35),transparent)}
+
+.acc-item{background:var(--glass);border:1px solid rgba(255,255,255,0.07);border-radius:var(--radius-md);margin-bottom:10px;overflow:hidden;transition:.25s}
+.acc-item:hover{border-color:rgba(201,162,39,0.3);background:rgba(255,255,255,0.055)}
+.acc-item.open{border-color:rgba(201,162,39,0.45);background:rgba(26,63,143,0.18)}
+.acc-head{display:flex;align-items:center;gap:14px;padding:19px 20px;cursor:pointer;user-select:none}
+.acc-ico{width:40px;height:40px;border-radius:11px;background:rgba(201,162,39,0.1);border:1px solid rgba(201,162,39,0.22);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;transition:.25s}
+.acc-item.open .acc-ico{background:rgba(201,162,39,0.18);border-color:rgba(201,162,39,0.45)}
+.acc-q{flex:1;font-size:15px;font-weight:500;color:var(--text);font-family:'Inter',sans-serif;letter-spacing:.1px}
+.acc-badge{font-size:10px;font-weight:600;letter-spacing:1px;text-transform:uppercase;padding:3px 10px;border-radius:20px;background:rgba(201,162,39,0.12);color:var(--gold);border:1px solid rgba(201,162,39,0.25);flex-shrink:0;display:none}
+.acc-chev{font-size:18px;color:var(--gold);transition:transform .35s cubic-bezier(.4,0,.2,1);flex-shrink:0;font-style:normal}
+.acc-item.open .acc-chev{transform:rotate(180deg)}
+.acc-body{max-height:0;overflow:hidden;transition:max-height .4s cubic-bezier(.4,0,.2,1)}
+.acc-item.open .acc-body{max-height:500px}
+.acc-inner{padding:0 20px 22px 74px;font-size:14px;line-height:1.78;color:var(--text-muted)}
+.acc-inner p{margin-bottom:.75rem}
+.acc-inner p:last-child{margin-bottom:0}
+.acc-inner strong{color:var(--gold-light);font-weight:500}
+.acc-inner ul{list-style:none;margin-top:.5rem}
+.acc-inner ul li{padding:4px 0;padding-left:14px;position:relative;font-size:13px}
+.acc-inner ul li::before{content:'✦';position:absolute;left:0;color:var(--gold);font-size:9px;top:7px}
+.acc-tag{display:inline-block;background:rgba(201,162,39,0.12);color:var(--gold);font-size:10px;font-weight:600;padding:4px 12px;border-radius:20px;border:1px solid rgba(201,162,39,0.28);margin-top:12px;letter-spacing:.8px;text-transform:uppercase}
+
+/* ─── SUPPORT CARDS ─── */
+.support-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:18px}
+.support-card{background:var(--glass);border:1px solid rgba(255,255,255,0.08);border-radius:var(--radius-lg);padding:2rem 1.75rem;position:relative;overflow:hidden;transition:.3s;cursor:pointer}
+.support-card::after{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent);opacity:0;transition:.3s}
+.support-card:hover{transform:translateY(-5px);border-color:rgba(201,162,39,0.4);box-shadow:0 20px 50px rgba(0,0,0,0.4)}
+.support-card:hover::after{opacity:1}
+.sc-icon{width:54px;height:54px;border-radius:15px;display:flex;align-items:center;justify-content:center;font-size:24px;margin-bottom:1.25rem;border:1px solid;transition:.3s}
+.sc-icon.blue{background:rgba(42,84,199,0.2);border-color:rgba(42,84,199,0.35);color:#7ba8f0}
+.sc-icon.gold{background:rgba(201,162,39,0.15);border-color:rgba(201,162,39,0.35);color:var(--gold-light)}
+.sc-icon.green{background:rgba(22,120,70,0.2);border-color:rgba(34,180,110,0.3);color:#5fcf9a}
+.sc-icon.purple{background:rgba(120,50,200,0.18);border-color:rgba(140,80,220,0.3);color:#b98ff8}
+.support-card:hover .sc-icon{transform:scale(1.05)}
+.sc-title{font-family:'Cinzel',serif;font-size:1.05rem;font-weight:600;color:#fff;margin-bottom:.5rem;letter-spacing:.4px}
+.sc-desc{font-size:13px;color:var(--text-muted);line-height:1.65;margin-bottom:1.25rem}
+.sc-badge{font-size:11px;color:var(--text-faint);display:flex;align-items:center;gap:6px;margin-bottom:1.25rem}
+.sc-badge span{width:7px;height:7px;border-radius:50%;display:inline-block}
+.sc-badge span.online{background:#3fcf78;box-shadow:0 0 8px rgba(63,207,120,.6)}
+.sc-badge span.email-ico{background:#7ba8f0}
+.sc-badge span.comm-ico{background:#b98ff8}
+.sc-link{font-size:12px;color:var(--gold);font-weight:600;letter-spacing:.8px;text-transform:uppercase;display:flex;align-items:center;gap:6px;transition:.2s}
+.sc-link:hover{gap:10px;color:var(--gold-light)}
+
+/* ─── CTA BAND ─── */
+.cta-band{background:linear-gradient(135deg,rgba(26,63,143,0.55) 0%,rgba(9,20,40,0.8) 100%);border:1px solid rgba(201,162,39,0.25);border-radius:var(--radius-xl);padding:3.5rem 2.5rem;text-align:center;position:relative;overflow:hidden}
+.cta-band::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 50% 80% at 50% 0%,rgba(201,162,39,0.1),transparent)}
+.cta-band h2{font-family:'Cinzel',serif;font-size:clamp(1.6rem,3vw,2.2rem);font-weight:700;color:#fff;margin-bottom:.75rem;position:relative;z-index:1}
+.cta-band h2 em{font-style:normal;background:linear-gradient(135deg,var(--gold-pale),var(--gold-light));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.cta-band p{font-family:'Cormorant Garamond',serif;font-size:1.2rem;font-style:italic;color:var(--text-muted);margin-bottom:2rem;position:relative;z-index:1}
+.cta-buttons{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;position:relative;z-index:1}
+.btn-gold{background:linear-gradient(135deg,var(--gold) 0%,#b8881e 100%);border:none;color:#0a0700;font-size:14px;font-weight:700;padding:14px 32px;border-radius:50px;cursor:pointer;display:inline-flex;align-items:center;gap:8px;transition:.25s;font-family:'Inter',sans-serif;letter-spacing:.4px}
+.btn-gold:hover{transform:translateY(-3px);box-shadow:0 12px 32px rgba(201,162,39,0.45)}
+.btn-outline-gold{background:transparent;border:1px solid rgba(201,162,39,0.45);color:var(--gold-light);font-size:14px;font-weight:600;padding:14px 32px;border-radius:50px;cursor:pointer;display:inline-flex;align-items:center;gap:8px;transition:.25s;font-family:'Inter',sans-serif;letter-spacing:.4px}
+.btn-outline-gold:hover{background:rgba(201,162,39,0.12);border-color:var(--gold);transform:translateY(-3px)}
+.btn-outline-white{background:transparent;border:1px solid rgba(255,255,255,0.2);color:#fff;font-size:14px;font-weight:500;padding:14px 32px;border-radius:50px;cursor:pointer;display:inline-flex;align-items:center;gap:8px;transition:.25s;font-family:'Inter',sans-serif}
+.btn-outline-white:hover{background:rgba(255,255,255,0.07);border-color:rgba(255,255,255,0.4);transform:translateY(-3px)}
+
+/* ─── FOOTER ─── */
+footer{background:var(--navy-mid);border-top:1px solid rgba(201,162,39,0.15);position:relative;z-index:1}
+.footer-top{display:grid;grid-template-columns:2fr 1fr 1fr 1.4fr;gap:2.5rem;padding:4rem 0 3rem}
+.footer-brand .logo-wrap{display:flex;align-items:center;gap:11px;margin-bottom:1.25rem;cursor:pointer}
+.footer-brand .logo-icon{width:42px;height:42px;background:linear-gradient(135deg,var(--royal),var(--royal-bright));border-radius:11px;display:flex;align-items:center;justify-content:center}
+.footer-brand .logo-icon::after{content:'✦';font-size:18px;color:var(--gold-light)}
+.footer-brand .logo-text{font-family:'Cinzel',serif;font-size:1.1rem;font-weight:600;color:#fff;letter-spacing:.8px}
+.footer-brand .logo-sub{font-size:9px;color:var(--gold);letter-spacing:2px;text-transform:uppercase}
+.footer-brand p{font-size:13px;color:var(--text-muted);line-height:1.7;max-width:240px;margin-bottom:1.5rem}
+.social-row{display:flex;gap:10px}
+.social-btn{width:36px;height:36px;border-radius:9px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:center;font-size:15px;cursor:pointer;transition:.2s;color:var(--text-muted)}
+.social-btn:hover{background:rgba(201,162,39,0.15);border-color:rgba(201,162,39,0.4);color:var(--gold-light);transform:translateY(-2px)}
+.footer-col h5{font-family:'Cinzel',serif;font-size:.75rem;font-weight:600;color:var(--gold);letter-spacing:2px;text-transform:uppercase;margin-bottom:1.25rem}
+.footer-col ul{list-style:none}
+.footer-col ul li{margin-bottom:.65rem}
+.footer-col ul li a{font-size:13px;color:var(--text-muted);text-decoration:none;cursor:pointer;transition:.2s}
+.footer-col ul li a:hover{color:#fff}
+.newsletter-wrap{display:flex;flex-direction:column;gap:.75rem}
+.newsletter-wrap label{font-size:13px;color:var(--text-muted)}
+.nl-form{display:flex;gap:8px}
+.nl-input{flex:1;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:10px 14px;color:#fff;font-size:13px;font-family:'Inter',sans-serif;outline:none;transition:.2s;min-width:0}
+.nl-input::placeholder{color:rgba(255,255,255,0.3)}
+.nl-input:focus{border-color:rgba(201,162,39,0.5);background:rgba(255,255,255,0.08)}
+.nl-btn{background:linear-gradient(135deg,var(--gold),#b8881e);border:none;color:#0a0700;font-size:12px;font-weight:700;padding:10px 16px;border-radius:8px;cursor:pointer;font-family:'Inter',sans-serif;transition:.2s;white-space:nowrap}
+.nl-btn:hover{transform:translateY(-1px)}
+.contact-item{display:flex;align-items:flex-start;gap:10px;margin-bottom:.85rem;font-size:12.5px;color:var(--text-muted)}
+.contact-icon{width:28px;height:28px;border-radius:7px;background:rgba(201,162,39,0.1);display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;margin-top:-1px}
+.footer-bottom{border-top:1px solid rgba(255,255,255,0.06);padding:1.25rem 0;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.75rem}
+.footer-copy{font-size:11.5px;color:var(--text-faint)}
+.footer-copy span{color:var(--gold)}
+.footer-bottom-links{display:flex;gap:1.5rem;flex-wrap:wrap}
+.footer-bottom-links a{font-size:11px;color:var(--text-faint);cursor:pointer;text-decoration:none;transition:.2s}
+.footer-bottom-links a:hover{color:var(--text-muted)}
+
+/* ─── ANIMATIONS ─── */
+@keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+.fade-up{opacity:0;transform:translateY(28px);transition:opacity .7s ease,transform .7s ease}
+.fade-up.visible{opacity:1;transform:translateY(0)}
+
+/* ─── SEARCH HIGHLIGHT ─── */
+.acc-item.hidden{display:none}
+.acc-item.search-match{border-color:rgba(201,162,39,0.5)!important}
+
+/* ─── TOAST ─── */
+.toast{position:fixed;bottom:32px;left:50%;transform:translateX(-50%) translateY(20px);background:rgba(26,63,143,0.95);backdrop-filter:blur(12px);border:1px solid rgba(201,162,39,0.4);color:#fff;font-size:13.5px;padding:12px 24px;border-radius:50px;opacity:0;transition:.3s;z-index:9999;pointer-events:none;font-family:'Inter',sans-serif;white-space:nowrap}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* ─── RESPONSIVE ─── */
+@media(max-width:900px){.footer-top{grid-template-columns:1fr 1fr;gap:2rem}}
+@media(max-width:640px){
+  .nav-links,.nav-actions .btn-ghost{display:none}
+  .hamburger{display:flex}
+  .cat-grid{grid-template-columns:repeat(3,1fr)}
+  .footer-top{grid-template-columns:1fr}
+  .acc-inner{padding-left:20px}
+  .cta-band{padding:2.5rem 1.5rem}
+  .footer-bottom{flex-direction:column;text-align:center}
+  .acc-badge{display:none}
+}
+</style>
+</head>
+<body>
+<a href="index.html" style="display:inline-flex;align-items:center;gap:6px;color:var(--gold-light,#c9a227);text-decoration:none;font-size:13px;padding:8px 16px;opacity:0.85;transition:opacity .2s" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.85">← Back to Home</a>
+
+<canvas id="particles-canvas"></canvas>
+
+<!-- ════ NAVBAR ════ -->
+<nav id="navbar">
+  <a class="nav-logo" href="index.html">
+    <div class="nav-logo-icon"></div>
+    <div>
+      <div class="nav-logo-text">CLJN</div>
+      <div class="nav-logo-sub">Digital Ministry</div>
+    </div>
+  </a>
+  <div class="nav-links">
+    <a class="nav-link" href="index.html">Home</a>
+    <a class="nav-link" href="ministers.html">Ministers</a>
+    <a class="nav-link" href="pricing.html">Pricing</a>
+    <a class="nav-link active" href="faq.html">FAQ</a>
+    <a class="nav-link" onclick="toast('Opening Contact')">Contact</a>
+  </div>
+  <div class="nav-actions">
+    <button class="btn-ghost" onclick="toast('Opening Login')">Login</button>
+    <button class="btn-nav-cta" onclick="toast('Starting registration')">Register Free</button>
+  </div>
+  <div class="hamburger" onclick="toast('Menu opened')">
+    <span></span><span></span><span></span>
+  </div>
+</nav>
+
+<!-- ════ HERO ════ -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-glow"></div>
+
+  <!-- Orbs -->
+  <div class="orb" style="width:90px;height:90px;background:radial-gradient(circle,rgba(201,162,39,0.18),transparent);top:22%;left:8%;animation-duration:9s;animation-delay:0s"></div>
+  <div class="orb" style="width:55px;height:55px;background:radial-gradient(circle,rgba(42,84,199,0.25),transparent);top:60%;right:10%;animation-duration:11s;animation-delay:-3s"></div>
+  <div class="orb" style="width:70px;height:70px;background:radial-gradient(circle,rgba(201,162,39,0.13),transparent);top:35%;right:6%;animation-duration:8s;animation-delay:-5s"></div>
+  <div class="orb" style="width:40px;height:40px;background:radial-gradient(circle,rgba(120,50,200,0.18),transparent);bottom:25%;left:12%;animation-duration:13s;animation-delay:-2s"></div>
+  <div class="orb" style="width:110px;height:110px;background:radial-gradient(circle,rgba(26,63,143,0.15),transparent);bottom:20%;right:20%;animation-duration:10s;animation-delay:-7s"></div>
+
+  <div class="hero-eyebrow"><span></span>Help Center &amp; Knowledge Base<span></span></div>
+
+  <h1>
+    <span class="line1">Answers to Your</span>
+    <span class="line2">Sacred Questions</span>
+  </h1>
+
+  <p class="hero-sub">
+    Find guidance, clarity, and support for your spiritual journey through our comprehensive ministry platform.
+  </p>
+
+  <div class="search-wrap">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    <input class="search-input" type="text" id="faqSearch" placeholder="Search questions, topics, ministers…" autocomplete="off" />
+    <button class="search-btn" onclick="doSearch()">Search</button>
+  </div>
+
+  <div class="hero-stats">
+    <div class="hstat"><div class="hstat-n">240+</div><div class="hstat-l">Articles</div></div>
+    <div class="hstat"><div class="hstat-n">1,800+</div><div class="hstat-l">Ministers</div></div>
+    <div class="hstat"><div class="hstat-n">98%</div><div class="hstat-l">Satisfaction</div></div>
+    <div class="hstat"><div class="hstat-n">&lt;2 min</div><div class="hstat-l">Response</div></div>
+  </div>
+</section>
+
+<!-- ════ MAIN ════ -->
+<main>
+  <!-- CATEGORIES -->
+  <section class="section" style="padding-top:3.5rem">
+    <div class="container">
+      <div class="section-head centered fade-up">
+        <div class="section-label">Browse by topic</div>
+        <div class="section-title">What do you need help with?</div>
+        <div class="section-sub">Select a category below to filter questions relevant to your inquiry.</div>
+      </div>
+      <div class="cat-grid fade-up">
+        <div class="cat-card active" data-cat="all" onclick="filterCat(this,'all')">
+          <div class="cat-icon">🌟</div>
+          <div class="cat-name">All Topics</div>
+          <div class="cat-count">12 articles</div>
+        </div>
+        <div class="cat-card" data-cat="account" onclick="filterCat(this,'account')">
+          <div class="cat-icon">👤</div>
+          <div class="cat-name">Account</div>
+          <div class="cat-count">4 articles</div>
+        </div>
+        <div class="cat-card" data-cat="booking" onclick="filterCat(this,'booking')">
+          <div class="cat-icon">📅</div>
+          <div class="cat-name">Booking</div>
+          <div class="cat-count">5 articles</div>
+        </div>
+        <div class="cat-card" data-cat="payments" onclick="filterCat(this,'payments')">
+          <div class="cat-icon">💳</div>
+          <div class="cat-name">Payments</div>
+          <div class="cat-count">6 articles</div>
+        </div>
+        <div class="cat-card" data-cat="consultations" onclick="filterCat(this,'consultations')">
+          <div class="cat-icon">🕊️</div>
+          <div class="cat-name">Consultations</div>
+          <div class="cat-count">7 articles</div>
+        </div>
+        <div class="cat-card" data-cat="subscriptions" onclick="filterCat(this,'subscriptions')">
+          <div class="cat-icon">✨</div>
+          <div class="cat-name">Subscriptions</div>
+          <div class="cat-count">5 articles</div>
+        </div>
+        <div class="cat-card" data-cat="privacy" onclick="filterCat(this,'privacy')">
+          <div class="cat-icon">🛡️</div>
+          <div class="cat-name">Privacy</div>
+          <div class="cat-count">4 articles</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ACCORDION FAQ -->
+  <section class="section" style="padding-top:2rem">
+    <div class="container">
+      <div class="section-head fade-up">
+        <div class="section-label">Knowledge Base</div>
+        <div class="section-title">Frequently Asked Questions</div>
+        <div class="section-sub">Answers curated by our ministry support team</div>
+      </div>
+
+      <div id="faqContainer">
+
+        <!-- CONSULTATIONS -->
+        <div class="faq-block fade-up">
+          <div class="faq-block-title">🕊️ Consultations</div>
+
+          <div class="acc-item" data-cat="consultations" data-q="how consultations work spiritual sessions ministers">
+            <div class="acc-head" onclick="toggleAcc(this)">
+              <div class="acc-ico">🕊️</div>
+              <span class="acc-q">How do consultations with ministers work?</span>
+              <span class="acc-badge">Popular</span>
+              <i class="acc-chev">⌄</i>
+            </div>
+            <div class="acc-body"><div class="acc-inner">
+              <p>CLJN consultations are <strong>real-time sacred conversations</strong> between you and a verified spiritual minister. The process is simple and deeply intentional:</p>
+              <ul>
+                <li>Browse our community of 1,800+ verified ministers by specialty — prayer, counseling, deliverance, prophecy, or general spiritual guidance.</li>
+                <li>Choose a session format: <strong>Live Video</strong>, <strong>Voice Call</strong>, or <strong>Sacred Chat</strong>.</li>
+                <li>Select a time that aligns with your schedule from the minister's live calendar.</li>
+                <li>Complete a brief pre-session intention form to help your minister prepare spiritually.</li>
+                <li>Receive a secure session link via email. No downloads required — sessions run in your browser.</li>
+              </ul>
+              <p>Payments are held securely in escrow and only released to the minister after the session is marked complete to your satisfaction.</p>
+              <div><span class="acc-tag">✦ Consultations</span></div>
+            </div></div>
+          </div>
+
+          <div class="acc-item" data-cat="consultations" data-q="chat privacy encrypted secure confidential">
+            <div class="acc-head" onclick="toggleAcc(this)">
+              <div class="acc-ico">🔒</div>
+              <span class="acc-q">Are my chat consultations private and secure?</span>
+              <span class="acc-badge">Privacy</span>
+              <i class="acc-chev">⌄</i>
+            </div>
+            <div class="acc-body"><div class="acc-inner">
+              <p>Your spiritual conversations are held in <strong>complete sacred confidence</strong>. CLJN employs enterprise-grade security across every session:</p>
+              <ul>
+                <li><strong>End-to-end encryption</strong> on all chat, voice, and video sessions — not even CLJN staff can access session content.</li>
+                <li>Session transcripts are stored in your private encrypted vault, accessible only to you.</li>
+                <li>Ministers are bound by our <strong>Spiritual Confidentiality Agreement</strong> and community covenant.</li>
+                <li>You may delete session records permanently at any time from your account.</li>
+              </ul>
+              <p>We are fully <strong>GDPR and CCPA compliant</strong>. Your journey remains between you, your minister, and God.</p>
+              <div><span class="acc-tag">✦ Privacy</span></div>
+            </div></div>
+          </div>
+
+          <div class="acc-item" data-cat="consultations" data-q="minister verification verified background check">
+            <div class="acc-head" onclick="toggleAcc(this)">
+              <div class="acc-ico">✅</div>
+              <span class="acc-q">How are ministers verified on CLJN?</span>
+              <span class="acc-badge">Trust</span>
+              <i class="acc-chev">⌄</i>
+            </div>
+            <div class="acc-body"><div class="acc-inner">
+              <p>Every minister on CLJN passes our <strong>Sacred Verification Program</strong> — one of the most rigorous in the digital ministry space:</p>
+              <ul>
+                <li><strong>Credentialing check:</strong> Ordination certificates and ministerial credentials verified against issuing organizations.</li>
+                <li><strong>Identity verification:</strong> Government-issued ID confirmed via our secure KYC partner.</li>
+                <li><strong>Background screening:</strong> National criminal background check conducted.</li>
+                <li><strong>Theological assessment:</strong> Ministers complete a doctrinal alignment interview.</li>
+                <li><strong>Community review:</strong> Minimum 30-day monitored onboarding period before full listing.</li>
+              </ul>
+              <p>Verified ministers display the <strong>✦ Sacred Seal</strong> badge on their profile. We remove ministers who violate our covenant — zero tolerance for spiritual misconduct.</p>
+              <div><span class="acc-tag">✦ Ministers</span></div>
+            </div></div>
+          </div>
+        </div>
+
+        <!-- SUBSCRIPTIONS -->
+        <div class="faq-block fade-up">
+          <div class="faq-block-title">✨ Subscriptions</div>
+
+          <div class="acc-item" data-cat="subscriptions" data-q="subscription plans pricing tiers seeker devotee oracle">
+            <div class="acc-head" onclick="toggleAcc(this)">
+              <div class="acc-ico">✨</div>
+              <span class="acc-q">What subscription plans does CLJN offer?</span>
+              <span class="acc-badge">Popular</span>
+              <i class="acc-chev">⌄</i>
+            </div>
+            <div class="acc-body"><div class="acc-inner">
+              <p>CLJN offers <strong>three sacred membership tiers</strong> to meet every believer where they are:</p>
+              <ul>
+                <li><strong>Seeker</strong> (Free) — Browse minister profiles, access community prayer forums, attend one free group session per month.</li>
+                <li><strong>Devotee</strong> ($19/month) — 3 private sessions per month, session recordings saved to your vault, priority support queue, access to archived sermons and teachings.</li>
+                <li><strong>Oracle</strong> ($49/month) — Unlimited sessions, exclusive access to senior apostolic ministers, monthly group prophetic gatherings, early access to new features, and a dedicated spiritual care coordinator.</li>
+              </ul>
+              <p>Annual billing is available at a <strong>25% discount</strong>. All plans include a <strong>14-day free trial</strong> — no card required for Seeker. Devotee and Oracle include a 7-day money-back guarantee.</p>
+              <div><span class="acc-tag">✦ Subscriptions</span></div>
+            </div></div>
+          </div>
+        </div>
+
+        <!-- PAYMENTS -->
+        <div class="faq-block fade-up">
+          <div class="faq-block-title">💳 Payments & Refunds</div>
+
+          <div class="acc-item" data-cat="payments" data-q="refund cancellation policy money back">
+            <div class="acc-head" onclick="toggleAcc(this)">
+              <div class="acc-ico">💰</div>
+              <span class="acc-q">What is the refund and cancellation policy?</span>
+              <span class="acc-badge">Important</span>
+              <i class="acc-chev">⌄</i>
+            </div>
+            <div class="acc-body"><div class="acc-inner">
+              <p>We believe every sacred investment should feel risk-free. Our policy is designed to honor both your resources and the minister's time:</p>
+              <ul>
+                <li><strong>Full refund:</strong> Cancel or reschedule any session more than 24 hours before the scheduled start.</li>
+                <li><strong>50% refund or credit:</strong> Cancellations made within 24 hours of the session receive a half-refund or full credit toward a future booking.</li>
+                <li><strong>No-show policy:</strong> No-shows are non-refundable out of respect for the minister's reserved time.</li>
+                <li><strong>Technical issues:</strong> If a session is interrupted by platform issues on our end, you receive an automatic full refund within 2 business days.</li>
+                <li><strong>Subscription refunds:</strong> Pro-rated refunds available within the first 7 days of a billing cycle.</li>
+              </ul>
+              <p>Disputes are handled by our pastoral care team within <strong>48 hours</strong>. We always err on the side of grace.</p>
+              <div><span class="acc-tag">✦ Payments</span></div>
+            </div></div>
+          </div>
+
+          <div class="acc-item" data-cat="payments" data-q="payment methods accepted visa mastercard apple pay paypal">
+            <div class="acc-head" onclick="toggleAcc(this)">
+              <div class="acc-ico">💳</div>
+              <span class="acc-q">What payment methods are accepted?</span>
+              <i class="acc-chev">⌄</i>
+            </div>
+            <div class="acc-body"><div class="acc-inner">
+              <p>CLJN accepts a wide range of secure payment methods to make your experience seamless:</p>
+              <ul>
+                <li><strong>Credit &amp; Debit Cards:</strong> Visa, Mastercard, American Express, Discover</li>
+                <li><strong>Digital Wallets:</strong> Apple Pay, Google Pay, PayPal</li>
+                <li><strong>Bank Transfer:</strong> ACH direct debit (US accounts)</li>
+                <li><strong>Ministry Giving Credits:</strong> Redeemable gift codes from partner ministries</li>
+              </ul>
+              <p>All transactions are processed via <strong>Stripe</strong> — PCI-DSS Level 1 compliant. We use 256-bit SSL encryption and never store raw card details on our servers. Subscriptions auto-renew on your billing date; you'll receive a 3-day advance reminder email before each charge.</p>
+              <div><span class="acc-tag">✦ Payments</span></div>
+            </div></div>
+          </div>
+        </div>
+
+        <!-- ACCOUNT -->
+        <div class="faq-block fade-up">
+          <div class="faq-block-title">👤 Account & Privacy</div>
+
+          <div class="acc-item" data-cat="account" data-q="account settings profile update password 2fa security">
+            <div class="acc-head" onclick="toggleAcc(this)">
+              <div class="acc-ico">⚙️</div>
+              <span class="acc-q">How do I manage my account settings and profile?</span>
+              <i class="acc-chev">⌄</i>
+            </div>
+            <div class="acc-body"><div class="acc-inner">
+              <p>Your CLJN profile is your spiritual home base. Here's how to keep it aligned with your journey:</p>
+              <ul>
+                <li>Navigate to <strong>Dashboard → Profile</strong> to update your display name, profile photo, spiritual interests, and bio.</li>
+                <li>Under <strong>Settings → Security</strong>, change your password or enable <strong>Two-Factor Authentication (2FA)</strong> via authenticator app or SMS.</li>
+                <li>Adjust notification preferences — session reminders, community updates, and prophetic newsletters — under <strong>Settings → Notifications</strong>.</li>
+                <li>Set your timezone for accurate session scheduling across all global ministers.</li>
+                <li>Account deletion is available under <strong>Settings → Privacy → Close Account</strong>. Requests are processed within 30 days per GDPR requirements, with full data export available.</li>
+              </ul>
+              <div><span class="acc-tag">✦ Account</span></div>
+            </div></div>
+          </div>
+
+          <div class="acc-item" data-cat="privacy" data-q="data privacy GDPR CCPA personal information secure">
+            <div class="acc-head" onclick="toggleAcc(this)">
+              <div class="acc-ico">🛡️</div>
+              <span class="acc-q">How is my personal and spiritual data protected?</span>
+              <i class="acc-chev">⌄</i>
+            </div>
+            <div class="acc-body"><div class="acc-inner">
+              <p>CLJN treats your data as sacred. We are fully <strong>GDPR, CCPA, and HIPAA-adjacent compliant</strong>:</p>
+              <ul>
+                <li>All data encrypted in transit (TLS 1.3) and at rest (AES-256).</li>
+                <li>Session transcripts stored in your personal encrypted vault — ministers cannot re-access content post-session.</li>
+                <li>We <strong>never sell, share, or monetize</strong> your personal or spiritual data to third parties.</li>
+                <li>Request a complete data export or permanent deletion at any time from your Privacy Settings.</li>
+                <li>Third-party integrations (payment processors, email providers) are vetted against our data covenant.</li>
+              </ul>
+              <p>Our full Privacy Policy is available at <strong>cljn.com/privacy</strong>. Questions? Our Data Protection Officer can be reached at <strong>dpo@cljn.com</strong>.</p>
+              <div><span class="acc-tag">✦ Privacy</span></div>
+            </div></div>
+          </div>
+        </div>
+
+      </div><!-- end faqContainer -->
+
+      <div id="noResults" style="display:none;text-align:center;padding:3rem 0;color:var(--text-muted)">
+        <div style="font-size:2.5rem;margin-bottom:1rem">🔍</div>
+        <div style="font-family:'Cinzel',serif;font-size:1.1rem;color:#fff;margin-bottom:.5rem">No results found</div>
+        <div style="font-size:13px">Try different keywords or <a onclick="clearSearch()" style="color:var(--gold);cursor:pointer;text-decoration:underline">browse all topics</a></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SUPPORT CARDS -->
+  <section class="section" style="padding-top:1rem">
+    <div class="container">
+      <div class="section-head centered fade-up">
+        <div class="section-label">Support Channels</div>
+        <div class="section-title">We're Here for You</div>
+        <div class="section-sub">Multiple paths to the help you need, whenever you need it</div>
+      </div>
+      <div class="support-grid fade-up">
+        <div class="support-card" onclick="toast('Opening Live Chat…')">
+          <div class="sc-icon blue">💬</div>
+          <div class="sc-title">Live Chat Support</div>
+          <div class="sc-badge"><span class="online"></span> 12 agents available now</div>
+          <div class="sc-desc">Connect instantly with a member of our pastoral support team. Average first response under 2 minutes, 7 days a week.</div>
+          <button class="btn-gold" style="width:100%;justify-content:center;font-size:13px;padding:11px 20px" onclick="event.stopPropagation();toast('Starting Live Chat…')">💬 Start Live Chat</button>
+        </div>
+        <div class="support-card" onclick="toast('Opening Email Support…')">
+          <div class="sc-icon gold">✉️</div>
+          <div class="sc-title">Email Support</div>
+          <div class="sc-badge"><span class="email-ico"></span> support@cljn.com</div>
+          <div class="sc-desc">Send a detailed message to our support ministry. Our specialists respond within 4 hours during business days, often sooner.</div>
+          <button class="btn-outline-gold" style="width:100%;justify-content:center;font-size:13px;padding:11px 20px" onclick="event.stopPropagation();toast('Opening email client…')">✉️ Send Email</button>
+        </div>
+        <div class="support-card" onclick="toast('Opening Community…')">
+          <div class="sc-icon purple">🤝</div>
+          <div class="sc-title">Community Help</div>
+          <div class="sc-badge"><span class="comm-ico"></span> 48,000+ members</div>
+          <div class="sc-desc">Join our thriving prayer community. Ask questions, share testimonies, and receive support from fellow believers and ministers.</div>
+          <button class="btn-outline-white" style="width:100%;justify-content:center;font-size:13px;padding:11px 20px" onclick="event.stopPropagation();toast('Opening Community Forums…')">🤝 Visit Community</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="section">
+    <div class="container">
+      <div class="cta-band fade-up">
+        <h2>Need More <em>Spiritual Guidance?</em></h2>
+        <p>Our ministers are ready to walk with you through every season of life.</p>
+        <div class="cta-buttons">
+          <button class="btn-gold" onclick="toast('Browsing Ministers…')">🌟 Browse Ministers</button>
+          <button class="btn-outline-gold" onclick="toast('Contacting our team…')">✉️ Contact Team</button>
+          <button class="btn-outline-white" onclick="toast('Opening documentation…')">📖 View Docs</button>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- ════ FOOTER ════ -->
+<footer>
+  <div class="container">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <div class="logo-wrap" onclick="toast('CLJN Home')">
+          <div class="logo-icon"></div>
+          <div>
+            <div class="logo-text">CLJN</div>
+            <div class="nav-logo-sub" style="font-size:9px;color:var(--gold);letter-spacing:2px;text-transform:uppercase">Digital Ministry</div>
+          </div>
+        </div>
+        <p>Connecting believers with anointed ministers across the globe. Your spiritual journey, guided by verified men and women of God.</p>
+        <div class="social-row">
+          <div class="social-btn" onclick="toast('Facebook')">f</div>
+          <div class="social-btn" onclick="toast('Twitter / X')">𝕏</div>
+          <div class="social-btn" onclick="toast('Instagram')">◎</div>
+          <div class="social-btn" onclick="toast('YouTube')">▶</div>
+          <div class="social-btn" onclick="toast('Telegram')">✈</div>
+        </div>
+      </div>
+
+      <div class="footer-col">
+        <h5>Quick Links</h5>
+        <ul>
+          <li><a onclick="toast('Home')">Home</a></li>
+          <li><a onclick="toast('Browse Ministers')">Browse Ministers</a></li>
+          <li><a onclick="toast('Pricing Plans')">Pricing</a></li>
+          <li><a onclick="toast('FAQ')">FAQ Center</a></li>
+          <li><a onclick="toast('Blog')">Ministry Blog</a></li>
+          <li><a onclick="toast('About')">About Us</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h5>Legal</h5>
+        <ul>
+          <li><a onclick="toast('Privacy Policy')">Privacy Policy</a></li>
+          <li><a onclick="toast('Terms of Service')">Terms of Service</a></li>
+          <li><a onclick="toast('Cookie Policy')">Cookie Policy</a></li>
+          <li><a onclick="toast('Refund Policy')">Refund Policy</a></li>
+          <li><a onclick="toast('Minister Agreement')">Minister Agreement</a></li>
+          <li><a onclick="toast('Data Rights')">Data Rights</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h5>Newsletter</h5>
+        <div class="newsletter-wrap">
+          <label>Receive prophetic insights, updates, and ministry news.</label>
+          <div class="nl-form">
+            <input class="nl-input" type="email" placeholder="your@email.com" />
+            <button class="nl-btn" onclick="toast('Subscribed! Blessings ahead.')">Join</button>
+          </div>
+        </div>
+        <div style="margin-top:1.5rem">
+          <h5 style="margin-bottom:.85rem">Contact</h5>
+          <div class="contact-item"><div class="contact-icon">✉️</div>support@cljn.com</div>
+          <div class="contact-item"><div class="contact-icon">📞</div>+1 (800) 555-DIVINE</div>
+          <div class="contact-item"><div class="contact-icon">📍</div>701 Ministry Way, Atlanta, GA 30301</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <div class="footer-copy">© 2025 <span>CLJN</span> Digital Ministry Platform. All rights reserved. Made with ✦ and prayer.</div>
+      <div class="footer-bottom-links">
+        <a onclick="toast('Privacy Policy')">Privacy</a>
+        <a onclick="toast('Terms')">Terms</a>
+        <a onclick="toast('Cookies')">Cookies</a>
+        <a onclick="toast('Sitemap')">Sitemap</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+/* ── PARTICLES ── */
+(function(){
+  const c=document.getElementById('particles-canvas');
+  const ctx=c.getContext('2d');
+  let W,H,pts=[];
+  function resize(){W=c.width=window.innerWidth;H=c.height=window.innerHeight}
+  resize();window.addEventListener('resize',resize);
+  function mkPt(){return{x:Math.random()*W,y:Math.random()*H,r:Math.random()*1.4+.4,vx:(Math.random()-.5)*.22,vy:(Math.random()-.5)*.22,a:Math.random(),gold:Math.random()>.6}}
+  for(let i=0;i<80;i++)pts.push(mkPt());
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    pts.forEach(p=>{
+      p.x+=p.vx;p.y+=p.vy;
+      if(p.x<0)p.x=W;if(p.x>W)p.x=0;if(p.y<0)p.y=H;if(p.y>H)p.y=0;
+      ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+      ctx.fillStyle=p.gold?`rgba(201,162,39,${p.a*.5})`:`rgba(100,140,255,${p.a*.3})`;
+      ctx.fill();
+    });
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+
+/* ── NAVBAR SCROLL ── */
+window.addEventListener('scroll',function(){
+  document.getElementById('navbar').style.background=window.scrollY>40?'rgba(5,13,31,0.97)':'rgba(5,13,31,0.82)';
+});
+
+/* ── ACCORDION ── */
+function toggleAcc(head){
+  const item=head.closest('.acc-item');
+  const wasOpen=item.classList.contains('open');
+  document.querySelectorAll('.acc-item.open').forEach(x=>x.classList.remove('open'));
+  if(!wasOpen)item.classList.add('open');
+}
+
+/* ── CATEGORY FILTER ── */
+function filterCat(card,cat){
+  document.querySelectorAll('.cat-card').forEach(c=>c.classList.remove('active'));
+  card.classList.add('active');
+  document.querySelectorAll('.acc-item').forEach(item=>{
+    item.classList.remove('hidden');
+    if(cat!=='all'&&item.dataset.cat!==cat)item.classList.add('hidden');
+  });
+  document.querySelectorAll('.faq-block').forEach(blk=>{
+    const vis=[...blk.querySelectorAll('.acc-item')].some(i=>!i.classList.contains('hidden'));
+    blk.style.display=vis?'':'none';
+  });
+  checkNoResults();
+  document.getElementById('faqSearch').value='';
+}
+
+/* ── SEARCH ── */
+document.getElementById('faqSearch').addEventListener('input',function(){
+  if(!this.value.trim())return clearSearch();
+  const q=this.value.toLowerCase();
+  document.querySelectorAll('.cat-card').forEach(c=>c.classList.remove('active'));
+  document.querySelector('[data-cat="all"]').classList.add('active');
+  document.querySelectorAll('.faq-block').forEach(blk=>blk.style.display='');
+  document.querySelectorAll('.acc-item').forEach(item=>{
+    const txt=(item.dataset.q+' '+item.innerText).toLowerCase();
+    const match=txt.includes(q);
+    item.classList.toggle('hidden',!match);
+    if(match){item.classList.add('open');item.classList.add('search-match');}
+    else{item.classList.remove('search-match');}
+  });
+  document.querySelectorAll('.faq-block').forEach(blk=>{
+    const vis=[...blk.querySelectorAll('.acc-item')].some(i=>!i.classList.contains('hidden'));
+    blk.style.display=vis?'':'none';
+  });
+  checkNoResults();
+});
+function doSearch(){document.getElementById('faqSearch').dispatchEvent(new Event('input'));}
+function clearSearch(){
+  document.getElementById('faqSearch').value='';
+  document.querySelectorAll('.acc-item').forEach(i=>{i.classList.remove('hidden','open','search-match');});
+  document.querySelectorAll('.faq-block').forEach(b=>b.style.display='');
+  document.querySelectorAll('.cat-card').forEach(c=>c.classList.remove('active'));
+  document.querySelector('[data-cat="all"]').classList.add('active');
+  checkNoResults();
+}
+function checkNoResults(){
+  const any=[...document.querySelectorAll('.acc-item')].some(i=>!i.classList.contains('hidden'));
+  document.getElementById('noResults').style.display=any?'none':'block';
+}
+
+/* ── SCROLL REVEAL ── */
+const obs=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');obs.unobserve(e.target);}});
+},{threshold:.12});
+document.querySelectorAll('.fade-up').forEach(el=>obs.observe(el));
+
+/* ── TOAST ── */
+let tTimer;
+function toast(msg){
+  const el=document.getElementById('toast');
+  el.textContent=msg;el.classList.add('show');
+  clearTimeout(tTimer);tTimer=setTimeout(()=>el.classList.remove('show'),2200);
+}
+</script>
+</body>
+</html>

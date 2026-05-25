@@ -1,0 +1,2203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ministers | CLJN – Spiritual Ministry Platform</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,900;1,400;1,600&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   CSS CUSTOM PROPERTIES – ROYAL MINISTRY PALETTE
+   ============================================================ */
+:root {
+  --royal: #1a2a6c;
+  --royal-mid: #243580;
+  --royal-deep: #0f1a4a;
+  --navy: #0a0f2e;
+  --gold: #c9a84c;
+  --gold-light: #e8c96a;
+  --gold-pale: #f5e6b8;
+  --gold-dim: rgba(201,168,76,0.18);
+  --white: #ffffff;
+  --off-white: #f8f5ef;
+  --glass: rgba(255,255,255,0.07);
+  --glass-border: rgba(201,168,76,0.22);
+  --glass-card: rgba(255,255,255,0.05);
+  --text-light: rgba(255,255,255,0.85);
+  --text-muted: rgba(255,255,255,0.55);
+  --shadow-gold: 0 8px 40px rgba(201,168,76,0.18);
+  --shadow-deep: 0 20px 60px rgba(10,15,46,0.6);
+  --radius: 18px;
+  --radius-sm: 10px;
+  --radius-pill: 50px;
+  --transition: 0.35s cubic-bezier(.4,0,.2,1);
+}
+
+/* ============================================================
+   RESET + BASE
+   ============================================================ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Outfit', sans-serif;
+  background: var(--navy);
+  color: var(--white);
+  overflow-x: hidden;
+  min-height: 100vh;
+}
+a { text-decoration: none; color: inherit; }
+ul { list-style: none; }
+button { cursor: pointer; border: none; background: none; font-family: inherit; }
+input, select, textarea { font-family: inherit; }
+img { max-width: 100%; display: block; }
+
+/* ============================================================
+   ANIMATED BACKGROUND
+   ============================================================ */
+body::before {
+  content: '';
+  position: fixed; inset: 0; z-index: 0;
+  background:
+    radial-gradient(ellipse 80% 50% at 10% 0%, rgba(26,42,108,0.9) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 40% at 90% 100%, rgba(201,168,76,0.12) 0%, transparent 55%),
+    radial-gradient(ellipse 50% 60% at 50% 50%, rgba(15,26,74,0.95) 0%, transparent 80%),
+    linear-gradient(160deg, #0a0f2e 0%, #0f1a4a 40%, #0a0f2e 100%);
+  pointer-events: none;
+}
+body > * { position: relative; z-index: 1; }
+
+/* ============================================================
+   NAVBAR
+   ============================================================ */
+.navbar {
+  position: sticky; top: 0; z-index: 9999;
+  background: rgba(10,15,46,0.85);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  border-bottom: 1px solid var(--glass-border);
+  box-shadow: 0 4px 30px rgba(0,0,0,0.3);
+  transition: var(--transition);
+}
+.nav-inner {
+  max-width: 1440px; margin: 0 auto;
+  padding: 0 2rem;
+  height: 72px;
+  display: flex; align-items: center; justify-content: space-between; gap: 2rem;
+}
+.nav-logo {
+  display: flex; align-items: center; gap: 0.7rem;
+  flex-shrink: 0;
+}
+.nav-logo-icon {
+  width: 38px; height: 38px;
+  background: linear-gradient(135deg, var(--gold), var(--gold-light));
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.2rem;
+  box-shadow: 0 4px 14px rgba(201,168,76,0.4);
+}
+.nav-logo-text {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.45rem; font-weight: 700;
+  background: linear-gradient(135deg, var(--white) 40%, var(--gold));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  letter-spacing: -0.02em;
+}
+.nav-logo-sub {
+  font-size: 0.6rem; font-weight: 400; letter-spacing: 0.18em;
+  color: var(--gold); text-transform: uppercase;
+  display: block; margin-top: -2px;
+  -webkit-text-fill-color: var(--gold);
+}
+.nav-links {
+  display: flex; align-items: center; gap: 0.3rem;
+}
+.nav-links a {
+  font-size: 0.875rem; font-weight: 500; letter-spacing: 0.02em;
+  padding: 0.5rem 1rem; border-radius: var(--radius-pill);
+  color: var(--text-light);
+  transition: var(--transition);
+  position: relative;
+}
+.nav-links a:hover { color: var(--white); background: var(--glass); }
+.nav-links a.active {
+  color: var(--gold);
+  background: var(--gold-dim);
+}
+.nav-links a.active::after {
+  content: '';
+  position: absolute; bottom: -1px; left: 50%; transform: translateX(-50%);
+  width: 20px; height: 2px; border-radius: 2px;
+  background: var(--gold);
+}
+.nav-actions {
+  display: flex; align-items: center; gap: 0.7rem;
+}
+.btn-ghost {
+  padding: 0.5rem 1.2rem; border-radius: var(--radius-pill);
+  font-size: 0.875rem; font-weight: 500;
+  border: 1px solid var(--glass-border);
+  color: var(--text-light);
+  background: var(--glass);
+  transition: var(--transition);
+}
+.btn-ghost:hover { border-color: var(--gold); color: var(--gold); background: var(--gold-dim); }
+.btn-register {
+  padding: 0.55rem 1.3rem; border-radius: var(--radius-pill);
+  font-size: 0.875rem; font-weight: 600;
+  background: linear-gradient(135deg, var(--gold), var(--gold-light));
+  color: var(--navy);
+  box-shadow: 0 4px 18px rgba(201,168,76,0.35);
+  transition: var(--transition);
+}
+.btn-register:hover { transform: translateY(-1px); box-shadow: 0 6px 24px rgba(201,168,76,0.5); }
+.btn-find {
+  padding: 0.55rem 1.3rem; border-radius: var(--radius-pill);
+  font-size: 0.875rem; font-weight: 600;
+  background: linear-gradient(135deg, var(--royal-mid), var(--royal));
+  color: var(--white);
+  border: 1px solid rgba(201,168,76,0.35);
+  box-shadow: 0 4px 18px rgba(26,42,108,0.5);
+  transition: var(--transition);
+}
+.btn-find:hover { transform: translateY(-1px); border-color: var(--gold); box-shadow: var(--shadow-gold); }
+.nav-hamburger {
+  display: none; flex-direction: column; gap: 5px;
+  padding: 0.5rem; cursor: pointer;
+}
+.nav-hamburger span {
+  display: block; width: 24px; height: 2px;
+  background: var(--text-light); border-radius: 2px;
+  transition: var(--transition);
+}
+.mobile-menu {
+  display: none;
+  position: fixed; top: 72px; left: 0; right: 0;
+  background: rgba(10,15,46,0.97);
+  backdrop-filter: blur(24px);
+  border-bottom: 1px solid var(--glass-border);
+  padding: 1.5rem 2rem 2rem;
+  flex-direction: column; gap: 0.5rem;
+  z-index: 9998;
+  animation: slideDown 0.3s ease;
+}
+.mobile-menu.open { display: flex; }
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.mobile-menu a {
+  padding: 0.9rem 1rem; border-radius: var(--radius-sm);
+  font-size: 1rem; font-weight: 500; color: var(--text-light);
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+  transition: var(--transition);
+}
+.mobile-menu a:hover, .mobile-menu a.active { color: var(--gold); }
+.mobile-menu-actions {
+  display: flex; gap: 0.7rem; margin-top: 1rem; flex-wrap: wrap;
+}
+
+/* ============================================================
+   HERO
+   ============================================================ */
+.hero {
+  position: relative; overflow: hidden;
+  padding: 5rem 2rem 4rem;
+  text-align: center;
+}
+.hero::before {
+  content: '';
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse 70% 60% at 50% 0%, rgba(201,168,76,0.08) 0%, transparent 65%),
+    radial-gradient(ellipse 40% 40% at 20% 80%, rgba(26,42,108,0.6) 0%, transparent 60%);
+  pointer-events: none;
+}
+.hero-ornament {
+  position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+  width: 1px; height: 60px;
+  background: linear-gradient(to bottom, transparent, var(--gold));
+  opacity: 0.5;
+}
+.hero-inner { max-width: 800px; margin: 0 auto; position: relative; }
+.breadcrumb {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  font-size: 0.8rem; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--text-muted);
+  background: var(--glass); border: 1px solid var(--glass-border);
+  padding: 0.4rem 1rem; border-radius: var(--radius-pill);
+  margin-bottom: 2rem;
+}
+.breadcrumb a { color: var(--gold); transition: var(--transition); }
+.breadcrumb a:hover { color: var(--gold-light); }
+.breadcrumb-sep { color: var(--text-muted); }
+.hero-eyebrow {
+  font-size: 0.75rem; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--gold); margin-bottom: 1rem;
+  display: flex; align-items: center; justify-content: center; gap: 0.7rem;
+}
+.hero-eyebrow::before, .hero-eyebrow::after {
+  content: ''; display: block; width: 30px; height: 1px; background: var(--gold); opacity: 0.6;
+}
+.hero-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(2.2rem, 5vw, 3.8rem);
+  font-weight: 700; line-height: 1.15;
+  letter-spacing: -0.02em;
+  margin-bottom: 1.2rem;
+}
+.hero-title .accent {
+  background: linear-gradient(135deg, var(--gold), var(--gold-light));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  font-style: italic;
+}
+.hero-subtitle {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(1rem, 2vw, 1.25rem);
+  font-weight: 300; line-height: 1.7;
+  color: var(--text-light); max-width: 600px; margin: 0 auto 2rem;
+}
+.hero-summary {
+  display: inline-flex; align-items: center; gap: 0.6rem;
+  font-size: 0.875rem; font-weight: 500;
+  color: var(--text-muted);
+  background: var(--glass); border: 1px solid var(--glass-border);
+  padding: 0.5rem 1.2rem; border-radius: var(--radius-pill);
+}
+.hero-summary .dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--gold);
+  box-shadow: 0 0 8px var(--gold);
+  animation: pulse 2s ease-in-out infinite;
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.6; transform: scale(0.85); }
+}
+.hero-stats {
+  display: flex; justify-content: center; gap: 3rem; margin-top: 2.5rem;
+  flex-wrap: wrap;
+}
+.hero-stat { text-align: center; }
+.hero-stat-num {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.6rem; font-weight: 700;
+  background: linear-gradient(135deg, var(--gold), var(--gold-light));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+.hero-stat-label {
+  font-size: 0.75rem; color: var(--text-muted); letter-spacing: 0.06em; margin-top: 2px;
+}
+
+/* ============================================================
+   LAYOUT WRAPPER
+   ============================================================ */
+.page-layout {
+  max-width: 1440px; margin: 0 auto;
+  padding: 0 2rem 4rem;
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  gap: 2rem;
+  align-items: start;
+}
+
+/* ============================================================
+   FILTER SIDEBAR
+   ============================================================ */
+.filter-sidebar {
+  position: sticky; top: 88px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius);
+  backdrop-filter: blur(20px);
+  overflow: hidden;
+}
+.filter-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 1.2rem 1.5rem;
+  border-bottom: 1px solid var(--glass-border);
+  background: rgba(201,168,76,0.06);
+}
+.filter-title {
+  font-size: 0.8rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--gold); display: flex; align-items: center; gap: 0.5rem;
+}
+.filter-reset {
+  font-size: 0.75rem; font-weight: 600; color: var(--text-muted);
+  padding: 0.3rem 0.7rem; border-radius: var(--radius-pill);
+  border: 1px solid rgba(255,255,255,0.12);
+  transition: var(--transition);
+}
+.filter-reset:hover { color: var(--gold); border-color: var(--gold); }
+.filter-body { padding: 1.2rem 1.5rem; display: flex; flex-direction: column; gap: 1.3rem; }
+.filter-group {}
+.filter-label {
+  font-size: 0.72rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--text-muted); margin-bottom: 0.5rem; display: block;
+}
+.filter-input {
+  width: 100%; padding: 0.65rem 1rem; border-radius: var(--radius-sm);
+  background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);
+  color: var(--white); font-size: 0.875rem; outline: none;
+  transition: var(--transition);
+}
+.filter-input::placeholder { color: var(--text-muted); }
+.filter-input:focus { border-color: var(--gold); background: rgba(201,168,76,0.06); }
+.filter-select {
+  width: 100%; padding: 0.65rem 1rem; border-radius: var(--radius-sm);
+  background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);
+  color: var(--white); font-size: 0.875rem; outline: none;
+  cursor: pointer; transition: var(--transition);
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23c9a84c' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 0.9rem center;
+  background-size: 12px;
+  padding-right: 2.5rem;
+}
+.filter-select:focus { border-color: var(--gold); }
+.filter-select option { background: #0f1a4a; color: var(--white); }
+/* Range slider */
+.range-wrap { position: relative; }
+.filter-range {
+  width: 100%; -webkit-appearance: none; height: 4px;
+  border-radius: 4px; outline: none; cursor: pointer;
+  background: linear-gradient(to right, var(--gold) 0%, var(--gold) 60%, rgba(255,255,255,0.15) 60%);
+}
+.filter-range::-webkit-slider-thumb {
+  -webkit-appearance: none; width: 18px; height: 18px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--gold), var(--gold-light));
+  border: 2px solid var(--navy);
+  box-shadow: 0 2px 8px rgba(201,168,76,0.5);
+  cursor: pointer;
+}
+.range-labels { display: flex; justify-content: space-between; margin-top: 0.4rem; }
+.range-labels span { font-size: 0.72rem; color: var(--text-muted); }
+.range-value {
+  text-align: center; margin-top: 0.3rem;
+  font-size: 0.8rem; font-weight: 600; color: var(--gold);
+}
+/* Rating filter */
+.rating-options { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+.rating-chip {
+  padding: 0.35rem 0.7rem; border-radius: var(--radius-pill);
+  font-size: 0.75rem; font-weight: 600;
+  border: 1px solid rgba(255,255,255,0.1); color: var(--text-muted);
+  cursor: pointer; transition: var(--transition);
+}
+.rating-chip:hover, .rating-chip.active {
+  border-color: var(--gold); color: var(--gold); background: var(--gold-dim);
+}
+/* Toggle switches */
+.toggle-row { display: flex; align-items: center; justify-content: space-between; }
+.toggle-label { font-size: 0.82rem; color: var(--text-light); }
+.toggle-switch {
+  position: relative; width: 40px; height: 22px; cursor: pointer;
+}
+.toggle-switch input { opacity: 0; width: 0; height: 0; }
+.toggle-track {
+  position: absolute; inset: 0; border-radius: 22px;
+  background: rgba(255,255,255,0.12); transition: var(--transition);
+}
+.toggle-thumb {
+  position: absolute; top: 3px; left: 3px;
+  width: 16px; height: 16px; border-radius: 50%;
+  background: var(--text-muted); transition: var(--transition);
+}
+.toggle-switch input:checked ~ .toggle-track { background: var(--gold); }
+.toggle-switch input:checked ~ .toggle-thumb { transform: translateX(18px); background: var(--navy); }
+/* Filter divider */
+.filter-divider { height: 1px; background: var(--glass-border); margin: 0.2rem 0; }
+/* Search btn */
+.btn-search-filter {
+  width: 100%; padding: 0.8rem 1.5rem; border-radius: var(--radius-sm);
+  background: linear-gradient(135deg, var(--gold), var(--gold-light));
+  color: var(--navy); font-size: 0.9rem; font-weight: 700;
+  letter-spacing: 0.04em;
+  box-shadow: 0 6px 20px rgba(201,168,76,0.35);
+  transition: var(--transition);
+}
+.btn-search-filter:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(201,168,76,0.5); }
+
+/* Active filters bar */
+.active-filters {
+  display: flex; flex-wrap: wrap; gap: 0.4rem; padding: 1rem 1.5rem;
+  border-top: 1px solid var(--glass-border);
+}
+.active-filter-tag {
+  display: flex; align-items: center; gap: 0.4rem;
+  padding: 0.3rem 0.7rem; border-radius: var(--radius-pill);
+  font-size: 0.72rem; font-weight: 600; color: var(--gold);
+  background: var(--gold-dim); border: 1px solid rgba(201,168,76,0.3);
+}
+.active-filter-tag button { color: var(--gold); font-size: 0.85rem; transition: var(--transition); }
+.active-filter-tag button:hover { color: var(--white); }
+
+/* ============================================================
+   MAIN CONTENT
+   ============================================================ */
+.main-content {}
+.content-toolbar {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 1.5rem; gap: 1rem; flex-wrap: wrap;
+}
+.results-count {
+  font-size: 0.875rem; color: var(--text-muted);
+}
+.results-count strong { color: var(--white); font-weight: 600; }
+.toolbar-right { display: flex; align-items: center; gap: 0.7rem; }
+.toolbar-select {
+  padding: 0.5rem 2.2rem 0.5rem 0.9rem; border-radius: var(--radius-sm);
+  background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);
+  color: var(--white); font-size: 0.8rem; font-weight: 500; outline: none;
+  cursor: pointer; appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23c9a84c' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 0.7rem center;
+}
+.toolbar-select option { background: #0f1a4a; }
+.view-toggle { display: flex; gap: 0.3rem; }
+.view-btn {
+  padding: 0.4rem 0.7rem; border-radius: var(--radius-sm);
+  border: 1px solid rgba(255,255,255,0.1); color: var(--text-muted);
+  font-size: 0.8rem; transition: var(--transition);
+}
+.view-btn.active { border-color: var(--gold); color: var(--gold); background: var(--gold-dim); }
+
+/* ============================================================
+   MINISTERS GRID
+   ============================================================ */
+.ministers-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(285px, 1fr));
+  gap: 1.4rem;
+}
+
+/* ============================================================
+   MINISTER CARD
+   ============================================================ */
+.minister-card {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(201,168,76,0.12);
+  border-radius: var(--radius);
+  overflow: hidden;
+  transition: var(--transition);
+  cursor: pointer;
+  position: relative;
+  animation: fadeUp 0.5s ease both;
+}
+.minister-card:hover {
+  transform: translateY(-6px);
+  border-color: rgba(201,168,76,0.4);
+  background: rgba(255,255,255,0.07);
+  box-shadow: var(--shadow-gold), 0 0 0 1px rgba(201,168,76,0.15);
+}
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.minister-card:nth-child(1) { animation-delay: 0.05s; }
+.minister-card:nth-child(2) { animation-delay: 0.1s; }
+.minister-card:nth-child(3) { animation-delay: 0.15s; }
+.minister-card:nth-child(4) { animation-delay: 0.2s; }
+.minister-card:nth-child(5) { animation-delay: 0.25s; }
+.minister-card:nth-child(6) { animation-delay: 0.3s; }
+
+.card-top {
+  position: relative;
+  background: linear-gradient(160deg, rgba(26,42,108,0.8), rgba(10,15,46,0.6));
+  padding: 1.5rem 1.5rem 0;
+}
+.card-badge-online {
+  position: absolute; top: 1rem; right: 1rem;
+  display: flex; align-items: center; gap: 0.3rem;
+  padding: 0.25rem 0.6rem; border-radius: var(--radius-pill);
+  font-size: 0.68rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase;
+}
+.card-badge-online.online {
+  background: rgba(34,197,94,0.15); color: #4ade80; border: 1px solid rgba(34,197,94,0.3);
+}
+.card-badge-online.offline {
+  background: rgba(255,255,255,0.07); color: var(--text-muted); border: 1px solid rgba(255,255,255,0.12);
+}
+.card-badge-online .status-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+}
+.online .status-dot { background: #4ade80; box-shadow: 0 0 6px #4ade80; animation: pulse 2s infinite; }
+.offline .status-dot { background: var(--text-muted); }
+
+.card-save {
+  position: absolute; top: 1rem; left: 1rem;
+  width: 32px; height: 32px; border-radius: 50%;
+  background: rgba(10,15,46,0.7); border: 1px solid var(--glass-border);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1rem; transition: var(--transition);
+  z-index: 2;
+}
+.card-save:hover { background: var(--gold-dim); border-color: var(--gold); transform: scale(1.1); }
+.card-save.saved { color: var(--gold); }
+
+.card-avatar-wrap {
+  display: flex; justify-content: center; padding-top: 1rem;
+  position: relative;
+}
+.card-avatar {
+  width: 90px; height: 90px; border-radius: 50%;
+  border: 3px solid rgba(201,168,76,0.4);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.4), 0 0 0 6px rgba(201,168,76,0.06);
+  object-fit: cover;
+  background: linear-gradient(135deg, var(--royal), var(--gold-dim));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 2rem; overflow: hidden;
+}
+.avatar-emoji { font-size: 3rem; }
+.verified-badge {
+  position: absolute; bottom: 0; right: calc(50% - 55px);
+  width: 22px; height: 22px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--gold), var(--gold-light));
+  border: 2px solid var(--navy);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.65rem; color: var(--navy); font-weight: 900;
+}
+
+.card-body { padding: 1rem 1.5rem 1.2rem; }
+.card-name {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.1rem; font-weight: 700; text-align: center;
+  color: var(--white); margin-bottom: 0.15rem;
+}
+.card-ministry {
+  font-size: 0.75rem; text-align: center; color: var(--gold);
+  font-weight: 500; letter-spacing: 0.04em; margin-bottom: 0.8rem;
+}
+.card-tags {
+  display: flex; flex-wrap: wrap; justify-content: center; gap: 0.35rem; margin-bottom: 0.9rem;
+}
+.card-tag {
+  padding: 0.2rem 0.55rem; border-radius: var(--radius-pill);
+  font-size: 0.65rem; font-weight: 600; letter-spacing: 0.04em;
+  border: 1px solid rgba(201,168,76,0.25); color: var(--text-muted);
+  background: rgba(255,255,255,0.04);
+}
+.card-meta {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; margin-bottom: 0.9rem;
+}
+.card-meta-item {
+  display: flex; flex-direction: column; align-items: center;
+  background: rgba(255,255,255,0.04); border-radius: var(--radius-sm);
+  padding: 0.5rem 0.4rem;
+}
+.card-meta-value {
+  font-size: 0.85rem; font-weight: 700; color: var(--white);
+}
+.card-meta-label { font-size: 0.62rem; color: var(--text-muted); letter-spacing: 0.06em; margin-top: 1px; }
+.card-rating { display: flex; align-items: center; justify-content: center; gap: 0.3rem; margin-bottom: 0.6rem; }
+.stars { color: var(--gold); font-size: 0.82rem; letter-spacing: 1px; }
+.rating-num { font-size: 0.8rem; font-weight: 700; color: var(--white); }
+.reviews { font-size: 0.72rem; color: var(--text-muted); }
+.card-bio {
+  font-size: 0.78rem; color: var(--text-muted); line-height: 1.5;
+  text-align: center; margin-bottom: 0.6rem;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+}
+.card-country { display: flex; align-items: center; justify-content: center; gap: 0.3rem; font-size: 0.73rem; color: var(--text-muted); margin-bottom: 1rem; }
+.card-lang { font-size: 0.7rem; color: var(--text-muted); text-align: center; margin-bottom: 1rem; }
+.card-lang span { color: var(--text-light); }
+.card-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; }
+.card-btn {
+  padding: 0.55rem 0.6rem; border-radius: var(--radius-sm);
+  font-size: 0.75rem; font-weight: 600; text-align: center;
+  transition: var(--transition); letter-spacing: 0.02em;
+}
+.card-btn-primary {
+  background: linear-gradient(135deg, var(--gold), var(--gold-light));
+  color: var(--navy); grid-column: 1 / -1;
+  box-shadow: 0 4px 14px rgba(201,168,76,0.25);
+}
+.card-btn-primary:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(201,168,76,0.4); }
+.card-btn-secondary {
+  border: 1px solid var(--glass-border); color: var(--text-light);
+  background: var(--glass);
+}
+.card-btn-secondary:hover { border-color: var(--gold); color: var(--gold); background: var(--gold-dim); }
+.card-btn-chat {
+  border: 1px solid rgba(26,42,108,0.8); color: var(--text-light);
+  background: rgba(26,42,108,0.4);
+}
+.card-btn-chat:hover { background: rgba(26,42,108,0.8); border-color: rgba(100,120,200,0.5); }
+
+/* ============================================================
+   SKELETON LOADERS
+   ============================================================ */
+.skeleton { animation: shimmer 1.8s infinite linear; }
+@keyframes shimmer {
+  0% { background-position: -400px 0; }
+  100% { background-position: 400px 0; }
+}
+.skeleton-card {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: var(--radius); overflow: hidden; padding: 1.5rem;
+}
+.skel {
+  border-radius: 6px;
+  background: linear-gradient(90deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.12) 50%, rgba(255,255,255,0.05) 100%);
+  background-size: 400px 100%;
+  animation: shimmer 1.8s infinite linear;
+}
+.skel-circle { border-radius: 50%; }
+
+/* ============================================================
+   PAGINATION
+   ============================================================ */
+.pagination-wrap {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-top: 2.5rem; flex-wrap: wrap; gap: 1rem;
+}
+.pagination { display: flex; align-items: center; gap: 0.4rem; }
+.page-btn {
+  min-width: 38px; height: 38px; border-radius: var(--radius-sm);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.875rem; font-weight: 600;
+  border: 1px solid rgba(255,255,255,0.1); color: var(--text-muted);
+  transition: var(--transition);
+}
+.page-btn:hover { border-color: var(--gold); color: var(--gold); background: var(--gold-dim); }
+.page-btn.active { background: linear-gradient(135deg, var(--gold), var(--gold-light)); color: var(--navy); border-color: transparent; box-shadow: 0 4px 14px rgba(201,168,76,0.3); }
+.page-btn.disabled { opacity: 0.3; pointer-events: none; }
+.page-prev, .page-next {
+  padding: 0 1rem; font-size: 0.8rem; font-weight: 600; letter-spacing: 0.04em;
+}
+.page-ellipsis { color: var(--text-muted); padding: 0 0.3rem; }
+.pagination-info { display: flex; align-items: center; gap: 0.7rem; font-size: 0.8rem; color: var(--text-muted); }
+
+/* ============================================================
+   EMPTY STATE
+   ============================================================ */
+.empty-state {
+  text-align: center; padding: 4rem 2rem; grid-column: 1 / -1;
+  display: none;
+}
+.empty-state.show { display: block; }
+.empty-icon { font-size: 4rem; margin-bottom: 1rem; }
+.empty-title { font-family: 'Playfair Display', serif; font-size: 1.6rem; margin-bottom: 0.5rem; color: var(--text-light); }
+.empty-sub { font-size: 0.9rem; color: var(--text-muted); margin-bottom: 1.5rem; }
+
+/* ============================================================
+   MODALS
+   ============================================================ */
+.modal-overlay {
+  display: none; position: fixed; inset: 0; z-index: 10000;
+  background: rgba(10,15,46,0.85);
+  backdrop-filter: blur(8px);
+  align-items: center; justify-content: center;
+  padding: 1rem;
+  animation: fadeIn 0.25s ease;
+}
+.modal-overlay.open { display: flex; }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+.modal {
+  background: linear-gradient(160deg, rgba(15,26,74,0.98), rgba(10,15,46,0.99));
+  border: 1px solid var(--glass-border);
+  border-radius: calc(var(--radius) + 4px);
+  box-shadow: var(--shadow-deep), 0 0 0 1px rgba(201,168,76,0.1);
+  width: 100%; max-height: 90vh;
+  overflow-y: auto; overflow-x: hidden;
+  position: relative;
+  animation: scaleIn 0.3s cubic-bezier(.34,1.56,.64,1);
+}
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.92) translateY(16px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+.modal::-webkit-scrollbar { width: 5px; }
+.modal::-webkit-scrollbar-track { background: transparent; }
+.modal::-webkit-scrollbar-thumb { background: rgba(201,168,76,0.3); border-radius: 5px; }
+.modal-close {
+  position: sticky; top: 1rem; float: right; margin: 1rem 1rem -2rem;
+  width: 36px; height: 36px; border-radius: 50%;
+  background: rgba(255,255,255,0.08); border: 1px solid var(--glass-border);
+  color: var(--text-muted); font-size: 1.2rem; z-index: 5;
+  display: flex; align-items: center; justify-content: center;
+  transition: var(--transition);
+}
+.modal-close:hover { background: rgba(255,255,255,0.15); color: var(--white); transform: scale(1.1); }
+
+/* PROFILE MODAL */
+.profile-modal { max-width: 760px; }
+.profile-hero {
+  background: linear-gradient(160deg, rgba(26,42,108,0.9), rgba(15,26,74,0.8));
+  padding: 2rem;
+  border-bottom: 1px solid var(--glass-border);
+  position: relative; overflow: hidden;
+}
+.profile-hero::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(circle at 80% 50%, rgba(201,168,76,0.07), transparent 60%);
+}
+.profile-hero-inner { display: flex; gap: 1.5rem; align-items: flex-start; position: relative; }
+.profile-avatar-large {
+  width: 110px; height: 110px; border-radius: 50%; flex-shrink: 0;
+  border: 3px solid rgba(201,168,76,0.5);
+  box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+  object-fit: cover; overflow: hidden;
+  background: linear-gradient(135deg, var(--royal), var(--gold-dim));
+  display: flex; align-items: center; justify-content: center; font-size: 3.5rem;
+  position: relative;
+}
+.profile-info { flex: 1; }
+.profile-verified { display: inline-flex; align-items: center; gap: 0.4rem; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.1em; color: var(--gold); text-transform: uppercase; margin-bottom: 0.4rem; }
+.profile-name {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.6rem; font-weight: 700; color: var(--white); margin-bottom: 0.15rem;
+}
+.profile-ministry-name { font-size: 0.9rem; color: var(--gold); font-weight: 500; margin-bottom: 0.7rem; }
+.profile-tags { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 1rem; }
+.profile-tag {
+  padding: 0.25rem 0.7rem; border-radius: var(--radius-pill);
+  font-size: 0.7rem; font-weight: 600;
+  background: var(--gold-dim); border: 1px solid rgba(201,168,76,0.3); color: var(--gold);
+}
+.profile-meta-row { display: flex; flex-wrap: wrap; gap: 1rem; }
+.profile-meta-item { font-size: 0.8rem; color: var(--text-muted); display: flex; align-items: center; gap: 0.3rem; }
+.profile-meta-item strong { color: var(--white); }
+.profile-actions { display: flex; gap: 0.7rem; margin-top: 1.2rem; flex-wrap: wrap; }
+.btn-sub-now {
+  padding: 0.6rem 1.5rem; border-radius: var(--radius-pill);
+  background: linear-gradient(135deg, var(--gold), var(--gold-light));
+  color: var(--navy); font-weight: 700; font-size: 0.85rem;
+  box-shadow: 0 4px 16px rgba(201,168,76,0.35); transition: var(--transition);
+}
+.btn-sub-now:hover { transform: translateY(-2px); box-shadow: 0 6px 24px rgba(201,168,76,0.5); }
+.btn-msg {
+  padding: 0.6rem 1.5rem; border-radius: var(--radius-pill);
+  border: 1px solid var(--glass-border); color: var(--text-light);
+  background: var(--glass); font-weight: 600; font-size: 0.85rem;
+  transition: var(--transition);
+}
+.btn-msg:hover { border-color: var(--gold); color: var(--gold); }
+
+.profile-body { padding: 1.5rem 2rem; }
+.profile-section { margin-bottom: 1.8rem; }
+.profile-section-title {
+  font-size: 0.72rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--gold); margin-bottom: 0.8rem;
+  display: flex; align-items: center; gap: 0.5rem;
+}
+.profile-section-title::after {
+  content: ''; flex: 1; height: 1px; background: var(--glass-border);
+}
+.profile-bio { font-size: 0.88rem; line-height: 1.75; color: var(--text-light); font-family: 'Cormorant Garamond', serif; font-size: 1.05rem; }
+.schedule-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 0.4rem; }
+.sched-day {
+  background: rgba(255,255,255,0.04); border-radius: var(--radius-sm);
+  padding: 0.5rem 0.3rem; text-align: center;
+  border: 1px solid rgba(255,255,255,0.08);
+}
+.sched-day.available { border-color: rgba(201,168,76,0.3); background: var(--gold-dim); }
+.sched-day-name { font-size: 0.62rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; }
+.sched-day.available .sched-day-name { color: var(--gold); }
+.sched-time { font-size: 0.58rem; color: var(--text-muted); margin-top: 2px; }
+.sermon-list { display: flex; flex-direction: column; gap: 0.6rem; }
+.sermon-item {
+  display: flex; align-items: center; gap: 0.8rem;
+  background: rgba(255,255,255,0.04); border-radius: var(--radius-sm);
+  padding: 0.6rem 0.9rem; border: 1px solid rgba(255,255,255,0.07);
+  cursor: pointer; transition: var(--transition);
+}
+.sermon-item:hover { border-color: rgba(201,168,76,0.3); }
+.sermon-play {
+  width: 30px; height: 30px; border-radius: 50%; flex-shrink: 0;
+  background: linear-gradient(135deg, var(--gold), var(--gold-light));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.65rem; color: var(--navy); font-weight: 900;
+}
+.sermon-info { flex: 1; }
+.sermon-title { font-size: 0.82rem; font-weight: 600; color: var(--white); }
+.sermon-dur { font-size: 0.7rem; color: var(--text-muted); }
+.sermon-progress { font-size: 0.68rem; color: var(--gold); }
+.related-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.8rem; }
+.related-card {
+  background: rgba(255,255,255,0.04); border-radius: var(--radius-sm);
+  padding: 0.8rem; text-align: center; border: 1px solid rgba(255,255,255,0.07);
+  cursor: pointer; transition: var(--transition);
+}
+.related-card:hover { border-color: rgba(201,168,76,0.3); transform: translateY(-2px); }
+.related-avatar { width: 44px; height: 44px; border-radius: 50%; margin: 0 auto 0.4rem; font-size: 1.5rem; background: linear-gradient(135deg, var(--royal), var(--gold-dim)); display: flex; align-items: center; justify-content: center; border: 2px solid rgba(201,168,76,0.25); }
+.related-name { font-size: 0.72rem; font-weight: 700; color: var(--white); }
+.related-spec { font-size: 0.62rem; color: var(--gold); }
+
+/* SUBSCRIPTION MODAL */
+.sub-modal { max-width: 480px; }
+.sub-modal-header {
+  padding: 1.8rem 2rem 1.2rem;
+  border-bottom: 1px solid var(--glass-border);
+  background: linear-gradient(135deg, rgba(26,42,108,0.5), rgba(201,168,76,0.06));
+}
+.sub-modal-title { font-family: 'Playfair Display', serif; font-size: 1.5rem; font-weight: 700; margin-bottom: 0.3rem; }
+.sub-modal-sub { font-size: 0.82rem; color: var(--text-muted); }
+.sub-modal-body { padding: 1.5rem 2rem; display: flex; flex-direction: column; gap: 1.2rem; }
+.form-group {}
+.form-label { display: block; font-size: 0.72rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 0.45rem; }
+.form-select, .form-input {
+  width: 100%; padding: 0.7rem 1rem; border-radius: var(--radius-sm);
+  background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12);
+  color: var(--white); font-size: 0.875rem; outline: none; transition: var(--transition);
+}
+.form-select { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23c9a84c' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 0.9rem center; background-size: 12px; padding-right: 2.5rem; }
+.form-select option { background: #0f1a4a; }
+.form-select:focus, .form-input:focus { border-color: var(--gold); background: rgba(201,168,76,0.06); }
+.form-input::placeholder { color: var(--text-muted); }
+.coupon-row { display: flex; gap: 0.5rem; }
+.coupon-row .form-input { flex: 1; }
+.btn-apply { padding: 0.7rem 1.2rem; border-radius: var(--radius-sm); background: var(--gold-dim); border: 1px solid rgba(201,168,76,0.35); color: var(--gold); font-weight: 700; font-size: 0.82rem; transition: var(--transition); }
+.btn-apply:hover { background: rgba(201,168,76,0.3); }
+.price-summary {
+  background: rgba(255,255,255,0.04); border-radius: var(--radius-sm);
+  padding: 1rem 1.2rem; border: 1px solid var(--glass-border);
+}
+.price-row { display: flex; justify-content: space-between; font-size: 0.82rem; color: var(--text-muted); margin-bottom: 0.5rem; }
+.price-row.total { border-top: 1px solid var(--glass-border); padding-top: 0.5rem; margin-top: 0.5rem; font-weight: 700; color: var(--white); font-size: 1rem; }
+.price-row.total span:last-child { color: var(--gold); }
+.price-discount { color: #4ade80; }
+.modal-footer { display: flex; gap: 0.7rem; padding: 1.2rem 2rem; border-top: 1px solid var(--glass-border); }
+.btn-proceed { flex: 1; padding: 0.8rem; border-radius: var(--radius-sm); background: linear-gradient(135deg, var(--gold), var(--gold-light)); color: var(--navy); font-weight: 700; font-size: 0.9rem; box-shadow: 0 4px 16px rgba(201,168,76,0.35); transition: var(--transition); }
+.btn-proceed:hover { transform: translateY(-1px); box-shadow: 0 6px 24px rgba(201,168,76,0.5); }
+.btn-cancel-modal { flex: 1; padding: 0.8rem; border-radius: var(--radius-sm); border: 1px solid var(--glass-border); color: var(--text-muted); font-weight: 600; font-size: 0.9rem; transition: var(--transition); }
+.btn-cancel-modal:hover { border-color: rgba(255,255,255,0.2); color: var(--white); }
+
+/* CHAT MODAL */
+.chat-modal { max-width: 420px; max-height: 85vh; }
+.chat-header {
+  display: flex; align-items: center; gap: 1rem;
+  padding: 1.2rem 1.5rem;
+  border-bottom: 1px solid var(--glass-border);
+  background: linear-gradient(135deg, rgba(26,42,108,0.8), rgba(15,26,74,0.8));
+}
+.chat-avatar { width: 44px; height: 44px; border-radius: 50%; font-size: 1.5rem; background: linear-gradient(135deg, var(--royal), var(--gold-dim)); display: flex; align-items: center; justify-content: center; border: 2px solid rgba(201,168,76,0.3); flex-shrink: 0; }
+.chat-info { flex: 1; }
+.chat-name { font-weight: 700; font-size: 0.95rem; }
+.chat-status { font-size: 0.72rem; color: #4ade80; display: flex; align-items: center; gap: 0.3rem; }
+.chat-status::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: #4ade80; display: inline-block; animation: pulse 2s infinite; }
+.chat-body {
+  height: 320px; overflow-y: auto;
+  padding: 1rem 1.2rem;
+  display: flex; flex-direction: column; gap: 0.8rem;
+  background: rgba(0,0,0,0.2);
+}
+.chat-body::-webkit-scrollbar { width: 4px; }
+.chat-body::-webkit-scrollbar-thumb { background: rgba(201,168,76,0.2); border-radius: 4px; }
+.msg { display: flex; gap: 0.5rem; max-width: 80%; }
+.msg.sent { flex-direction: row-reverse; align-self: flex-end; }
+.msg-bubble {
+  padding: 0.65rem 0.9rem; border-radius: 16px;
+  font-size: 0.82rem; line-height: 1.5;
+}
+.msg.received .msg-bubble { background: rgba(255,255,255,0.08); border-bottom-left-radius: 4px; color: var(--text-light); }
+.msg.sent .msg-bubble { background: linear-gradient(135deg, var(--gold), var(--gold-light)); color: var(--navy); font-weight: 500; border-bottom-right-radius: 4px; }
+.msg-time { font-size: 0.62rem; color: var(--text-muted); align-self: flex-end; margin-bottom: 2px; }
+.msg-avatar-sm { width: 28px; height: 28px; border-radius: 50%; font-size: 0.9rem; background: linear-gradient(135deg, var(--royal), var(--gold-dim)); display: flex; align-items: center; justify-content: center; flex-shrink: 0; align-self: flex-end; }
+.typing-indicator {
+  display: flex; gap: 0.5rem; align-items: center; padding: 0 0 0.3rem;
+}
+.typing-dot {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--gold); opacity: 0.6;
+  animation: typingBounce 1.4s ease infinite;
+}
+.typing-dot:nth-child(2) { animation-delay: 0.2s; }
+.typing-dot:nth-child(3) { animation-delay: 0.4s; }
+@keyframes typingBounce {
+  0%, 60%, 100% { transform: translateY(0); opacity: 0.6; }
+  30% { transform: translateY(-5px); opacity: 1; }
+}
+.chat-input-bar {
+  display: flex; align-items: center; gap: 0.6rem;
+  padding: 0.9rem 1.2rem;
+  border-top: 1px solid var(--glass-border);
+  background: rgba(255,255,255,0.03);
+}
+.chat-icon-btn { color: var(--text-muted); font-size: 1.1rem; padding: 0.3rem; transition: var(--transition); flex-shrink: 0; }
+.chat-icon-btn:hover { color: var(--gold); }
+.chat-input-field {
+  flex: 1; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);
+  border-radius: var(--radius-pill); padding: 0.55rem 1rem;
+  color: var(--white); font-size: 0.85rem; outline: none; transition: var(--transition);
+}
+.chat-input-field::placeholder { color: var(--text-muted); }
+.chat-input-field:focus { border-color: var(--gold); }
+.chat-send {
+  width: 36px; height: 36px; border-radius: 50%; flex-shrink: 0;
+  background: linear-gradient(135deg, var(--gold), var(--gold-light));
+  color: var(--navy); font-size: 0.8rem; display: flex; align-items: center; justify-content: center;
+  transition: var(--transition);
+}
+.chat-send:hover { transform: scale(1.08); box-shadow: 0 4px 14px rgba(201,168,76,0.4); }
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+footer {
+  border-top: 1px solid var(--glass-border);
+  background: rgba(10,15,46,0.6);
+  backdrop-filter: blur(20px);
+  margin-top: 4rem;
+}
+.footer-top {
+  max-width: 1440px; margin: 0 auto;
+  padding: 4rem 2rem 3rem;
+  display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 3rem;
+}
+.footer-brand p {
+  font-size: 0.82rem; line-height: 1.75; color: var(--text-muted);
+  margin-top: 0.8rem; margin-bottom: 1.5rem;
+  font-family: 'Cormorant Garamond', serif; font-size: 1rem;
+}
+.footer-social { display: flex; gap: 0.6rem; }
+.footer-social-btn {
+  width: 36px; height: 36px; border-radius: 50%;
+  background: var(--glass); border: 1px solid var(--glass-border);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.85rem; color: var(--text-muted);
+  transition: var(--transition);
+}
+.footer-social-btn:hover { border-color: var(--gold); color: var(--gold); background: var(--gold-dim); }
+.footer-col-title {
+  font-size: 0.72rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--gold); margin-bottom: 1.2rem;
+}
+.footer-links { display: flex; flex-direction: column; gap: 0.6rem; }
+.footer-links a { font-size: 0.85rem; color: var(--text-muted); transition: var(--transition); }
+.footer-links a:hover { color: var(--white); padding-left: 4px; }
+.footer-bottom {
+  max-width: 1440px; margin: 0 auto;
+  padding: 1.2rem 2rem;
+  border-top: 1px solid var(--glass-border);
+  display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;
+}
+.footer-copy { font-size: 0.78rem; color: var(--text-muted); }
+.footer-legal { display: flex; gap: 1.5rem; }
+.footer-legal a { font-size: 0.78rem; color: var(--text-muted); transition: var(--transition); }
+.footer-legal a:hover { color: var(--gold); }
+
+/* ============================================================
+   MOBILE FILTER TOGGLE
+   ============================================================ */
+.filter-mobile-toggle {
+  display: none;
+  padding: 0.7rem 1.2rem; border-radius: var(--radius-sm);
+  background: var(--glass); border: 1px solid var(--glass-border);
+  color: var(--text-light); font-size: 0.85rem; font-weight: 600;
+  align-items: center; gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+/* ============================================================
+   NOTIFICATION TOAST
+   ============================================================ */
+.toast {
+  position: fixed; bottom: 2rem; right: 2rem; z-index: 99999;
+  background: rgba(15,26,74,0.95); border: 1px solid var(--glass-border);
+  backdrop-filter: blur(16px);
+  border-radius: var(--radius-sm); padding: 0.9rem 1.3rem;
+  display: flex; align-items: center; gap: 0.7rem;
+  box-shadow: var(--shadow-deep);
+  transform: translateX(200%); transition: transform 0.4s cubic-bezier(.34,1.56,.64,1);
+  max-width: 300px;
+}
+.toast.show { transform: translateX(0); }
+.toast-icon { font-size: 1.2rem; flex-shrink: 0; }
+.toast-msg { font-size: 0.82rem; color: var(--text-light); }
+.toast-border { position: absolute; left: 0; top: 0; bottom: 0; width: 3px; border-radius: var(--radius-sm) 0 0 var(--radius-sm); background: linear-gradient(to bottom, var(--gold), var(--gold-light)); }
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 1100px) {
+  .page-layout { grid-template-columns: 260px 1fr; }
+}
+@media (max-width: 900px) {
+  .page-layout { grid-template-columns: 1fr; }
+  .filter-sidebar { position: static; display: none; }
+  .filter-sidebar.open { display: block; }
+  .filter-mobile-toggle { display: flex; }
+  .footer-top { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 768px) {
+  .nav-links, .nav-actions { display: none; }
+  .nav-hamburger { display: flex; }
+  .hero { padding: 3.5rem 1.5rem 3rem; }
+  .hero-stats { gap: 1.5rem; }
+  .ministers-grid { grid-template-columns: 1fr 1fr; }
+  .content-toolbar { flex-direction: column; align-items: flex-start; }
+  .profile-hero-inner { flex-direction: column; align-items: center; text-align: center; }
+  .profile-meta-row { justify-content: center; }
+  .profile-actions { justify-content: center; }
+  .schedule-grid { grid-template-columns: repeat(4, 1fr); }
+  .related-grid { grid-template-columns: repeat(2, 1fr); }
+  .footer-top { grid-template-columns: 1fr; gap: 2rem; }
+  .pagination-wrap { flex-direction: column; align-items: flex-start; }
+}
+@media (max-width: 480px) {
+  .ministers-grid { grid-template-columns: 1fr; }
+  .page-layout { padding: 0 1rem 3rem; }
+  .profile-body { padding: 1.2rem; }
+  .sub-modal-body, .modal-footer { padding: 1.2rem; }
+  .sub-modal-header { padding: 1.5rem 1.2rem 1rem; }
+}
+</style>
+</head>
+<body>
+
+<!-- ============================================================
+     NAVBAR
+     ============================================================ -->
+<nav class="navbar" id="navbar">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">
+      <div class="nav-logo-icon">✦</div>
+      <div>
+        <span class="nav-logo-text">CLJN</span>
+        <span class="nav-logo-sub">Ministry Platform</span>
+      </div>
+    </a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="ministers.html" class="active">Ministers</a></li>
+      <li><a href="index.html#how">About</a></li>
+      <li><a href="pricing.html">Pricing</a></li>
+      <li><a href="contact.html">Contact</a></li>
+      <li><a href="admin.html" style="color:#c9a84c;font-weight:600;">Admin</a></li>
+    </ul>
+    <div class="nav-actions">
+      <button class="btn-ghost" onclick="window.location.href='auth.html'">Login</button>
+      <button class="btn-register" onclick="window.location.href='auth.html'">Register</button>
+      <button class="btn-find" onclick="scrollToGrid()">Find a Minister</button>
+    </div>
+    <div class="nav-hamburger" id="hamburger" onclick="toggleMobile()">
+      <span></span><span></span><span></span>
+    </div>
+  </div>
+</nav>
+<div class="mobile-menu" id="mobileMenu">
+  <a href="index.html">🏠 Home</a>
+  <a href="ministers.html" class="active">✦ Ministers</a>
+  <a href="index.html#how">ℹ About</a>
+  <a href="pricing.html">💳 Pricing</a>
+  <a href="contact.html">📩 Contact</a>
+  <div class="mobile-menu-actions">
+    <button class="btn-ghost" style="flex:1" onclick="window.location.href='auth.html'">Login</button>
+    <button class="btn-register" style="flex:1" onclick="window.location.href='auth.html'">Register</button>
+  </div>
+</div>
+
+<!-- ============================================================
+     HERO
+     ============================================================ -->
+<section class="hero">
+  <div class="hero-ornament"></div>
+  <div class="hero-inner">
+    <div class="breadcrumb">
+      <a href="index.html">Home</a>
+      <span class="breadcrumb-sep">›</span>
+      <span>Ministers</span>
+    </div>
+    <div class="hero-eyebrow">CLJN Ministry Directory</div>
+    <h1 class="hero-title">
+      Find Your <span class="accent">Spiritual Minister</span>
+    </h1>
+    <p class="hero-subtitle">
+      Browse our curated community of trusted ministers for prayer, prophecy, counseling, healing, deliverance, and profound spiritual guidance.
+    </p>
+    <div class="hero-summary">
+      <span class="dot"></span>
+      <span>Showing <strong>120 Trusted Ministers</strong> available worldwide</span>
+    </div>
+    <div class="hero-stats">
+      <div class="hero-stat"><div class="hero-stat-num">120+</div><div class="hero-stat-label">Ministers</div></div>
+      <div class="hero-stat"><div class="hero-stat-num">48</div><div class="hero-stat-label">Countries</div></div>
+      <div class="hero-stat"><div class="hero-stat-num">12K+</div><div class="hero-stat-label">Consultations</div></div>
+      <div class="hero-stat"><div class="hero-stat-num">4.9★</div><div class="hero-stat-label">Avg Rating</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     PAGE LAYOUT
+     ============================================================ -->
+<div class="page-layout">
+
+  <!-- FILTER SIDEBAR -->
+  <aside class="filter-sidebar" id="filterSidebar">
+    <div class="filter-header">
+      <div class="filter-title">⚙ Filters</div>
+      <button class="filter-reset" onclick="resetFilters()">Reset All</button>
+    </div>
+    <div class="filter-body">
+      <!-- Search -->
+      <div class="filter-group">
+        <label class="filter-label">🔍 Minister Name</label>
+        <input class="filter-input" id="nameSearch" type="text" placeholder="Search by name..." oninput="filterSearch()">
+      </div>
+      <!-- Specialty -->
+      <div class="filter-group">
+        <label class="filter-label">✦ Ministry Specialty</label>
+        <select class="filter-select" id="specialtyFilter" onchange="applyFilter('Specialty', this.value)">
+          <option value="">All Specialties</option>
+          <option>Prayer & Intercession</option>
+          <option>Prophecy</option>
+          <option>Healing & Deliverance</option>
+          <option>Counseling</option>
+          <option>Teaching & Preaching</option>
+          <option>Evangelism</option>
+          <option>Youth Ministry</option>
+          <option>Marriage & Family</option>
+        </select>
+      </div>
+      <!-- Country -->
+      <div class="filter-group">
+        <label class="filter-label">🌍 Country</label>
+        <select class="filter-select" id="countryFilter" onchange="applyFilter('Country', this.value)">
+          <option value="">All Countries</option>
+          <option>United States</option>
+          <option>United Kingdom</option>
+          <option>Nigeria</option>
+          <option>South Africa</option>
+          <option>Kenya</option>
+          <option>Ghana</option>
+          <option>Canada</option>
+          <option>Australia</option>
+          <option>Brazil</option>
+          <option>India</option>
+        </select>
+      </div>
+      <!-- Language -->
+      <div class="filter-group">
+        <label class="filter-label">💬 Language</label>
+        <select class="filter-select" id="langFilter" onchange="applyFilter('Language', this.value)">
+          <option value="">All Languages</option>
+          <option>English</option>
+          <option>French</option>
+          <option>Spanish</option>
+          <option>Portuguese</option>
+          <option>Yoruba</option>
+          <option>Igbo</option>
+          <option>Hausa</option>
+          <option>Swahili</option>
+        </select>
+      </div>
+      <!-- Denomination -->
+      <div class="filter-group">
+        <label class="filter-label">⛪ Denomination</label>
+        <select class="filter-select" onchange="applyFilter('Denomination', this.value)">
+          <option value="">All Denominations</option>
+          <option>Pentecostal</option>
+          <option>Baptist</option>
+          <option>Catholic</option>
+          <option>Anglican</option>
+          <option>Methodist</option>
+          <option>Non-Denominational</option>
+          <option>Charismatic</option>
+          <option>Apostolic</option>
+        </select>
+      </div>
+      <!-- Fee range -->
+      <div class="filter-group">
+        <label class="filter-label">💰 Consultation Fee ($/hr)</label>
+        <div class="range-wrap">
+          <input type="range" class="filter-range" id="feeRange" min="0" max="500" value="300" oninput="updateRange(this)">
+          <div class="range-labels"><span>Free</span><span>$500+</span></div>
+          <div class="range-value" id="rangeVal">Up to $300/hr</div>
+        </div>
+      </div>
+      <!-- Rating -->
+      <div class="filter-group">
+        <label class="filter-label">⭐ Minimum Rating</label>
+        <div class="rating-options">
+          <button class="rating-chip" onclick="toggleChip(this, 'Rating')">Any</button>
+          <button class="rating-chip" onclick="toggleChip(this, 'Rating')">3★+</button>
+          <button class="rating-chip" onclick="toggleChip(this, 'Rating')">4★+</button>
+          <button class="rating-chip active" onclick="toggleChip(this, 'Rating')">4.5★+</button>
+          <button class="rating-chip" onclick="toggleChip(this, 'Rating')">5★</button>
+        </div>
+      </div>
+      <div class="filter-divider"></div>
+      <!-- Toggles -->
+      <div class="filter-group">
+        <label class="filter-label">🕐 Availability</label>
+        <div style="display:flex;flex-direction:column;gap:0.6rem">
+          <div class="toggle-row">
+            <span class="toggle-label">Online Only</span>
+            <label class="toggle-switch">
+              <input type="checkbox" id="onlineOnly" onchange="applyFilter('Online', this.checked ? 'Online Only' : '')">
+              <div class="toggle-track"></div>
+              <div class="toggle-thumb"></div>
+            </label>
+          </div>
+          <div class="toggle-row">
+            <span class="toggle-label">Available Today</span>
+            <label class="toggle-switch">
+              <input type="checkbox" id="availToday" onchange="applyFilter('Today', this.checked ? 'Available Today' : '')">
+              <div class="toggle-track"></div>
+              <div class="toggle-thumb"></div>
+            </label>
+          </div>
+        </div>
+      </div>
+      <!-- Experience -->
+      <div class="filter-group">
+        <label class="filter-label">🎓 Experience</label>
+        <select class="filter-select" onchange="applyFilter('Experience', this.value)">
+          <option value="">Any Experience</option>
+          <option>1–3 Years</option>
+          <option>3–5 Years</option>
+          <option>5–10 Years</option>
+          <option>10–20 Years</option>
+          <option>20+ Years</option>
+        </select>
+      </div>
+      <!-- Sort -->
+      <div class="filter-group">
+        <label class="filter-label">↕ Sort By</label>
+        <select class="filter-select" id="sortBy" onchange="showToast('🔄 Sorted by ' + this.options[this.selectedIndex].text, 'info')">
+          <option>Popularity</option>
+          <option>Highest Rated</option>
+          <option>Lowest Price</option>
+          <option>Highest Experience</option>
+          <option>Recently Added</option>
+        </select>
+      </div>
+      <button class="btn-search-filter" onclick="performSearch()">Search Ministers</button>
+    </div>
+    <!-- Active Filters -->
+    <div class="active-filters" id="activeFilters"></div>
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <main class="main-content">
+    <!-- Mobile filter toggle -->
+    <button class="filter-mobile-toggle" onclick="toggleFilterSidebar()">
+      <span>⚙</span> <span>Filters</span>
+      <span id="filterCount" style="background:var(--gold);color:var(--navy);border-radius:50%;width:18px;height:18px;display:flex;align-items:center;justify-content:center;font-size:0.65rem;font-weight:700;">2</span>
+    </button>
+
+    <div class="content-toolbar">
+      <p class="results-count">Showing <strong>1–12</strong> of <strong>120</strong> ministers</p>
+      <div class="toolbar-right">
+        <select class="toolbar-select" onchange="showToast('Showing ' + this.value + ' results per page', 'info')">
+          <option>Show 12</option>
+          <option>Show 20</option>
+          <option>Show 50</option>
+        </select>
+        <div class="view-toggle">
+          <button class="view-btn active" onclick="toggleView(this, 'grid')" title="Grid View">⊞</button>
+          <button class="view-btn" onclick="toggleView(this, 'list')" title="List View">☰</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- SKELETON (hidden by default, shown briefly) -->
+    <div id="skeletonGrid" class="ministers-grid" style="display:none">
+      <div class="skeleton-card" style="height:460px">
+        <div style="display:flex;justify-content:center;margin-bottom:1rem"><div class="skel skel-circle" style="width:90px;height:90px"></div></div>
+        <div class="skel" style="height:16px;margin-bottom:0.6rem;width:70%;margin-left:auto;margin-right:auto"></div>
+        <div class="skel" style="height:12px;width:50%;margin:0 auto 1rem"></div>
+        <div class="skel" style="height:10px;margin-bottom:0.4rem"></div>
+        <div class="skel" style="height:10px;width:80%;margin-bottom:0.4rem"></div>
+        <div class="skel" style="height:10px;width:60%;margin-bottom:1rem"></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.5rem;margin-bottom:1rem">
+          <div class="skel" style="height:48px;border-radius:8px"></div>
+          <div class="skel" style="height:48px;border-radius:8px"></div>
+        </div>
+        <div class="skel" style="height:38px;border-radius:8px"></div>
+      </div>
+      <div class="skeleton-card" style="height:460px">
+        <div style="display:flex;justify-content:center;margin-bottom:1rem"><div class="skel skel-circle" style="width:90px;height:90px"></div></div>
+        <div class="skel" style="height:16px;margin-bottom:0.6rem;width:70%;margin-left:auto;margin-right:auto"></div>
+        <div class="skel" style="height:12px;width:50%;margin:0 auto 1rem"></div>
+        <div class="skel" style="height:10px;margin-bottom:0.4rem"></div>
+        <div class="skel" style="height:10px;width:80%;margin-bottom:0.4rem"></div>
+        <div class="skel" style="height:10px;width:60%;margin-bottom:1rem"></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.5rem;margin-bottom:1rem">
+          <div class="skel" style="height:48px;border-radius:8px"></div>
+          <div class="skel" style="height:48px;border-radius:8px"></div>
+        </div>
+        <div class="skel" style="height:38px;border-radius:8px"></div>
+      </div>
+      <div class="skeleton-card" style="height:460px">
+        <div style="display:flex;justify-content:center;margin-bottom:1rem"><div class="skel skel-circle" style="width:90px;height:90px"></div></div>
+        <div class="skel" style="height:16px;margin-bottom:0.6rem;width:70%;margin-left:auto;margin-right:auto"></div>
+        <div class="skel" style="height:12px;width:50%;margin:0 auto 1rem"></div>
+        <div class="skel" style="height:10px;margin-bottom:0.4rem"></div>
+        <div class="skel" style="height:10px;width:80%;margin-bottom:0.4rem"></div>
+        <div class="skel" style="height:10px;width:60%;margin-bottom:1rem"></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.5rem;margin-bottom:1rem">
+          <div class="skel" style="height:48px;border-radius:8px"></div>
+          <div class="skel" style="height:48px;border-radius:8px"></div>
+        </div>
+        <div class="skel" style="height:38px;border-radius:8px"></div>
+      </div>
+    </div>
+
+    <!-- MINISTERS GRID -->
+    <div class="ministers-grid" id="ministersGrid"></div>
+
+    <!-- EMPTY STATE -->
+    <div class="empty-state" id="emptyState">
+      <div class="empty-icon">🔍</div>
+      <div class="empty-title">No Ministers Found</div>
+      <p class="empty-sub">Try adjusting your search filters to discover more spiritual ministers.</p>
+      <button class="btn-search-filter" style="display:inline-block;width:auto;padding:0.7rem 2rem" onclick="resetFilters()">Reset Filters</button>
+    </div>
+
+    <!-- PAGINATION -->
+    <div class="pagination-wrap" id="paginationWrap">
+      <div class="pagination">
+        <button class="page-btn page-prev disabled" onclick="changePage(-1)">← Prev</button>
+        <button class="page-btn active" onclick="setPage(this,1)">1</button>
+        <button class="page-btn" onclick="setPage(this,2)">2</button>
+        <button class="page-btn" onclick="setPage(this,3)">3</button>
+        <span class="page-ellipsis">…</span>
+        <button class="page-btn" onclick="setPage(this,10)">10</button>
+        <button class="page-btn page-next" onclick="changePage(1)">Next →</button>
+      </div>
+      <div class="pagination-info">
+        <span>Page <strong id="currentPage">1</strong> of <strong>10</strong></span>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- ============================================================
+     PROFILE MODAL
+     ============================================================ -->
+<div class="modal-overlay" id="profileModal">
+  <div class="modal profile-modal">
+    <button class="modal-close" onclick="closeModal('profileModal')">✕</button>
+    <div class="profile-hero">
+      <div class="profile-hero-inner">
+        <div class="profile-avatar-large" id="modalAvatar">👴</div>
+        <div class="profile-info">
+          <div class="profile-verified">✦ Verified Minister</div>
+          <div class="profile-name" id="modalName">Dr. Emmanuel Okafor</div>
+          <div class="profile-ministry-name" id="modalMinistry">Grace Covenant Ministries International</div>
+          <div class="profile-tags" id="modalTags"></div>
+          <div class="profile-meta-row">
+            <div class="profile-meta-item">📍 <span id="modalCountry">Nigeria</span></div>
+            <div class="profile-meta-item">⭐ <strong id="modalRating">4.9</strong> (324 reviews)</div>
+            <div class="profile-meta-item">📅 <strong id="modalExp">18 yrs</strong> experience</div>
+            <div class="profile-meta-item">💬 <span id="modalLang">English, Yoruba</span></div>
+          </div>
+          <div class="profile-actions">
+            <button class="btn-sub-now" onclick="closeModal('profileModal'); openModal('subModal')">✦ Subscribe Now</button>
+            <button class="btn-msg" onclick="closeModal('profileModal'); openModal('chatModal')">💬 Message Minister</button>
+            <button class="btn-ghost" onclick="showToast('💾 Minister saved to favorites!', 'success')">🤍 Save</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="profile-body">
+      <div class="profile-section">
+        <div class="profile-section-title">About</div>
+        <div class="profile-bio" id="modalBio">Dr. Emmanuel Okafor is a seasoned man of God with over 18 years of active ministry experience. Renowned globally for his extraordinary gift in prophetic ministry and healing, he has ministered to thousands across six continents. His teaching style blends deep scriptural insight with practical life application, making him a sought-after speaker at international conferences. He holds a Doctor of Ministry degree and is ordained by the International Apostolic Council.</div>
+      </div>
+      <div class="profile-section">
+        <div class="profile-section-title">Weekly Availability</div>
+        <div class="schedule-grid">
+          <div class="sched-day"><div class="sched-day-name">Mon</div><div class="sched-time">9am–5pm</div></div>
+          <div class="sched-day available"><div class="sched-day-name">Tue</div><div class="sched-time">10am–4pm</div></div>
+          <div class="sched-day available"><div class="sched-day-name">Wed</div><div class="sched-time">8am–6pm</div></div>
+          <div class="sched-day"><div class="sched-day-name">Thu</div><div class="sched-time">Unavail.</div></div>
+          <div class="sched-day available"><div class="sched-day-name">Fri</div><div class="sched-time">9am–3pm</div></div>
+          <div class="sched-day"><div class="sched-day-name">Sat</div><div class="sched-time">Unavail.</div></div>
+          <div class="sched-day available"><div class="sched-day-name">Sun</div><div class="sched-time">2pm–7pm</div></div>
+        </div>
+      </div>
+      <div class="profile-section">
+        <div class="profile-section-title">Audio Sermons</div>
+        <div class="sermon-list">
+          <div class="sermon-item" onclick="showToast('🎵 Playing: The Power of Prophetic Prayer', 'info')">
+            <div class="sermon-play">▶</div>
+            <div class="sermon-info">
+              <div class="sermon-title">The Power of Prophetic Prayer</div>
+              <div class="sermon-dur">48 min · 12.4K plays</div>
+            </div>
+            <div class="sermon-progress">▶ Play</div>
+          </div>
+          <div class="sermon-item" onclick="showToast('🎵 Playing: Healing Streams', 'info')">
+            <div class="sermon-play">▶</div>
+            <div class="sermon-info">
+              <div class="sermon-title">Healing Streams — Faith Unlocked</div>
+              <div class="sermon-dur">62 min · 9.1K plays</div>
+            </div>
+            <div class="sermon-progress">▶ Play</div>
+          </div>
+          <div class="sermon-item" onclick="showToast('🎵 Playing: Walking in Deliverance', 'info')">
+            <div class="sermon-play">▶</div>
+            <div class="sermon-info">
+              <div class="sermon-title">Walking in Total Deliverance</div>
+              <div class="sermon-dur">35 min · 7.8K plays</div>
+            </div>
+            <div class="sermon-progress">▶ Play</div>
+          </div>
+        </div>
+      </div>
+      <div class="profile-section">
+        <div class="profile-section-title">Related Ministers</div>
+        <div class="related-grid">
+          <div class="related-card" onclick="showToast('Opening Minister profile...', 'info')">
+            <div class="related-avatar">🙏</div>
+            <div class="related-name">Bishop J. Mensah</div>
+            <div class="related-spec">Prophecy</div>
+          </div>
+          <div class="related-card" onclick="showToast('Opening Minister profile...', 'info')">
+            <div class="related-avatar">✝</div>
+            <div class="related-name">Rev. Sarah Bloom</div>
+            <div class="related-spec">Counseling</div>
+          </div>
+          <div class="related-card" onclick="showToast('Opening Minister profile...', 'info')">
+            <div class="related-avatar">🕊</div>
+            <div class="related-name">Apostle D. Nwosu</div>
+            <div class="related-spec">Healing</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     SUBSCRIPTION MODAL
+     ============================================================ -->
+<div class="modal-overlay" id="subModal">
+  <div class="modal sub-modal">
+    <button class="modal-close" onclick="closeModal('subModal')">✕</button>
+    <div class="sub-modal-header">
+      <div class="sub-modal-title">✦ Subscribe to Minister</div>
+      <div class="sub-modal-sub">Choose your plan and begin your spiritual journey today.</div>
+    </div>
+    <div class="sub-modal-body">
+      <div class="form-group">
+        <label class="form-label">Subscription Plan</label>
+        <select class="form-select" onchange="updatePrice(this)">
+          <option data-price="29">Basic Plan — Prayer & Guidance ($29/mo)</option>
+          <option data-price="59" selected>Standard Plan — Full Access ($59/mo)</option>
+          <option data-price="99">Premium Plan — VIP Unlimited ($99/mo)</option>
+          <option data-price="249">Diamond Plan — Exclusive Mentorship ($249/mo)</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Duration</label>
+        <select class="form-select" id="durationSel" onchange="updatePrice()">
+          <option data-mult="1">1 Month</option>
+          <option data-mult="3">3 Months (Save 10%)</option>
+          <option data-mult="6" selected>6 Months (Save 15%)</option>
+          <option data-mult="12">12 Months (Save 25%)</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Payment Method</label>
+        <select class="form-select">
+          <option>💳 Credit / Debit Card</option>
+          <option>🏦 Bank Transfer</option>
+          <option>₿ Cryptocurrency</option>
+          <option>📱 Mobile Money</option>
+          <option>🅿 PayPal</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Coupon Code</label>
+        <div class="coupon-row">
+          <input class="form-input" id="couponInput" type="text" placeholder="Enter coupon code...">
+          <button class="btn-apply" onclick="applyCoupon()">Apply</button>
+        </div>
+      </div>
+      <div class="price-summary">
+        <div class="price-row"><span>Plan</span><span id="pricePlan">Standard Plan</span></div>
+        <div class="price-row"><span>Duration</span><span id="priceDuration">6 Months</span></div>
+        <div class="price-row"><span>Subtotal</span><span id="priceSub">$354.00</span></div>
+        <div class="price-row price-discount" id="discountRow"><span>Discount (15%)</span><span id="priceDisc">-$53.10</span></div>
+        <div class="price-row total"><span>Total</span><span id="priceTotal">$300.90</span></div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancel-modal" onclick="closeModal('subModal')">Cancel</button>
+      <button class="btn-proceed" onclick="proceedPayment()">Proceed to Pay ✦</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     CHAT MODAL
+     ============================================================ -->
+<div class="modal-overlay" id="chatModal">
+  <div class="modal chat-modal">
+    <div class="chat-header">
+      <div class="chat-avatar" id="chatAvatar">👴</div>
+      <div class="chat-info">
+        <div class="chat-name" id="chatName">Dr. Emmanuel Okafor</div>
+        <div class="chat-status">Online — typically replies in minutes</div>
+      </div>
+      <button class="modal-close" style="position:static;float:none;margin:0" onclick="closeModal('chatModal')">✕</button>
+    </div>
+    <div class="chat-body" id="chatBody">
+      <div class="msg received">
+        <div class="msg-avatar-sm">👴</div>
+        <div>
+          <div class="msg-bubble">Peace be unto you, beloved. How may the Spirit guide me to serve you today? 🙏</div>
+          <div class="msg-time">2:14 PM</div>
+        </div>
+      </div>
+      <div class="msg sent">
+        <div>
+          <div class="msg-bubble">Good afternoon, Minister. I've been going through a very difficult season spiritually. I need your guidance.</div>
+          <div class="msg-time">2:16 PM</div>
+        </div>
+      </div>
+      <div class="msg received">
+        <div class="msg-avatar-sm">👴</div>
+        <div>
+          <div class="msg-bubble">I understand, dear one. Know that you are not alone in this season. The Lord sees your heart and your struggle. Would you like us to pray together, or would you prefer to talk it through first?</div>
+          <div class="msg-time">2:17 PM</div>
+        </div>
+      </div>
+      <div class="msg sent">
+        <div>
+          <div class="msg-bubble">I would love to pray first, please.</div>
+          <div class="msg-time">2:18 PM</div>
+        </div>
+      </div>
+      <div class="msg received" id="typingRow" style="display:none">
+        <div class="msg-avatar-sm">👴</div>
+        <div>
+          <div class="typing-indicator">
+            <div class="typing-dot"></div>
+            <div class="typing-dot"></div>
+            <div class="typing-dot"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="chat-input-bar">
+      <button class="chat-icon-btn" onclick="showToast('📎 Attach file', 'info')" title="Attach">📎</button>
+      <button class="chat-icon-btn" onclick="showToast('😊 Emoji panel', 'info')" title="Emoji">😊</button>
+      <input class="chat-input-field" id="chatInput" type="text" placeholder="Type a message..." onkeydown="if(event.key==='Enter') sendChat()">
+      <button class="chat-send" onclick="sendChat()">➤</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast">
+  <div class="toast-border"></div>
+  <div class="toast-icon" id="toastIcon">✦</div>
+  <div class="toast-msg" id="toastMsg">Action completed</div>
+</div>
+
+<!-- ============================================================
+     FOOTER
+     ============================================================ -->
+<footer>
+  <div class="footer-top">
+    <div class="footer-brand">
+      <a href="index.html" class="nav-logo" style="display:inline-flex">
+        <div class="nav-logo-icon">✦</div>
+        <div>
+          <span class="nav-logo-text">CLJN</span>
+          <span class="nav-logo-sub">Ministry Platform</span>
+        </div>
+      </a>
+      <p>Connecting souls with anointed spiritual ministers worldwide. A sacred space for prayer, prophecy, healing, and spiritual counsel.</p>
+      <div class="footer-social">
+        <button class="footer-social-btn" onclick="showToast('Facebook — coming soon', 'info')">f</button>
+        <button class="footer-social-btn" onclick="showToast('Twitter/X — coming soon', 'info')">𝕏</button>
+        <button class="footer-social-btn" onclick="showToast('Instagram — coming soon', 'info')">◎</button>
+        <button class="footer-social-btn" onclick="showToast('YouTube — coming soon', 'info')">▶</button>
+        <button class="footer-social-btn" onclick="showToast('WhatsApp — coming soon', 'info')">✉</button>
+      </div>
+    </div>
+    <div>
+      <div class="footer-col-title">Platform</div>
+      <div class="footer-links">
+        <a href="ministers.html">Browse Ministers</a>
+        <a href="index.html#how">How It Works</a>
+        <a href="pricing.html">Pricing Plans</a>
+        <a href="minister-register.html">Become a Minister</a>
+        <a href="dashboard.html">Live Sessions</a>
+        <a href="bookmarks.html">Audio Sermons</a>
+      </div>
+    </div>
+    <div>
+      <div class="footer-col-title">Ministries</div>
+      <div class="footer-links">
+        <a href="ministers.html">Prayer & Intercession</a>
+        <a href="ministers.html">Prophecy</a>
+        <a href="#">Healing & Deliverance</a>
+        <a href="ministers.html">Counseling</a>
+        <a href="#">Evangelism</a>
+        <a href="ministers.html">Youth Ministry</a>
+      </div>
+    </div>
+    <div>
+      <div class="footer-col-title">Support</div>
+      <div class="footer-links">
+        <a href="#">Help Center</a>
+        <a href="#">Contact Us</a>
+        <a href="terms.html">Privacy Policy</a>
+        <a href="terms.html">Terms of Service</a>
+        <a href="#">Refund Policy</a>
+        <a href="#">Community Guidelines</a>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div class="footer-copy">© 2026 CLJN Ministry Platform. All rights reserved.</div>
+    <div class="footer-legal">
+      <a href="#">Privacy</a>
+      <a href="terms.html">Terms</a>
+      <a href="#">Cookies</a>
+    </div>
+  </div>
+</footer>
+
+<!-- ============================================================
+     JAVASCRIPT
+     ============================================================ -->
+<script>
+// ============================================================
+// MINISTER DATA
+// ============================================================
+const ministersData = [
+  {
+    id: 1, emoji: '👴', name: 'Dr. Emmanuel Okafor',
+    ministry: 'Grace Covenant Ministries International',
+    tags: ['Prophecy', 'Healing', 'Deliverance'],
+    langs: 'English, Yoruba', exp: '18 yrs', fee: '$120/hr',
+    rating: '4.9', reviews: '324', online: true,
+    bio: 'Renowned global prophet with 18 years of ministry. Known for extraordinary healing and prophetic accuracy.',
+    country: '🇳🇬 Nigeria', denomination: 'Apostolic', specialty: 'Prophecy'
+  },
+  {
+    id: 2, emoji: '🙏', name: 'Bishop Joseph Mensah',
+    ministry: 'Harvest Fire International Church',
+    tags: ['Prayer', 'Preaching', 'Evangelism'],
+    langs: 'English, Twi', exp: '22 yrs', fee: '$95/hr',
+    rating: '4.8', reviews: '218', online: true,
+    bio: 'Pioneering Bishop with missions in 30 nations. Passionate evangelist and transformational leader.',
+    country: '🇬🇭 Ghana', denomination: 'Pentecostal', specialty: 'Prayer & Intercession'
+  },
+  {
+    id: 3, emoji: '✝', name: 'Rev. Sarah Bloomfield',
+    ministry: 'Shalom Counseling & Prayer Center',
+    tags: ['Counseling', 'Marriage', 'Family'],
+    langs: 'English, French', exp: '12 yrs', fee: '$80/hr',
+    rating: '5.0', reviews: '189', online: false,
+    bio: 'Licensed Christian counselor and ordained minister. Specializes in marriage restoration and family healing.',
+    country: '🇬🇧 United Kingdom', denomination: 'Anglican', specialty: 'Counseling'
+  },
+  {
+    id: 4, emoji: '🕊', name: 'Apostle David Nwosu',
+    ministry: 'Kingdom Authority Ministries',
+    tags: ['Healing', 'Deliverance', 'Apostolic'],
+    langs: 'English, Igbo, Hausa', exp: '25 yrs', fee: '$150/hr',
+    rating: '4.9', reviews: '412', online: true,
+    bio: 'Apostolic father with a remarkable deliverance ministry spanning three decades across Africa and Europe.',
+    country: '🇳🇬 Nigeria', denomination: 'Charismatic', specialty: 'Healing & Deliverance'
+  },
+  {
+    id: 5, emoji: '✨', name: 'Pastor Michelle Carter',
+    ministry: 'New Horizons Worship Center',
+    tags: ['Teaching', 'Youth', 'Worship'],
+    langs: 'English', exp: '9 yrs', fee: '$65/hr',
+    rating: '4.7', reviews: '143', online: true,
+    bio: 'Dynamic pastor and youth specialist. Brings transformational biblical teaching with a contemporary approach.',
+    country: '🇺🇸 United States', denomination: 'Non-Denominational', specialty: 'Teaching & Preaching'
+  },
+  {
+    id: 6, emoji: '📖', name: 'Dr. Moses Kiprotich',
+    ministry: 'Revival Springs Ministry',
+    tags: ['Teaching', 'Prophecy', 'Prayer'],
+    langs: 'English, Swahili, Kalenjin', exp: '16 yrs', fee: '$85/hr',
+    rating: '4.8', reviews: '267', online: false,
+    bio: 'Bible scholar and prophetic teacher. His depth of scriptural exposition has impacted thousands across East Africa.',
+    country: '🇰🇪 Kenya', denomination: 'Pentecostal', specialty: 'Teaching & Preaching'
+  },
+  {
+    id: 7, emoji: '🌟', name: 'Prophet James Adeyemi',
+    ministry: 'Fire & Glory Prophetic House',
+    tags: ['Prophecy', 'Intercession', 'Healing'],
+    langs: 'English, Yoruba, French', exp: '14 yrs', fee: '$110/hr',
+    rating: '4.9', reviews: '391', online: true,
+    bio: 'Prophetic voice of this generation. Known for accurate directional prophecies and powerful prayer intercession.',
+    country: '🇳🇬 Nigeria', denomination: 'Charismatic', specialty: 'Prophecy'
+  },
+  {
+    id: 8, emoji: '🤲', name: 'Pastor Amara Thompson',
+    ministry: 'Grace Point Community Church',
+    tags: ['Counseling', 'Healing', 'Deliverance'],
+    langs: 'English, Krio', exp: '8 yrs', fee: '$55/hr',
+    rating: '4.6', reviews: '98', online: true,
+    bio: 'Compassionate counselor and minister. Committed to inner healing and spiritual restoration for broken individuals.',
+    country: '🇸🇱 Sierra Leone', denomination: 'Baptist', specialty: 'Counseling'
+  },
+  {
+    id: 9, emoji: '⛪', name: 'Rev. Dr. Thomas Osei',
+    ministry: 'Cornerstone International Ministry',
+    tags: ['Teaching', 'Evangelism', 'Prophecy'],
+    langs: 'English, Twi, Ga', exp: '20 yrs', fee: '$130/hr',
+    rating: '4.8', reviews: '305', online: false,
+    bio: 'Accomplished theologian, evangelist and conference speaker with global reach in over 45 nations.',
+    country: '🇬🇭 Ghana', denomination: 'Methodist', specialty: 'Evangelism'
+  },
+  {
+    id: 10, emoji: '🌺', name: 'Prophetess Ruth Nakamura',
+    ministry: 'Dwelling Place Ministries',
+    tags: ['Prophecy', 'Healing', 'Intercessory'],
+    langs: 'English, Japanese', exp: '11 yrs', fee: '$90/hr',
+    rating: '4.9', reviews: '178', online: true,
+    bio: 'Prophetic intercessor and healing evangelist bridging the East and West through powerful prophetic ministry.',
+    country: '🇯🇵 Japan', denomination: 'Pentecostal', specialty: 'Prophecy'
+  },
+  {
+    id: 11, emoji: '💫', name: 'Evangelist Mark Williams',
+    ministry: 'Hope Alive Global Outreach',
+    tags: ['Evangelism', 'Prayer', 'Preaching'],
+    langs: 'English, Spanish', exp: '15 yrs', fee: '$75/hr',
+    rating: '4.7', reviews: '224', online: false,
+    bio: 'Fiery evangelist known for mass crusades with documented healings. His passion is the unreached nations of the world.',
+    country: '🇺🇸 United States', denomination: 'Non-Denominational', specialty: 'Evangelism'
+  },
+  {
+    id: 12, emoji: '🌸', name: 'Bishop Grace Mutumba',
+    ministry: 'Living Waters Cathedral',
+    tags: ['Healing', 'Counseling', 'Women'],
+    langs: 'English, Zulu, Sotho', exp: '19 yrs', fee: '$100/hr',
+    rating: '4.9', reviews: '342', online: true,
+    bio: 'Pioneering female bishop with a powerful healing ministry. Champion for women in ministry and spiritual mentoring.',
+    country: '🇿🇦 South Africa', denomination: 'Charismatic', specialty: 'Healing & Deliverance'
+  }
+];
+
+let savedMinisters = new Set();
+let activeFilters = {};
+let currentPage = 1;
+
+// ============================================================
+// RENDER MINISTERS
+// ============================================================
+function renderMinisters(data) {
+  const grid = document.getElementById('ministersGrid');
+  const emptyState = document.getElementById('emptyState');
+  const paginationWrap = document.getElementById('paginationWrap');
+
+  if (data.length === 0) {
+    grid.innerHTML = '';
+    emptyState.classList.add('show');
+    paginationWrap.style.display = 'none';
+    return;
+  }
+
+  emptyState.classList.remove('show');
+  paginationWrap.style.display = '';
+
+  grid.innerHTML = data.map((m, i) => `
+    <div class="minister-card" style="animation-delay:${i * 0.06}s">
+      <div class="card-top">
+        <button class="card-save ${savedMinisters.has(m.id) ? 'saved' : ''}" onclick="toggleSave(event, ${m.id})" title="Save Minister">
+          ${savedMinisters.has(m.id) ? '❤️' : '🤍'}
+        </button>
+        <div class="card-badge-online ${m.online ? 'online' : 'offline'}">
+          <span class="status-dot"></span>
+          ${m.online ? 'Online' : 'Offline'}
+        </div>
+        <div class="card-avatar-wrap">
+          <div class="card-avatar">
+            <span class="avatar-emoji">${m.emoji}</span>
+          </div>
+          <div class="verified-badge" title="Verified Minister">✓</div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="card-name">${m.name}</div>
+        <div class="card-ministry">${m.ministry}</div>
+        <div class="card-tags">
+          ${m.tags.map(t => `<span class="card-tag">${t}</span>`).join('')}
+        </div>
+        <div class="card-meta">
+          <div class="card-meta-item">
+            <span class="card-meta-value">${m.exp}</span>
+            <span class="card-meta-label">Experience</span>
+          </div>
+          <div class="card-meta-item">
+            <span class="card-meta-value" style="color:var(--gold)">${m.fee}</span>
+            <span class="card-meta-label">Consultation</span>
+          </div>
+        </div>
+        <div class="card-rating">
+          <span class="stars">★★★★★</span>
+          <span class="rating-num">${m.rating}</span>
+          <span class="reviews">(${m.reviews} reviews)</span>
+        </div>
+        <div class="card-bio">${m.bio}</div>
+        <div class="card-country"><span>${m.country}</span></div>
+        <div class="card-lang">🗣 <span>${m.langs}</span></div>
+        <div class="card-actions">
+          <button class="card-btn card-btn-primary" onclick="openProfile(${m.id})">View Profile</button>
+          <button class="card-btn card-btn-secondary" onclick="openSubModal(${m.id})">Subscribe</button>
+          <button class="card-btn card-btn-chat" onclick="openChatModal(${m.id})">💬 Quick Chat</button>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+// ============================================================
+// INITIAL LOAD with skeleton
+// ============================================================
+function loadWithSkeleton() {
+  const skeletonGrid = document.getElementById('skeletonGrid');
+  const ministersGrid = document.getElementById('ministersGrid');
+
+  skeletonGrid.style.display = 'grid';
+  ministersGrid.style.display = 'none';
+
+  setTimeout(() => {
+    skeletonGrid.style.display = 'none';
+    ministersGrid.style.display = 'grid';
+    renderMinisters(ministersData);
+  }, 1400);
+}
+
+// ============================================================
+// FILTER LOGIC
+// ============================================================
+function applyFilter(key, value) {
+  if (!value) {
+    delete activeFilters[key];
+  } else {
+    activeFilters[key] = value;
+  }
+  renderActiveFilters();
+  showToast(`🔍 Filter applied: ${value || 'cleared'}`, 'info');
+}
+
+function renderActiveFilters() {
+  const container = document.getElementById('activeFilters');
+  const keys = Object.keys(activeFilters);
+  if (keys.length === 0) {
+    container.innerHTML = '';
+    document.getElementById('filterCount').textContent = '0';
+    return;
+  }
+  document.getElementById('filterCount').textContent = keys.length;
+  container.innerHTML = keys.map(k => `
+    <div class="active-filter-tag">
+      ${k}: ${activeFilters[k]}
+      <button onclick="removeFilter('${k}')">✕</button>
+    </div>
+  `).join('');
+}
+
+function removeFilter(key) {
+  delete activeFilters[key];
+  renderActiveFilters();
+  showToast(`Filter removed: ${key}`, 'info');
+}
+
+function toggleChip(el, key) {
+  document.querySelectorAll('.rating-chip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  if (el.textContent === 'Any') {
+    delete activeFilters[key];
+  } else {
+    activeFilters[key] = el.textContent;
+  }
+  renderActiveFilters();
+  showToast(`Rating filter: ${el.textContent}`, 'info');
+}
+
+function resetFilters() {
+  activeFilters = {};
+  document.querySelectorAll('.filter-select').forEach(s => s.selectedIndex = 0);
+  document.querySelectorAll('.filter-input').forEach(i => i.value = '');
+  document.querySelectorAll('input[type=checkbox]').forEach(c => c.checked = false);
+  document.getElementById('feeRange').value = 300;
+  document.getElementById('rangeVal').textContent = 'Up to $300/hr';
+  document.querySelectorAll('.rating-chip').forEach((c,i) => {
+    c.classList.toggle('active', i === 0);
+  });
+  renderActiveFilters();
+  renderMinisters(ministersData);
+  showToast('🔄 All filters reset', 'info');
+}
+
+function updateRange(input) {
+  const v = input.value;
+  document.getElementById('rangeVal').textContent = v == 500 ? 'All prices' : `Up to $${v}/hr`;
+  const pct = (v / 500) * 100;
+  input.style.background = `linear-gradient(to right, var(--gold) 0%, var(--gold) ${pct}%, rgba(255,255,255,0.15) ${pct}%)`;
+}
+
+function filterSearch() {
+  const query = document.getElementById('nameSearch').value.toLowerCase();
+  if (!query) { renderMinisters(ministersData); return; }
+  const filtered = ministersData.filter(m => m.name.toLowerCase().includes(query) || m.ministry.toLowerCase().includes(query));
+  renderMinisters(filtered);
+}
+
+function performSearch() {
+  showToast('🔍 Searching ministers...', 'info');
+  const grid = document.getElementById('ministersGrid');
+  const skel = document.getElementById('skeletonGrid');
+  skel.style.display = 'grid'; grid.style.display = 'none';
+  setTimeout(() => {
+    skel.style.display = 'none'; grid.style.display = 'grid';
+    renderMinisters(ministersData);
+    showToast('✅ Found 120 ministers', 'success');
+  }, 1000);
+}
+
+// ============================================================
+// PROFILE MODAL
+// ============================================================
+function openProfile(id) {
+  window.location.href = 'minister-profile.html';
+}
+
+function openSubModal(id) {
+  window.location.href = 'pricing.html';
+}
+
+function openChatModal(id) {
+  window.location.href = 'dashboard.html';
+}
+
+function openModal(id) {
+  document.getElementById(id).classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal(id) {
+  document.getElementById(id).classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+// Close on overlay click
+document.querySelectorAll('.modal-overlay').forEach(overlay => {
+  overlay.addEventListener('click', e => {
+    if (e.target === overlay) closeModal(overlay.id);
+  });
+});
+
+// ============================================================
+// SUBSCRIPTION PRICING
+// ============================================================
+const planPrices = [29, 59, 99, 249];
+const planNames = ['Basic Plan', 'Standard Plan', 'Premium Plan', 'Diamond Plan'];
+const durationMonths = [1, 3, 6, 12];
+const discounts = [0, 0.10, 0.15, 0.25];
+
+function updatePrice() {
+  const planSel = document.querySelector('.sub-modal-body .form-select');
+  const durSel = document.getElementById('durationSel');
+  const pi = planSel ? planSel.selectedIndex : 1;
+  const di = durSel ? durSel.selectedIndex : 2;
+  const price = planPrices[pi];
+  const months = durationMonths[di];
+  const disc = discounts[di];
+  const sub = price * months;
+  const discAmt = sub * disc;
+  const total = sub - discAmt;
+  document.getElementById('pricePlan').textContent = planNames[pi];
+  document.getElementById('priceDuration').textContent = months + ' Month' + (months > 1 ? 's' : '');
+  document.getElementById('priceSub').textContent = '$' + sub.toFixed(2);
+  document.getElementById('priceDisc').textContent = '-$' + discAmt.toFixed(2);
+  document.getElementById('priceTotal').textContent = '$' + total.toFixed(2);
+  const discRow = document.getElementById('discountRow');
+  discRow.style.display = disc > 0 ? 'flex' : 'none';
+}
+
+document.querySelector('.sub-modal-body .form-select')?.addEventListener('change', updatePrice);
+
+function applyCoupon() {
+  const code = document.getElementById('couponInput').value.trim().toUpperCase();
+  if (code === 'DIVINE20' || code === 'GRACE') {
+    showToast('🎉 Coupon applied! Extra 20% off', 'success');
+    document.getElementById('couponInput').style.borderColor = '#4ade80';
+  } else if (code === '') {
+    showToast('Please enter a coupon code', 'info');
+  } else {
+    showToast('❌ Invalid coupon code', 'error');
+    document.getElementById('couponInput').style.borderColor = '#f87171';
+    setTimeout(() => { document.getElementById('couponInput').style.borderColor = ''; }, 2000);
+  }
+}
+
+function proceedPayment() {
+  closeModal('subModal');
+  showToast('🎉 Subscription successful! Welcome to CLJN.', 'success');
+}
+
+// ============================================================
+// CHAT
+// ============================================================
+const replies = [
+  'Hallelujah! The Lord is answering your prayer even now. 🙏',
+  'Let us decree and declare: "By His stripes you are healed."',
+  'I sense the Holy Spirit moving in this conversation. Be encouraged!',
+  'The anointing breaks every yoke. You shall walk in freedom.',
+  'The Lord says to you today: "Fear not, for I am with you."',
+  'I will keep you in my prayers. Stand firm in faith, beloved.',
+];
+
+function sendChat() {
+  const input = document.getElementById('chatInput');
+  const body = document.getElementById('chatBody');
+  const msg = input.value.trim();
+  if (!msg) return;
+
+  const now = new Date();
+  const time = now.getHours() + ':' + String(now.getMinutes()).padStart(2, '0') + ' ' + (now.getHours() >= 12 ? 'PM' : 'AM');
+
+  body.innerHTML += `
+    <div class="msg sent">
+      <div>
+        <div class="msg-bubble">${msg}</div>
+        <div class="msg-time">${time}</div>
+      </div>
+    </div>`;
+
+  input.value = '';
+  body.scrollTop = body.scrollHeight;
+
+  // Show typing
+  const typingRow = document.getElementById('typingRow');
+  typingRow.style.display = 'flex';
+  body.scrollTop = body.scrollHeight;
+
+  setTimeout(() => {
+    typingRow.style.display = 'none';
+    const reply = replies[Math.floor(Math.random() * replies.length)];
+    const avatar = document.getElementById('chatAvatar').innerHTML;
+    body.innerHTML += `
+      <div class="msg received">
+        <div class="msg-avatar-sm">${avatar}</div>
+        <div>
+          <div class="msg-bubble">${reply}</div>
+          <div class="msg-time">${time}</div>
+        </div>
+      </div>`;
+    body.scrollTop = body.scrollHeight;
+  }, 1800);
+}
+
+// ============================================================
+// SAVE TOGGLE
+// ============================================================
+function toggleSave(e, id) {
+  e.stopPropagation();
+  if (savedMinisters.has(id)) {
+    savedMinisters.delete(id);
+    showToast('💔 Minister removed from saved', 'info');
+  } else {
+    savedMinisters.add(id);
+    showToast('💾 Minister saved to favorites!', 'success');
+  }
+  renderMinisters(ministersData);
+}
+
+// ============================================================
+// PAGINATION
+// ============================================================
+function setPage(btn, num) {
+  document.querySelectorAll('.page-btn:not(.page-prev):not(.page-next)').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  currentPage = num;
+  document.getElementById('currentPage').textContent = num;
+  loadWithSkeleton();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function changePage(dir) {
+  currentPage = Math.max(1, Math.min(10, currentPage + dir));
+  document.getElementById('currentPage').textContent = currentPage;
+  loadWithSkeleton();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ============================================================
+// MISC UI
+// ============================================================
+function toggleMobile() {
+  document.getElementById('mobileMenu').classList.toggle('open');
+}
+
+function toggleFilterSidebar() {
+  document.getElementById('filterSidebar').classList.toggle('open');
+}
+
+function toggleView(btn, mode) {
+  document.querySelectorAll('.view-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  const grid = document.getElementById('ministersGrid');
+  if (mode === 'list') {
+    grid.style.gridTemplateColumns = '1fr';
+    showToast('📋 List view activated', 'info');
+  } else {
+    grid.style.gridTemplateColumns = '';
+    showToast('⊞ Grid view activated', 'info');
+  }
+}
+
+function scrollToGrid() {
+  document.getElementById('ministersGrid').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+// ============================================================
+// TOAST
+// ============================================================
+let toastTimer;
+function showToast(msg, type = 'success') {
+  const toast = document.getElementById('toast');
+  const toastMsg = document.getElementById('toastMsg');
+  const toastIcon = document.getElementById('toastIcon');
+  clearTimeout(toastTimer);
+  toastMsg.textContent = msg;
+  toastIcon.textContent = type === 'success' ? '✦' : type === 'error' ? '✕' : 'ℹ';
+  toast.style.borderLeftColor = type === 'success' ? 'var(--gold)' : type === 'error' ? '#f87171' : '#60a5fa';
+  toast.classList.add('show');
+  toastTimer = setTimeout(() => toast.classList.remove('show'), 3200);
+}
+
+// ============================================================
+// NAVBAR SCROLL
+// ============================================================
+window.addEventListener('scroll', () => {
+  const navbar = document.getElementById('navbar');
+  if (window.scrollY > 40) {
+    navbar.style.background = 'rgba(10,15,46,0.97)';
+  } else {
+    navbar.style.background = 'rgba(10,15,46,0.85)';
+  }
+});
+
+// ============================================================
+// KEYBOARD ESC
+// ============================================================
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    ['profileModal','subModal','chatModal'].forEach(closeModal);
+    document.getElementById('mobileMenu').classList.remove('open');
+  }
+});
+
+// ============================================================
+// INIT
+// ============================================================
+document.addEventListener('DOMContentLoaded', () => {
+  loadWithSkeleton();
+  updatePrice();
+  renderActiveFilters();
+});
+</script>
+</body>
+</html>

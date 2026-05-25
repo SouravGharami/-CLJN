@@ -1,0 +1,961 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CLJN — Contact & Support</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy:        #040c18;
+    --navy-mid:    #071020;
+    --navy-card:   #0b1a30;
+    --royal:       #1a3a8f;
+    --royal-mid:   #1e4db7;
+    --royal-light: #2563eb;
+    --gold:        #c9a227;
+    --gold-light:  #f0c040;
+    --gold-pale:   #fde68a;
+    --gold-dim:    rgba(201,162,39,.16);
+    --glass:       rgba(255,255,255,.055);
+    --glass-b:     rgba(201,162,39,.2);
+    --glass-h:     rgba(255,255,255,.09);
+    --text:        #f0e6c8;
+    --text2:       rgba(240,230,200,.62);
+    --text3:       rgba(240,230,200,.36);
+    --r:           18px;
+    --rs:          10px;
+    --sdark:       0 24px 64px rgba(0,0,0,.6);
+    --sgold:       0 0 44px rgba(201,162,39,.12);
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    background: var(--navy);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── BACKGROUND ── */
+  body::before {
+    content: '';
+    position: fixed; inset: 0; z-index: 0;
+    background:
+      radial-gradient(ellipse 75% 55% at 10% 15%, rgba(26,58,143,.45) 0%, transparent 58%),
+      radial-gradient(ellipse 55% 45% at 90% 80%, rgba(201,162,39,.11) 0%, transparent 55%),
+      radial-gradient(ellipse 40% 50% at 55% 5%,  rgba(30,77,183,.18) 0%, transparent 50%),
+      linear-gradient(170deg, #040c18 0%, #07101e 45%, #050d1a 100%);
+    pointer-events: none;
+  }
+  body::after {
+    content: '';
+    position: fixed; inset: 0; z-index: 0;
+    background-image: radial-gradient(circle, rgba(201,162,39,.065) 1px, transparent 1px);
+    background-size: 42px 42px;
+    pointer-events: none;
+    opacity: .55;
+  }
+
+  .z1 { position: relative; z-index: 1; }
+  .page { max-width: 1300px; margin: 0 auto; padding: 0 24px 90px; }
+
+  /* ── NAV ── */
+  .nav {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 20px 0 10px;
+    border-bottom: 1px solid rgba(201,162,39,.14);
+    margin-bottom: 6px;
+  }
+  .brand { display: flex; align-items: center; gap: 12px; }
+  .brand-icon {
+    width: 40px; height: 40px; border-radius: 10px;
+    background: linear-gradient(135deg, var(--gold), var(--royal-mid));
+    display: grid; place-items: center; font-size: 20px;
+    box-shadow: 0 4px 18px rgba(201,162,39,.35);
+  }
+  .brand-name {
+    font-family: 'Cinzel', serif; font-size: 20px; font-weight: 700;
+    background: linear-gradient(90deg, var(--gold-light), var(--text));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    letter-spacing: 1.5px;
+  }
+  .nav-links { display: flex; gap: 4px; }
+  .nav-link {
+    font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500;
+    color: var(--text2); padding: 7px 14px; border-radius: 8px;
+    border: none; background: transparent; cursor: pointer;
+    transition: all .25s; text-decoration: none;
+  }
+  .nav-link:hover { background: var(--glass); color: var(--text); }
+  .nav-link.active { background: var(--gold-dim); color: var(--gold-light); }
+  .nav-avatar {
+    width: 38px; height: 38px; border-radius: 50%;
+    border: 2px solid var(--gold); overflow: hidden; cursor: pointer;
+    transition: transform .2s, box-shadow .2s;
+  }
+  .nav-avatar:hover { transform: scale(1.08); box-shadow: 0 0 14px rgba(201,162,39,.5); }
+  .nav-avatar img { width: 100%; height: 100%; object-fit: cover; }
+
+  /* ── HERO ── */
+  .hero {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 48px; align-items: center;
+    padding: 60px 0 56px;
+    animation: fadeDown .75s ease both;
+  }
+  .hero-eyebrow {
+    font-family: 'DM Sans', sans-serif; font-size: 11px; font-weight: 500;
+    letter-spacing: 3.5px; text-transform: uppercase;
+    color: var(--gold); margin-bottom: 12px;
+  }
+  .hero-title {
+    font-family: 'Cinzel', serif;
+    font-size: clamp(32px, 5.5vw, 58px);
+    font-weight: 700; line-height: 1.08; margin-bottom: 10px;
+    background: linear-gradient(120deg, var(--gold-light) 0%, var(--text) 45%, var(--gold-pale) 100%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  }
+  .hero-sub {
+    font-size: 18px; color: var(--text2); font-style: italic;
+    line-height: 1.7; max-width: 460px; margin-bottom: 28px;
+  }
+  .hero-badges { display: flex; gap: 10px; flex-wrap: wrap; }
+  .hero-badge {
+    display: flex; align-items: center; gap: 7px;
+    padding: 7px 16px;
+    background: var(--gold-dim); border: 1px solid rgba(201,162,39,.25);
+    border-radius: 999px;
+    font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 500;
+    color: var(--gold-light); transition: transform .2s;
+  }
+  .hero-badge:hover { transform: translateY(-1px); }
+
+  /* Hero illustration */
+  .hero-visual {
+    position: relative;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .hero-glow-ring {
+    position: absolute;
+    width: 340px; height: 340px;
+    border-radius: 50%;
+    border: 1px solid rgba(201,162,39,.14);
+    animation: slowspin 18s linear infinite;
+  }
+  .hero-glow-ring:nth-child(2) {
+    width: 260px; height: 260px;
+    border-color: rgba(30,77,183,.3);
+    animation-direction: reverse; animation-duration: 12s;
+  }
+  .hero-illus {
+    width: 220px; height: 220px;
+    background: var(--glass);
+    border: 1px solid var(--glass-b);
+    border-radius: 50%;
+    backdrop-filter: blur(24px);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 88px;
+    box-shadow: var(--sdark), var(--sgold), inset 0 0 60px rgba(201,162,39,.06);
+    position: relative; z-index: 2;
+    animation: floatpulse 5s ease-in-out infinite;
+  }
+  .hero-dot {
+    position: absolute; width: 10px; height: 10px;
+    border-radius: 50%; background: var(--gold-light);
+    box-shadow: 0 0 12px var(--gold-light);
+  }
+  .hero-dot:nth-child(3)  { top: 38px;  right: 60px;  animation: twinkle 2.4s ease-in-out infinite; }
+  .hero-dot:nth-child(4)  { bottom: 55px; left: 50px;  animation: twinkle 3.1s ease-in-out infinite .6s; }
+  .hero-dot:nth-child(5)  { top: 80px;  left: 30px;   animation: twinkle 2.8s ease-in-out infinite 1.2s; width:6px;height:6px; }
+
+  /* ── DIVIDER ── */
+  .divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(201,162,39,.3), transparent);
+    margin: 10px 0 0;
+  }
+
+  /* ── SECTION ── */
+  .section { margin-top: 56px; }
+  .section-head {
+    display: flex; align-items: flex-end; justify-content: space-between;
+    margin-bottom: 28px;
+  }
+  .section-title {
+    font-family: 'Cinzel', serif;
+    font-size: clamp(18px, 2.8vw, 26px); font-weight: 600;
+    color: var(--text); position: relative; padding-bottom: 10px;
+  }
+  .section-title::after {
+    content: ''; position: absolute; bottom: 0; left: 0;
+    width: 48px; height: 2px;
+    background: linear-gradient(90deg, var(--gold), transparent);
+    border-radius: 2px;
+  }
+  .section-sub {
+    font-size: 15px; color: var(--text2); font-style: italic; margin-top: 4px;
+  }
+
+  /* ── CONTACT LAYOUT ── */
+  .contact-grid {
+    display: grid; grid-template-columns: 1.1fr .9fr;
+    gap: 32px; align-items: start;
+  }
+
+  /* ── GLASS CARD ── */
+  .glass-card {
+    background: var(--glass);
+    border: 1px solid var(--glass-b);
+    border-radius: var(--r);
+    backdrop-filter: blur(22px);
+    box-shadow: var(--sdark), var(--sgold);
+    transition: border-color .3s, box-shadow .3s, transform .3s;
+  }
+  .glass-card:hover {
+    border-color: rgba(201,162,39,.38);
+    box-shadow: 0 28px 70px rgba(0,0,0,.65), 0 0 50px rgba(201,162,39,.16);
+  }
+
+  /* ── FORM CARD ── */
+  .form-card { padding: 36px 36px 32px; animation: cardIn .65s ease both .1s; }
+  .form-header { margin-bottom: 28px; }
+  .form-title {
+    font-family: 'Cinzel', serif; font-size: 22px; font-weight: 700;
+    color: var(--text); margin-bottom: 6px;
+  }
+  .form-desc { font-size: 15px; color: var(--text2); font-style: italic; }
+
+  .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+  .field { margin-bottom: 16px; }
+  .field label {
+    display: block;
+    font-family: 'DM Sans', sans-serif; font-size: 11.5px; font-weight: 500;
+    letter-spacing: .8px; text-transform: uppercase;
+    color: var(--gold); margin-bottom: 8px;
+  }
+  .field input, .field select, .field textarea {
+    width: 100%;
+    background: rgba(255,255,255,.04);
+    border: 1px solid rgba(201,162,39,.2);
+    border-radius: var(--rs);
+    color: var(--text);
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 15.5px;
+    padding: 12px 16px;
+    outline: none;
+    transition: border-color .25s, box-shadow .25s, background .25s;
+  }
+  .field select { appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23c9a227' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-position: right 14px center;
+    padding-right: 38px; cursor: pointer;
+  }
+  .field select option { background: #0b1a30; color: var(--text); }
+  .field textarea { resize: vertical; min-height: 130px; line-height: 1.6; }
+  .field input::placeholder, .field textarea::placeholder { color: var(--text3); }
+  .field input:focus, .field select:focus, .field textarea:focus {
+    border-color: var(--gold);
+    background: rgba(201,162,39,.05);
+    box-shadow: 0 0 0 3px rgba(201,162,39,.13);
+  }
+
+  .char-count {
+    font-family: 'DM Sans', sans-serif; font-size: 11px;
+    color: var(--text3); text-align: right; margin-top: 5px;
+  }
+
+  .btn-send {
+    width: 100%; padding: 15px;
+    background: linear-gradient(90deg, var(--gold), var(--gold-light));
+    border: none; border-radius: var(--rs);
+    color: var(--navy); font-family: 'Cinzel', serif;
+    font-size: 14px; font-weight: 700; letter-spacing: 1.2px;
+    cursor: pointer;
+    transition: transform .25s, box-shadow .25s, filter .25s;
+    box-shadow: 0 6px 28px rgba(201,162,39,.35);
+    display: flex; align-items: center; justify-content: center; gap: 10px;
+    margin-top: 6px;
+  }
+  .btn-send:hover { transform: translateY(-2px); box-shadow: 0 10px 40px rgba(201,162,39,.55); filter: brightness(1.06); }
+  .btn-send:active { transform: translateY(0); }
+  .btn-send.sent {
+    background: linear-gradient(90deg, #16a34a, #22c55e);
+    box-shadow: 0 6px 28px rgba(34,197,94,.35);
+  }
+
+  .form-note {
+    font-family: 'DM Sans', sans-serif; font-size: 11.5px;
+    color: var(--text3); text-align: center; margin-top: 14px;
+  }
+
+  /* ── SUPPORT CARDS ── */
+  .support-stack { display: flex; flex-direction: column; gap: 14px; animation: cardIn .65s ease both .2s; }
+  .support-card {
+    display: flex; align-items: center; gap: 16px;
+    padding: 18px 20px; border-radius: var(--r);
+    background: var(--glass); border: 1px solid var(--glass-b);
+    backdrop-filter: blur(20px); cursor: pointer;
+    transition: all .28s cubic-bezier(.2,.8,.2,1);
+    box-shadow: var(--sdark);
+  }
+  .support-card:hover {
+    transform: translateX(6px);
+    border-color: rgba(201,162,39,.42);
+    box-shadow: 0 16px 50px rgba(0,0,0,.55), 0 0 36px rgba(201,162,39,.14);
+    background: var(--glass-h);
+  }
+  .support-icon {
+    width: 52px; height: 52px; border-radius: 14px; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 24px;
+    transition: transform .3s;
+  }
+  .support-card:hover .support-icon { transform: scale(1.1) rotate(-5deg); }
+  .si-email  { background: linear-gradient(135deg, #1e3a8a, #2563eb); box-shadow: 0 4px 16px rgba(37,99,235,.35); }
+  .si-chat   { background: linear-gradient(135deg, #065f46, #10b981); box-shadow: 0 4px 16px rgba(16,185,129,.3); }
+  .si-phone  { background: linear-gradient(135deg, #7c2d12, #ea580c); box-shadow: 0 4px 16px rgba(234,88,12,.3); }
+  .si-help   { background: linear-gradient(135deg, var(--gold), var(--gold-light)); box-shadow: 0 4px 16px rgba(201,162,39,.35); }
+  .support-info { flex: 1; }
+  .support-name {
+    font-family: 'Cinzel', serif; font-size: 15px; font-weight: 600;
+    color: var(--text); margin-bottom: 3px;
+  }
+  .support-detail { font-size: 13.5px; color: var(--text2); font-style: italic; margin-bottom: 3px; }
+  .support-status {
+    font-family: 'DM Sans', sans-serif; font-size: 11px; font-weight: 600;
+    display: flex; align-items: center; gap: 5px;
+  }
+  .dot-green { width: 6px; height: 6px; border-radius: 50%; background: #22c55e; box-shadow: 0 0 6px #22c55e; animation: blink 2s ease-in-out infinite; }
+  .dot-amber { width: 6px; height: 6px; border-radius: 50%; background: var(--gold-light); box-shadow: 0 0 6px var(--gold-light); }
+  .sup-arrow { color: var(--gold); font-size: 18px; opacity: .6; transition: opacity .2s, transform .2s; }
+  .support-card:hover .sup-arrow { opacity: 1; transform: translateX(4px); }
+
+  /* ── RESPONSE TIME BADGES ── */
+  .resp-badge {
+    display: inline-block;
+    padding: 2px 9px; border-radius: 5px;
+    font-family: 'DM Sans', sans-serif; font-size: 10px; font-weight: 600;
+    text-transform: uppercase; letter-spacing: .5px;
+  }
+  .rb-fast  { background: rgba(34,197,94,.15); color: #4ade80; border: 1px solid rgba(34,197,94,.25); }
+  .rb-med   { background: rgba(251,191,36,.15); color: var(--gold-light); border: 1px solid rgba(201,162,39,.25); }
+
+  /* ── FAQ ── */
+  .faq-list { display: flex; flex-direction: column; gap: 10px; animation: cardIn .65s ease both .15s; }
+  .faq-item {
+    background: var(--glass); border: 1px solid var(--glass-b);
+    border-radius: var(--rs); backdrop-filter: blur(18px);
+    overflow: hidden; transition: border-color .25s, box-shadow .25s;
+  }
+  .faq-item.open { border-color: rgba(201,162,39,.4); box-shadow: 0 8px 30px rgba(0,0,0,.4), 0 0 24px rgba(201,162,39,.1); }
+  .faq-q {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 17px 20px; cursor: pointer; gap: 16px;
+    transition: background .2s;
+  }
+  .faq-q:hover { background: var(--glass-h); }
+  .faq-q-text {
+    font-family: 'Cinzel', serif; font-size: 14.5px; font-weight: 600;
+    color: var(--text); flex: 1; line-height: 1.4;
+  }
+  .faq-chevron {
+    width: 28px; height: 28px; border-radius: 7px;
+    background: var(--gold-dim); border: 1px solid rgba(201,162,39,.25);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--gold); font-size: 13px;
+    transition: transform .3s, background .25s; flex-shrink: 0;
+  }
+  .faq-item.open .faq-chevron { transform: rotate(180deg); background: var(--gold); color: var(--navy); }
+  .faq-a {
+    max-height: 0; overflow: hidden;
+    transition: max-height .4s ease, padding .3s ease;
+    padding: 0 20px;
+    font-size: 15px; color: var(--text2); line-height: 1.7; font-style: italic;
+  }
+  .faq-item.open .faq-a { max-height: 300px; padding: 0 20px 18px; }
+
+  /* ── OFFICE INFO ── */
+  .office-grid {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 24px; animation: cardIn .65s ease both .2s;
+  }
+  .office-card {
+    padding: 26px 24px;
+    background: var(--glass); border: 1px solid var(--glass-b);
+    border-radius: var(--r); backdrop-filter: blur(20px);
+    box-shadow: var(--sdark);
+    transition: all .3s cubic-bezier(.2,.8,.2,1);
+    position: relative; overflow: hidden;
+  }
+  .office-card::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    opacity: 0; transition: opacity .3s;
+  }
+  .office-card:hover::before { opacity: 1; }
+  .office-card:hover { transform: translateY(-4px); border-color: rgba(201,162,39,.4); box-shadow: 0 24px 60px rgba(0,0,0,.6), 0 0 40px rgba(201,162,39,.13); }
+  .office-icon { font-size: 30px; margin-bottom: 14px; }
+  .office-label {
+    font-family: 'DM Sans', sans-serif; font-size: 10.5px; font-weight: 600;
+    letter-spacing: 2px; text-transform: uppercase;
+    color: var(--gold); margin-bottom: 6px;
+  }
+  .office-value {
+    font-family: 'Cinzel', serif; font-size: 14.5px; font-weight: 600;
+    color: var(--text); line-height: 1.5; margin-bottom: 5px;
+  }
+  .office-note { font-size: 13px; color: var(--text3); font-style: italic; }
+
+  /* Social row */
+  .social-row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 6px; }
+  .social-btn {
+    display: flex; align-items: center; gap: 7px;
+    padding: 8px 15px; border-radius: 8px;
+    background: var(--glass); border: 1px solid var(--glass-b);
+    color: var(--text2); font-family: 'DM Sans', sans-serif;
+    font-size: 12px; font-weight: 500;
+    cursor: pointer; text-decoration: none;
+    transition: all .22s;
+  }
+  .social-btn:hover { background: var(--glass-h); color: var(--text); border-color: rgba(201,162,39,.38); transform: translateY(-1px); }
+
+  /* ── MAP ── */
+  .map-section { animation: cardIn .65s ease both .25s; }
+  .map-wrap {
+    border-radius: var(--r); overflow: hidden;
+    border: 1px solid var(--glass-b);
+    box-shadow: var(--sdark), var(--sgold);
+    position: relative; height: 360px;
+    background: var(--navy-card);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    transition: border-color .3s;
+  }
+  .map-wrap:hover { border-color: rgba(201,162,39,.4); }
+
+  /* SVG map illustration */
+  .map-svg-bg {
+    position: absolute; inset: 0; overflow: hidden;
+    opacity: .85;
+  }
+  .map-overlay {
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse 60% 60% at 50% 50%, transparent 30%, rgba(4,12,24,.7) 100%),
+      linear-gradient(to bottom, rgba(4,12,24,.2) 0%, rgba(4,12,24,.55) 100%);
+    pointer-events: none;
+  }
+  .map-pin {
+    position: absolute; top: 50%; left: 50%;
+    transform: translate(-50%, -60%);
+    display: flex; flex-direction: column; align-items: center;
+    z-index: 3;
+    animation: pinbounce 2.5s ease-in-out infinite;
+  }
+  .map-pin-head {
+    width: 42px; height: 42px; border-radius: 50% 50% 50% 0;
+    transform: rotate(-45deg);
+    background: linear-gradient(135deg, var(--gold), var(--gold-light));
+    box-shadow: 0 0 28px rgba(201,162,39,.65), 0 4px 18px rgba(0,0,0,.5);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px; transform: rotate(-45deg);
+  }
+  .map-pin-head span { transform: rotate(45deg); display: block; }
+  .map-pin-tail {
+    width: 3px; height: 18px;
+    background: linear-gradient(to bottom, var(--gold), transparent);
+  }
+  .map-pulse {
+    position: absolute; top: 50%; left: 50%;
+    width: 60px; height: 60px; border-radius: 50%;
+    border: 2px solid rgba(201,162,39,.5);
+    transform: translate(-50%, -50%);
+    animation: mappulse 2.2s ease-out infinite;
+  }
+  .map-pulse:nth-child(2) { animation-delay: .7s; }
+  .map-label {
+    position: absolute; top: calc(50% + 20px); left: 50%;
+    transform: translateX(-50%);
+    background: rgba(4,12,24,.88);
+    border: 1px solid rgba(201,162,39,.3);
+    border-radius: 8px; padding: 8px 20px;
+    font-family: 'Cinzel', serif; font-size: 13px; font-weight: 600;
+    color: var(--text); white-space: nowrap;
+    backdrop-filter: blur(10px);
+    z-index: 3;
+  }
+  .map-open-btn {
+    position: absolute; bottom: 18px; right: 18px;
+    background: linear-gradient(90deg, var(--gold), var(--gold-light));
+    color: var(--navy); border: none; border-radius: 8px;
+    font-family: 'Cinzel', serif; font-size: 12px; font-weight: 700;
+    padding: 10px 20px; cursor: pointer; z-index: 4;
+    box-shadow: 0 4px 20px rgba(201,162,39,.4);
+    transition: transform .22s, box-shadow .22s;
+    letter-spacing: .5px;
+  }
+  .map-open-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(201,162,39,.55); }
+
+  /* ── TOAST ── */
+  .toast-wrap { position: fixed; bottom: 26px; right: 26px; z-index: 9999; display: flex; flex-direction: column; gap: 10px; }
+  .toast {
+    background: var(--navy-card); border: 1px solid var(--glass-b); border-radius: 10px;
+    padding: 12px 20px; display: flex; align-items: center; gap: 10px;
+    font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500; color: var(--text);
+    backdrop-filter: blur(16px); box-shadow: 0 12px 36px rgba(0,0,0,.5);
+    animation: toastIn .35s ease both; min-width: 220px;
+  }
+  .toast.out { animation: toastOut .3s ease forwards; }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeDown  { from{opacity:0;transform:translateY(-18px)} to{opacity:1;transform:none} }
+  @keyframes cardIn    { from{opacity:0;transform:translateY(26px) scale(.97)} to{opacity:1;transform:none} }
+  @keyframes floatpulse{ 0%,100%{transform:translateY(0)} 50%{transform:translateY(-12px)} }
+  @keyframes slowspin  { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
+  @keyframes twinkle   { 0%,100%{opacity:.3;transform:scale(.8)} 50%{opacity:1;transform:scale(1.2)} }
+  @keyframes blink     { 0%,100%{opacity:1} 50%{opacity:.4} }
+  @keyframes pinbounce { 0%,100%{transform:translate(-50%,-60%)} 50%{transform:translate(-50%,-68%)} }
+  @keyframes mappulse  { 0%{transform:translate(-50%,-50%) scale(1);opacity:.7} 100%{transform:translate(-50%,-50%) scale(2.5);opacity:0} }
+  @keyframes toastIn   { from{opacity:0;transform:translateX(28px)} to{opacity:1;transform:none} }
+  @keyframes toastOut  { from{opacity:1} to{opacity:0;transform:translateX(28px)} }
+
+  /* ── RESPONSIVE ── */
+  @media(max-width: 900px) {
+    .hero         { grid-template-columns: 1fr; }
+    .hero-visual  { display: none; }
+    .contact-grid { grid-template-columns: 1fr; }
+    .office-grid  { grid-template-columns: 1fr 1fr; }
+    .nav-links    { display: none; }
+  }
+  @media(max-width: 600px) {
+    .field-row    { grid-template-columns: 1fr; }
+    .office-grid  { grid-template-columns: 1fr; }
+    .page         { padding: 0 14px 70px; }
+    .form-card    { padding: 24px 18px 20px; }
+    .map-wrap     { height: 260px; }
+    .toast-wrap   { bottom: 14px; right: 14px; left: 14px; }
+  }
+
+  ::-webkit-scrollbar { width: 5px; }
+  ::-webkit-scrollbar-track { background: var(--navy); }
+  ::-webkit-scrollbar-thumb { background: rgba(201,162,39,.28); border-radius: 5px; }
+</style>
+</head>
+<body>
+<a href="index.html" style="display:inline-flex;align-items:center;gap:6px;color:var(--gold,#c9a227);text-decoration:none;font-size:13px;padding:8px 16px;opacity:0.85;transition:opacity .2s" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.85">← Back to Home</a>
+<div class="z1">
+<div class="page">
+
+  <!-- ── NAV ── -->
+  <nav class="nav">
+    <a href="index.html" class="brand" style="text-decoration:none;">
+      <div class="brand-icon">✦</div>
+      <div class="brand-name">CLJN</div>
+    </a>
+    <div class="nav-links">
+      <a href="index.html" class="nav-link">Home</a>
+      <a href="ministers.html" class="nav-link">Ministers</a>
+      <a href="index.html#how" class="nav-link">About</a>
+      <a href="pricing.html" class="nav-link">Pricing</a>
+      <a href="contact.html" class="nav-link active">Contact</a>
+      <a href="admin.html" class="nav-link" style="color:#c9a84c;font-weight:600;">Admin</a>
+    </div>
+    <div style="display:flex;align-items:center;gap:8px;">
+      <button class="nav-link" style="cursor:pointer;border:1px solid rgba(201,162,39,.4);border-radius:8px;" onclick="window.location.href='auth.html'">Login</button>
+      <button class="nav-link" style="cursor:pointer;background:linear-gradient(135deg,#c9a84c,#e6c96b);color:#05071a;font-weight:600;border-radius:8px;" onclick="window.location.href='auth.html'">Register</button>
+    </div>
+  </nav>
+
+  <!-- ── HERO ── -->
+  <section class="hero">
+    <div>
+      <p class="hero-eyebrow">✦ We Are Here For You</p>
+      <h1 class="hero-title">Contact &amp;<br>Support</h1>
+      <p class="hero-sub">Every soul deserves to be heard. Reach out to our ministry team — we're here to guide, support, and pray with you.</p>
+      <div class="hero-badges">
+        <div class="hero-badge">⚡ Avg reply in 2 hrs</div>
+        <div class="hero-badge">🙏 Prayer support 24/7</div>
+        <div class="hero-badge">🌍 Global community</div>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="hero-glow-ring"></div>
+      <div class="hero-glow-ring"></div>
+      <div class="hero-illus">🕊️</div>
+      <div class="hero-dot"></div>
+      <div class="hero-dot"></div>
+      <div class="hero-dot"></div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ── CONTACT FORM + SUPPORT CARDS ── -->
+  <section class="section">
+    <div class="section-head">
+      <div>
+        <h2 class="section-title">Send a Message</h2>
+        <p class="section-sub">Fill the form and we'll respond with grace and care</p>
+      </div>
+    </div>
+
+    <div class="contact-grid">
+
+      <!-- FORM -->
+      <div class="glass-card form-card">
+        <div class="form-header">
+          <h3 class="form-title">✦ Write to Us</h3>
+          <p class="form-desc">Your message will be handled by our dedicated ministry support team</p>
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label>Full Name</label>
+            <input type="text" id="fname" placeholder="John Mensah" oninput="validateField(this)">
+          </div>
+          <div class="field">
+            <label>Email Address</label>
+            <input type="email" id="femail" placeholder="john@example.com" oninput="validateField(this)">
+          </div>
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label>Phone (Optional)</label>
+            <input type="tel" placeholder="+1 (555) 000-0000">
+          </div>
+          <div class="field">
+            <label>Subject</label>
+            <select id="fsubject">
+              <option value="">— Select a topic —</option>
+              <option>General Inquiry</option>
+              <option>Prayer Request</option>
+              <option>Technical Support</option>
+              <option>Partnership & Outreach</option>
+              <option>Sermon Submission</option>
+              <option>Donation & Giving</option>
+              <option>Report an Issue</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Your Message</label>
+          <textarea id="fmessage" placeholder="Share what's on your heart — our team reads every message personally…" maxlength="600" oninput="countChars(this)"></textarea>
+          <div class="char-count"><span id="charNum">0</span> / 600 characters</div>
+        </div>
+
+        <button class="btn-send" id="sendBtn" onclick="sendForm()">
+          <span id="sendLabel">✦ Send Message</span>
+        </button>
+        <p class="form-note">🔒 Your message is private & confidential. We respond within 2 business hours.</p>
+      </div>
+
+      <!-- SUPPORT CARDS -->
+      <div class="support-stack">
+        <div class="support-card" onclick="showToast('📧','Opening email client…')">
+          <div class="support-icon si-email">📧</div>
+          <div class="support-info">
+            <div class="support-name">Email Support</div>
+            <div class="support-detail">support@cljn.org</div>
+            <div class="support-status">
+              <span class="dot-green"></span>
+              <span style="color:#4ade80">Online Now</span>&nbsp;
+              <span class="resp-badge rb-fast">~2 hr reply</span>
+            </div>
+          </div>
+          <span class="sup-arrow">›</span>
+        </div>
+
+        <div class="support-card" onclick="showToast('💬','Starting live chat…')">
+          <div class="support-icon si-chat">💬</div>
+          <div class="support-info">
+            <div class="support-name">Live Chat</div>
+            <div class="support-detail">Chat with a ministry counselor</div>
+            <div class="support-status">
+              <span class="dot-green"></span>
+              <span style="color:#4ade80">3 agents available</span>&nbsp;
+              <span class="resp-badge rb-fast">Instant</span>
+            </div>
+          </div>
+          <span class="sup-arrow">›</span>
+        </div>
+
+        <div class="support-card" onclick="showToast('📞','Initiating call support…')">
+          <div class="support-icon si-phone">📞</div>
+          <div class="support-info">
+            <div class="support-name">Phone Support</div>
+            <div class="support-detail">+1 (888) 345-DIVINE</div>
+            <div class="support-status">
+              <span class="dot-amber"></span>
+              <span style="color:var(--gold-light)">Mon–Fri 9am–6pm</span>&nbsp;
+              <span class="resp-badge rb-med">Business hrs</span>
+            </div>
+          </div>
+          <span class="sup-arrow">›</span>
+        </div>
+
+        <div class="support-card" onclick="showToast('📚','Opening help center…')">
+          <div class="support-icon si-help">📚</div>
+          <div class="support-info">
+            <div class="support-name">Help Center</div>
+            <div class="support-detail">Browse 200+ articles & guides</div>
+            <div class="support-status">
+              <span class="dot-green"></span>
+              <span style="color:#4ade80">Always available</span>&nbsp;
+              <span class="resp-badge rb-fast">Self-serve</span>
+            </div>
+          </div>
+          <span class="sup-arrow">›</span>
+        </div>
+
+        <!-- Prayer card -->
+        <div class="support-card" onclick="showToast('🙏','Submitting prayer request…')" style="border-color:rgba(201,162,39,.35);background:rgba(201,162,39,.05)">
+          <div class="support-icon" style="background:linear-gradient(135deg,#7e22ce,#a855f7);box-shadow:0 4px 16px rgba(168,85,247,.3)">🙏</div>
+          <div class="support-info">
+            <div class="support-name">Prayer Requests</div>
+            <div class="support-detail">Submit for community intercession</div>
+            <div class="support-status">
+              <span class="dot-green"></span>
+              <span style="color:#d8b4fe">Our ministers pray daily</span>
+            </div>
+          </div>
+          <span class="sup-arrow">›</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider" style="margin-top:52px"></div>
+
+  <!-- ── FAQ ── -->
+  <section class="section">
+    <div class="section-head">
+      <div>
+        <h2 class="section-title">Common Questions</h2>
+        <p class="section-sub">Answers to what our community asks most</p>
+      </div>
+    </div>
+
+    <div class="faq-list">
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">
+          <span class="faq-q-text">How do I submit a prayer request to a specific minister?</span>
+          <div class="faq-chevron">▾</div>
+        </div>
+        <div class="faq-a">Navigate to any minister's profile page and tap the "Send Prayer Request" button. Your request will be delivered directly to their inbox and included in their personal prayer session. All requests are treated with complete confidentiality and reverence.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">
+          <span class="faq-q-text">How do I access sermons offline on the CLJN app?</span>
+          <div class="faq-chevron">▾</div>
+        </div>
+        <div class="faq-a">Premium subscribers can download any sermon for offline listening. Simply tap the ⬇ download icon on any sermon card. Downloads are stored on your device and accessible via the "Downloaded" tab in My Library — even without internet access.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">
+          <span class="faq-q-text">Can ministers apply to be featured on CLJN?</span>
+          <div class="faq-chevron">▾</div>
+        </div>
+        <div class="faq-a">Yes! Ministers and preachers are welcome to apply through our Ministry Partnership program. Select "Partnership & Outreach" in the contact form above, and our team will review your application and respond within 5 business days with onboarding information.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">
+          <span class="faq-q-text">How do I report inappropriate content or a technical issue?</span>
+          <div class="faq-chevron">▾</div>
+        </div>
+        <div class="faq-a">Use the "Report an Issue" option in the contact form, or tap the flag icon directly on any piece of content. For urgent technical matters, our live chat is the fastest route to resolution — our agents typically respond in under 3 minutes.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">
+          <span class="faq-q-text">Is CLJN free to use, and what does Premium include?</span>
+          <div class="faq-chevron">▾</div>
+        </div>
+        <div class="faq-a">CLJN is free for all core features — sermons, articles, and community access. Premium (from $4.99/month) adds offline downloads, ad-free listening, exclusive minister Q&A sessions, early access to new sermons, and priority prayer support.</div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider" style="margin-top:52px"></div>
+
+  <!-- ── OFFICE INFO ── -->
+  <section class="section">
+    <div class="section-head">
+      <div>
+        <h2 class="section-title">Ministry & Office</h2>
+        <p class="section-sub">Where we are rooted and how to find us</p>
+      </div>
+    </div>
+
+    <div class="office-grid">
+      <div class="office-card">
+        <div class="office-icon">📍</div>
+        <div class="office-label">Headquarters</div>
+        <div class="office-value">CLJN Ministries<br>1 Kingdom Avenue, Suite 400<br>Atlanta, GA 30301 · USA</div>
+        <div class="office-note">Open Mon–Fri, 9:00am – 5:00pm EST</div>
+      </div>
+
+      <div class="office-card">
+        <div class="office-icon">✉️</div>
+        <div class="office-label">Email Addresses</div>
+        <div class="office-value">support@cljn.org</div>
+        <div class="office-note">General support &amp; inquiries</div>
+        <div class="office-value" style="margin-top:10px;font-size:13.5px">partners@cljn.org</div>
+        <div class="office-note">Ministry partnerships &amp; press</div>
+      </div>
+
+      <div class="office-card">
+        <div class="office-icon">📞</div>
+        <div class="office-label">Phone Lines</div>
+        <div class="office-value">+1 (888) 345-DIVINE</div>
+        <div class="office-note">Toll-free · Mon–Fri 9am–6pm</div>
+        <div class="office-value" style="margin-top:10px;font-size:13.5px">+1 (404) 776-0001</div>
+        <div class="office-note">International line</div>
+      </div>
+
+      <div class="office-card">
+        <div class="office-icon">🌐</div>
+        <div class="office-label">Social & Community</div>
+        <div class="office-note" style="margin-bottom:14px">Follow our ministry across platforms</div>
+        <div class="social-row">
+          <a href="#" class="social-btn" onclick="showToast('📘','Opening Facebook…');return false">📘 Facebook</a>
+          <a href="#" class="social-btn" onclick="showToast('📸','Opening Instagram…');return false">📸 Instagram</a>
+          <a href="#" class="social-btn" onclick="showToast('🐦','Opening Twitter…');return false">🐦 Twitter</a>
+          <a href="#" class="social-btn" onclick="showToast('▶️','Opening YouTube…');return false">▶️ YouTube</a>
+          <a href="#" class="social-btn" onclick="showToast('💬','Opening WhatsApp…');return false">💬 WhatsApp</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider" style="margin-top:52px"></div>
+
+  <!-- ── MAP ── -->
+  <section class="section map-section">
+    <div class="section-head">
+      <div>
+        <h2 class="section-title">Find Us</h2>
+        <p class="section-sub">Our home base in the heart of Atlanta, Georgia</p>
+      </div>
+    </div>
+
+    <div class="map-wrap" onclick="showToast('🗺️','Opening in Google Maps…')">
+      <!-- SVG illustrated map grid -->
+      <div class="map-svg-bg">
+        <svg width="100%" height="100%" viewBox="0 0 1300 360" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+          <!-- grid roads -->
+          <defs>
+            <pattern id="grid" width="80" height="80" patternUnits="userSpaceOnUse">
+              <path d="M 80 0 L 0 0 0 80" fill="none" stroke="rgba(201,162,39,0.09)" stroke-width="1"/>
+            </pattern>
+          </defs>
+          <rect width="1300" height="360" fill="url(#grid)"/>
+          <!-- major roads -->
+          <line x1="0" y1="180" x2="1300" y2="180" stroke="rgba(201,162,39,0.22)" stroke-width="3"/>
+          <line x1="650" y1="0" x2="650" y2="360" stroke="rgba(201,162,39,0.22)" stroke-width="3"/>
+          <line x1="0" y1="90" x2="1300" y2="90" stroke="rgba(30,77,183,0.18)" stroke-width="2"/>
+          <line x1="0" y1="270" x2="1300" y2="270" stroke="rgba(30,77,183,0.18)" stroke-width="2"/>
+          <line x1="325" y1="0" x2="325" y2="360" stroke="rgba(30,77,183,0.18)" stroke-width="2"/>
+          <line x1="975" y1="0" x2="975" y2="360" stroke="rgba(30,77,183,0.18)" stroke-width="2"/>
+          <!-- blocks -->
+          <rect x="90" y="105" width="140" height="60" rx="4" fill="rgba(26,58,143,0.25)" stroke="rgba(30,77,183,0.2)" stroke-width="1"/>
+          <rect x="250" y="105" width="60" height="60" rx="4" fill="rgba(26,58,143,0.2)" stroke="rgba(30,77,183,0.15)" stroke-width="1"/>
+          <rect x="90" y="195" width="100" height="60" rx="4" fill="rgba(26,58,143,0.2)" stroke="rgba(30,77,183,0.15)" stroke-width="1"/>
+          <rect x="340" y="105" width="90" height="130" rx="4" fill="rgba(26,58,143,0.25)" stroke="rgba(30,77,183,0.2)" stroke-width="1"/>
+          <rect x="700" y="105" width="120" height="60" rx="4" fill="rgba(26,58,143,0.2)" stroke="rgba(30,77,183,0.15)" stroke-width="1"/>
+          <rect x="840" y="105" width="80" height="60" rx="4" fill="rgba(26,58,143,0.18)" stroke="rgba(30,77,183,0.13)" stroke-width="1"/>
+          <rect x="700" y="195" width="200" height="60" rx="4" fill="rgba(26,58,143,0.2)" stroke="rgba(30,77,183,0.15)" stroke-width="1"/>
+          <rect x="1000" y="105" width="110" height="130" rx="4" fill="rgba(26,58,143,0.22)" stroke="rgba(30,77,183,0.18)" stroke-width="1"/>
+          <rect x="1130" y="195" width="80" height="60" rx="4" fill="rgba(26,58,143,0.17)" stroke="rgba(30,77,183,0.12)" stroke-width="1"/>
+          <!-- diagonal road -->
+          <line x1="150" y1="0" x2="550" y2="360" stroke="rgba(201,162,39,0.1)" stroke-width="2"/>
+          <line x1="750" y1="0" x2="1150" y2="360" stroke="rgba(201,162,39,0.1)" stroke-width="2"/>
+          <!-- road labels -->
+          <text x="660" y="174" font-family="monospace" font-size="9" fill="rgba(201,162,39,0.45)" transform="rotate(90,660,174)">KINGDOM AVE</text>
+          <text x="20" y="177" font-family="monospace" font-size="9" fill="rgba(201,162,39,0.45)">DIVINE BLVD</text>
+          <!-- center highlight -->
+          <circle cx="650" cy="180" r="40" fill="rgba(201,162,39,0.06)" stroke="rgba(201,162,39,0.25)" stroke-width="1.5" stroke-dasharray="4 4"/>
+        </svg>
+      </div>
+      <div class="map-overlay"></div>
+      <div class="map-pulse"></div>
+      <div class="map-pulse"></div>
+      <div class="map-pin">
+        <div class="map-pin-head"><span>✝</span></div>
+        <div class="map-pin-tail"></div>
+      </div>
+      <div class="map-label">✦ CLJN HQ · Atlanta, GA</div>
+      <button class="map-open-btn" onclick="event.stopPropagation();showToast('🗺️','Opening Google Maps…')">Open in Maps →</button>
+    </div>
+  </section>
+
+</div><!-- /page -->
+</div><!-- /z1 -->
+
+<!-- TOAST -->
+<div class="toast-wrap" id="toastWrap"></div>
+
+<script>
+  // FAQ accordion
+  function toggleFaq(btn) {
+    const item = btn.closest('.faq-item');
+    const isOpen = item.classList.contains('open');
+    document.querySelectorAll('.faq-item.open').forEach(i => i.classList.remove('open'));
+    if (!isOpen) item.classList.add('open');
+  }
+
+  // Char counter
+  function countChars(el) {
+    document.getElementById('charNum').textContent = el.value.length;
+  }
+
+  // Field glow on input
+  function validateField(el) {
+    el.style.borderColor = el.value.length > 1 ? 'rgba(201,162,39,.55)' : '';
+  }
+
+  // Form send
+  function sendForm() {
+    const btn = document.getElementById('sendBtn');
+    const lbl = document.getElementById('sendLabel');
+    btn.style.pointerEvents = 'none';
+    lbl.textContent = '⏳ Sending…';
+    setTimeout(() => {
+      btn.classList.add('sent');
+      lbl.textContent = '✓ Message Sent!';
+      showToast('✅', 'Your message was sent. We'll reply within 2 hrs.');
+      setTimeout(() => {
+        btn.classList.remove('sent');
+        btn.style.pointerEvents = '';
+        lbl.textContent = '✦ Send Message';
+        document.getElementById('fname').value = '';
+        document.getElementById('femail').value = '';
+        document.getElementById('fmessage').value = '';
+        document.getElementById('fsubject').value = '';
+        document.getElementById('charNum').textContent = '0';
+      }, 3200);
+    }, 1600);
+  }
+
+  // Toast
+  function showToast(icon, msg) {
+    const wrap = document.getElementById('toastWrap');
+    const t = document.createElement('div');
+    t.className = 'toast';
+    t.innerHTML = `<span>${icon}</span><span>${msg}</span>`;
+    wrap.appendChild(t);
+    setTimeout(() => {
+      t.classList.add('out');
+      setTimeout(() => t.remove(), 320);
+    }, 2800);
+  }
+
+  // Open first FAQ by default
+  document.querySelectorAll('.faq-item')[0].classList.add('open');
+</script>
+</body>
+</html>

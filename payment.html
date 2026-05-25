@@ -1,0 +1,1157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CLJN – Payment Status</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Cinzel:wght@400;500;600;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #050d1f;
+    --navy-mid: #0a1930;
+    --navy-light: #112244;
+    --royal: #1a3a8f;
+    --royal-bright: #2255cc;
+    --gold: #c9a84c;
+    --gold-light: #e6c96b;
+    --gold-pale: #f5e6b0;
+    --gold-shine: #fff3c0;
+    --white: #ffffff;
+    --glass: rgba(255,255,255,0.06);
+    --glass-border: rgba(201,168,76,0.25);
+    --glass-strong: rgba(255,255,255,0.10);
+    --success: #22c77a;
+    --success-glow: rgba(34,199,122,0.3);
+    --error: #e05252;
+    --error-glow: rgba(224,82,82,0.3);
+    --text-dim: rgba(245,230,176,0.55);
+    --shadow-gold: 0 0 40px rgba(201,168,76,0.15);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--navy);
+    font-family: 'Lato', sans-serif;
+    color: var(--white);
+    min-height: 100vh;
+    overflow-x: hidden;
+    position: relative;
+  }
+
+  /* ── Animated Background ── */
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background:
+      radial-gradient(ellipse 80% 60% at 20% 10%, rgba(26,58,143,0.45) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 50% at 80% 90%, rgba(201,168,76,0.12) 0%, transparent 55%),
+      radial-gradient(ellipse 40% 40% at 50% 50%, rgba(10,25,48,0.9) 0%, transparent 100%);
+    pointer-events: none; z-index: 0;
+  }
+
+  .stars {
+    position: fixed; inset: 0; pointer-events: none; z-index: 0;
+    background-image:
+      radial-gradient(1px 1px at 15% 20%, rgba(201,168,76,0.6) 0%, transparent 100%),
+      radial-gradient(1px 1px at 35% 60%, rgba(201,168,76,0.4) 0%, transparent 100%),
+      radial-gradient(1px 1px at 65% 25%, rgba(255,255,255,0.5) 0%, transparent 100%),
+      radial-gradient(1px 1px at 80% 70%, rgba(201,168,76,0.5) 0%, transparent 100%),
+      radial-gradient(1px 1px at 90% 15%, rgba(255,255,255,0.4) 0%, transparent 100%),
+      radial-gradient(1px 1px at 10% 80%, rgba(201,168,76,0.3) 0%, transparent 100%),
+      radial-gradient(1px 1px at 55% 85%, rgba(255,255,255,0.35) 0%, transparent 100%),
+      radial-gradient(1px 1px at 45% 10%, rgba(201,168,76,0.45) 0%, transparent 100%);
+  }
+
+  /* ── Navbar ── */
+  nav {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(5,13,31,0.85);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--glass-border);
+    padding: 0 2rem;
+  }
+
+  .nav-inner {
+    max-width: 1300px; margin: 0 auto;
+    display: flex; align-items: center; justify-content: space-between;
+    height: 72px;
+  }
+
+  .logo {
+    display: flex; align-items: center; gap: 12px; text-decoration: none;
+  }
+
+  .logo-icon {
+    width: 42px; height: 42px;
+    background: linear-gradient(135deg, var(--gold), var(--royal));
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px;
+    box-shadow: 0 0 18px rgba(201,168,76,0.4);
+  }
+
+  .logo-text {
+    font-family: 'Cinzel', serif;
+    font-size: 1.25rem; font-weight: 700;
+    background: linear-gradient(to right, var(--gold-light), var(--white), var(--gold));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    letter-spacing: 0.05em;
+  }
+
+  .logo-sub {
+    font-size: 0.6rem; font-weight: 300;
+    color: var(--gold); letter-spacing: 0.2em;
+    text-transform: uppercase; display: block; margin-top: -2px;
+    -webkit-text-fill-color: var(--gold);
+  }
+
+  .nav-links {
+    display: flex; align-items: center; gap: 2rem; list-style: none;
+  }
+
+  .nav-links a {
+    font-family: 'Cinzel', serif; font-size: 0.8rem;
+    letter-spacing: 0.08em; text-decoration: none;
+    color: var(--gold-pale); transition: color 0.25s;
+  }
+
+  .nav-links a:hover { color: var(--gold-light); }
+
+  .nav-cta {
+    background: linear-gradient(135deg, var(--gold), #a07830);
+    color: var(--navy) !important;
+    padding: 8px 20px; border-radius: 6px;
+    font-weight: 700 !important; font-size: 0.75rem !important;
+    transition: box-shadow 0.25s !important;
+  }
+
+  .nav-cta:hover { box-shadow: 0 0 20px rgba(201,168,76,0.5) !important; }
+
+  .nav-user {
+    display: flex; align-items: center; gap: 10px;
+  }
+
+  .avatar {
+    width: 36px; height: 36px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--royal), var(--gold));
+    border: 2px solid var(--gold); cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px; font-weight: 700;
+  }
+
+  .nav-mobile-btn {
+    display: none; background: none; border: none;
+    color: var(--gold); font-size: 1.5rem; cursor: pointer;
+  }
+
+  /* ── Toggle Bar ── */
+  .toggle-bar {
+    position: relative; z-index: 1;
+    display: flex; justify-content: center;
+    padding: 2.5rem 1rem 1rem;
+    gap: 1rem;
+  }
+
+  .toggle-btn {
+    font-family: 'Cinzel', serif; font-size: 0.8rem; letter-spacing: 0.1em;
+    padding: 10px 28px; border-radius: 40px; border: 1px solid var(--glass-border);
+    background: var(--glass); color: var(--gold-pale);
+    cursor: pointer; transition: all 0.3s;
+  }
+
+  .toggle-btn.active-success {
+    background: linear-gradient(135deg, rgba(34,199,122,0.2), rgba(34,199,122,0.05));
+    border-color: var(--success); color: var(--success);
+    box-shadow: 0 0 20px var(--success-glow);
+  }
+
+  .toggle-btn.active-fail {
+    background: linear-gradient(135deg, rgba(224,82,82,0.2), rgba(224,82,82,0.05));
+    border-color: var(--error); color: var(--error);
+    box-shadow: 0 0 20px var(--error-glow);
+  }
+
+  /* ── States ── */
+  .state { display: none; }
+  .state.visible { display: block; }
+
+  /* ── Main Container ── */
+  .main {
+    position: relative; z-index: 1;
+    max-width: 1300px; margin: 0 auto;
+    padding: 1rem 2rem 4rem;
+  }
+
+  /* ── Status Hero ── */
+  .status-hero {
+    text-align: center; padding: 3rem 1rem 2.5rem;
+    animation: fadeDown 0.7s ease both;
+  }
+
+  @keyframes fadeDown {
+    from { opacity: 0; transform: translateY(-30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .status-icon-wrap {
+    width: 110px; height: 110px; border-radius: 50%;
+    margin: 0 auto 1.8rem;
+    display: flex; align-items: center; justify-content: center;
+    position: relative;
+  }
+
+  .status-icon-wrap.success-wrap {
+    background: radial-gradient(circle, rgba(34,199,122,0.25), rgba(34,199,122,0.05));
+    border: 2px solid rgba(34,199,122,0.5);
+    box-shadow: 0 0 50px var(--success-glow), inset 0 0 30px rgba(34,199,122,0.1);
+    animation: pulseSuccess 2.5s ease-in-out infinite;
+  }
+
+  .status-icon-wrap.fail-wrap {
+    background: radial-gradient(circle, rgba(224,82,82,0.25), rgba(224,82,82,0.05));
+    border: 2px solid rgba(224,82,82,0.5);
+    box-shadow: 0 0 50px var(--error-glow), inset 0 0 30px rgba(224,82,82,0.1);
+    animation: pulseFail 2.5s ease-in-out infinite;
+  }
+
+  @keyframes pulseSuccess {
+    0%,100% { box-shadow: 0 0 50px var(--success-glow), inset 0 0 30px rgba(34,199,122,0.1); }
+    50% { box-shadow: 0 0 80px rgba(34,199,122,0.5), inset 0 0 40px rgba(34,199,122,0.18); }
+  }
+
+  @keyframes pulseFail {
+    0%,100% { box-shadow: 0 0 50px var(--error-glow), inset 0 0 30px rgba(224,82,82,0.1); }
+    50% { box-shadow: 0 0 80px rgba(224,82,82,0.5), inset 0 0 40px rgba(224,82,82,0.18); }
+  }
+
+  .status-icon-wrap svg { width: 52px; height: 52px; }
+
+  .status-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 5px 16px; border-radius: 20px; font-size: 0.7rem;
+    font-family: 'Cinzel', serif; letter-spacing: 0.12em;
+    margin-bottom: 1rem; text-transform: uppercase;
+  }
+
+  .status-badge.s-badge {
+    background: rgba(34,199,122,0.12); border: 1px solid rgba(34,199,122,0.35);
+    color: var(--success);
+  }
+
+  .status-badge.f-badge {
+    background: rgba(224,82,82,0.12); border: 1px solid rgba(224,82,82,0.35);
+    color: var(--error);
+  }
+
+  .status-heading {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: clamp(1.6rem, 4vw, 2.8rem);
+    font-weight: 700; margin-bottom: 0.75rem;
+    background: linear-gradient(135deg, var(--gold-light), var(--white) 50%, var(--gold));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  }
+
+  .status-heading.fail-heading {
+    background: linear-gradient(135deg, #ff9a9a, #e05252 50%, #ff6b6b);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  }
+
+  .status-sub {
+    color: var(--text-dim); font-size: 1rem; max-width: 500px;
+    margin: 0 auto; line-height: 1.7;
+  }
+
+  /* ── Grid Layout ── */
+  .content-grid {
+    display: grid;
+    grid-template-columns: 1fr 380px;
+    gap: 2rem; margin-top: 2rem;
+  }
+
+  /* ── Glass Card ── */
+  .glass-card {
+    background: var(--glass);
+    border: 1px solid var(--glass-border);
+    border-radius: 20px;
+    backdrop-filter: blur(16px);
+    padding: 2rem;
+    transition: border-color 0.3s, box-shadow 0.3s;
+    animation: fadeUp 0.6s ease both;
+  }
+
+  .glass-card:hover {
+    border-color: rgba(201,168,76,0.4);
+    box-shadow: var(--shadow-gold);
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .card-title {
+    font-family: 'Cinzel', serif; font-size: 0.75rem;
+    letter-spacing: 0.15em; color: var(--gold);
+    text-transform: uppercase; margin-bottom: 1.5rem;
+    display: flex; align-items: center; gap: 8px;
+  }
+
+  .card-title::after {
+    content: ''; flex: 1; height: 1px;
+    background: linear-gradient(to right, var(--glass-border), transparent);
+  }
+
+  /* ── Transaction Details ── */
+  .detail-row {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 0.85rem 0; border-bottom: 1px solid rgba(255,255,255,0.05);
+    gap: 1rem;
+  }
+
+  .detail-row:last-child { border-bottom: none; }
+
+  .detail-label {
+    font-size: 0.8rem; color: var(--text-dim); letter-spacing: 0.05em;
+  }
+
+  .detail-value {
+    font-size: 0.9rem; color: var(--gold-pale); font-weight: 700;
+    text-align: right;
+  }
+
+  .txn-id {
+    font-family: monospace; font-size: 0.78rem;
+    background: rgba(201,168,76,0.1); padding: 4px 10px;
+    border-radius: 6px; border: 1px solid rgba(201,168,76,0.2);
+    letter-spacing: 0.05em; color: var(--gold-light);
+  }
+
+  /* ── Action Buttons ── */
+  .action-grid {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 1rem; margin-top: 1.5rem;
+  }
+
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center;
+    gap: 8px; padding: 14px 20px; border-radius: 10px;
+    font-family: 'Cinzel', serif; font-size: 0.78rem; letter-spacing: 0.08em;
+    font-weight: 600; cursor: pointer; text-decoration: none;
+    border: none; transition: all 0.3s; text-align: center;
+  }
+
+  .btn-primary {
+    background: linear-gradient(135deg, var(--gold), #8a5e20);
+    color: var(--navy);
+    box-shadow: 0 4px 20px rgba(201,168,76,0.3);
+  }
+
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(201,168,76,0.5);
+  }
+
+  .btn-secondary {
+    background: var(--glass-strong);
+    border: 1px solid var(--glass-border);
+    color: var(--gold-pale);
+  }
+
+  .btn-secondary:hover {
+    border-color: var(--gold); color: var(--gold-light);
+    background: rgba(201,168,76,0.1);
+    transform: translateY(-2px);
+  }
+
+  .btn-full {
+    grid-column: 1 / -1;
+  }
+
+  .btn-danger {
+    background: linear-gradient(135deg, #e05252, #9a2020);
+    color: var(--white);
+    box-shadow: 0 4px 20px var(--error-glow);
+  }
+
+  .btn-danger:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(224,82,82,0.5);
+  }
+
+  /* ── Payment Summary Card ── */
+  .summary-card {
+    position: sticky; top: 90px;
+  }
+
+  .plan-header {
+    display: flex; align-items: center; gap: 12px;
+    padding-bottom: 1.5rem; margin-bottom: 1.5rem;
+    border-bottom: 1px solid var(--glass-border);
+  }
+
+  .plan-icon {
+    width: 48px; height: 48px; border-radius: 12px;
+    background: linear-gradient(135deg, var(--gold), var(--royal));
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px; flex-shrink: 0;
+  }
+
+  .plan-name {
+    font-family: 'Cinzel', serif; font-size: 1rem;
+    font-weight: 700; color: var(--white);
+  }
+
+  .plan-tier {
+    font-size: 0.7rem; color: var(--gold); letter-spacing: 0.12em;
+    text-transform: uppercase; margin-top: 2px;
+  }
+
+  .amount-display {
+    text-align: center; padding: 1.5rem 0;
+    border-bottom: 1px solid var(--glass-border);
+    margin-bottom: 1.5rem;
+  }
+
+  .amount-label { font-size: 0.7rem; color: var(--text-dim); letter-spacing: 0.1em; text-transform: uppercase; }
+
+  .amount-value {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 2.8rem; font-weight: 700;
+    background: linear-gradient(135deg, var(--gold-light), var(--white));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    line-height: 1.1; margin: 4px 0;
+  }
+
+  .amount-period { font-size: 0.8rem; color: var(--text-dim); }
+
+  .method-badge {
+    display: flex; align-items: center; gap: 8px;
+    background: rgba(201,168,76,0.08); border: 1px solid rgba(201,168,76,0.2);
+    border-radius: 8px; padding: 10px 14px; margin-top: 1rem;
+  }
+
+  .method-icon { font-size: 1.2rem; }
+  .method-info { flex: 1; }
+  .method-name { font-size: 0.85rem; color: var(--gold-pale); font-weight: 700; }
+  .method-detail { font-size: 0.7rem; color: var(--text-dim); margin-top: 1px; }
+
+  /* ── Checkmark list ── */
+  .features-list { list-style: none; margin-top: 1.5rem; }
+
+  .features-list li {
+    display: flex; align-items: center; gap: 10px;
+    padding: 6px 0; font-size: 0.82rem; color: var(--gold-pale);
+  }
+
+  .features-list li::before {
+    content: '✦'; color: var(--gold); font-size: 0.6rem; flex-shrink: 0;
+  }
+
+  /* ── Error Details ── */
+  .error-box {
+    background: rgba(224,82,82,0.08);
+    border: 1px solid rgba(224,82,82,0.25);
+    border-radius: 12px; padding: 1.2rem 1.5rem;
+    display: flex; gap: 12px; align-items: flex-start;
+    margin-bottom: 1.5rem;
+  }
+
+  .error-icon { font-size: 1.3rem; flex-shrink: 0; margin-top: 2px; }
+
+  .error-title {
+    font-family: 'Cinzel', serif; font-size: 0.8rem;
+    color: var(--error); margin-bottom: 4px;
+  }
+
+  .error-desc { font-size: 0.82rem; color: var(--text-dim); line-height: 1.5; }
+
+  /* ── Ministers Slider ── */
+  .ministers-section {
+    margin-top: 2rem; animation: fadeUp 0.8s 0.3s ease both;
+  }
+
+  .section-heading {
+    font-family: 'Cinzel', serif; font-size: 0.75rem;
+    letter-spacing: 0.15em; text-transform: uppercase;
+    color: var(--gold); margin-bottom: 1.5rem;
+    display: flex; align-items: center; gap: 12px;
+  }
+
+  .section-heading::before,
+  .section-heading::after {
+    content: ''; flex: 1; height: 1px;
+    background: linear-gradient(to right, transparent, var(--glass-border));
+  }
+
+  .section-heading::before { background: linear-gradient(to left, transparent, var(--glass-border)); }
+
+  .slider-wrap {
+    overflow: hidden; position: relative;
+  }
+
+  .slider-track {
+    display: flex; gap: 1.25rem;
+    animation: slideLoop 30s linear infinite;
+    width: max-content;
+  }
+
+  .slider-track:hover { animation-play-state: paused; }
+
+  @keyframes slideLoop {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+
+  .minister-card {
+    width: 220px; flex-shrink: 0;
+    background: var(--glass); border: 1px solid var(--glass-border);
+    border-radius: 16px; padding: 1.5rem 1rem;
+    text-align: center; cursor: pointer;
+    transition: all 0.3s; backdrop-filter: blur(10px);
+  }
+
+  .minister-card:hover {
+    transform: translateY(-6px);
+    border-color: var(--gold);
+    box-shadow: 0 12px 40px rgba(201,168,76,0.2);
+  }
+
+  .minister-avatar {
+    width: 70px; height: 70px; border-radius: 50%;
+    margin: 0 auto 1rem;
+    border: 2px solid var(--gold);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 2rem;
+    background: linear-gradient(135deg, var(--navy-light), var(--royal));
+    box-shadow: 0 0 20px rgba(201,168,76,0.2);
+  }
+
+  .minister-name {
+    font-family: 'Cinzel', serif; font-size: 0.85rem;
+    font-weight: 600; color: var(--white); margin-bottom: 4px;
+  }
+
+  .minister-title { font-size: 0.7rem; color: var(--gold); margin-bottom: 0.6rem; }
+
+  .minister-stars { color: var(--gold); font-size: 0.75rem; letter-spacing: 2px; }
+
+  .minister-tag {
+    display: inline-block; font-size: 0.65rem; margin-top: 8px;
+    padding: 3px 10px; border-radius: 20px;
+    background: rgba(201,168,76,0.1); border: 1px solid rgba(201,168,76,0.2);
+    color: var(--gold-pale); letter-spacing: 0.05em;
+  }
+
+  /* ── Support Note ── */
+  .support-note {
+    display: flex; align-items: center; gap: 10px;
+    background: rgba(26,58,143,0.15); border: 1px solid rgba(26,58,143,0.35);
+    border-radius: 10px; padding: 1rem 1.2rem; margin-top: 1.5rem;
+    font-size: 0.8rem; color: var(--text-dim);
+  }
+
+  .support-note strong { color: var(--gold-pale); }
+
+  /* ── Footer ── */
+  footer {
+    position: relative; z-index: 1;
+    background: rgba(5,13,31,0.9);
+    border-top: 1px solid var(--glass-border);
+    padding: 3rem 2rem 1.5rem;
+    margin-top: 4rem;
+  }
+
+  .footer-inner { max-width: 1300px; margin: 0 auto; }
+
+  .footer-top {
+    display: grid; grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 3rem; margin-bottom: 2.5rem;
+  }
+
+  .footer-brand p {
+    font-size: 0.83rem; color: var(--text-dim);
+    line-height: 1.8; margin-top: 1rem; max-width: 280px;
+  }
+
+  .footer-heading {
+    font-family: 'Cinzel', serif; font-size: 0.7rem;
+    letter-spacing: 0.15em; text-transform: uppercase;
+    color: var(--gold); margin-bottom: 1.2rem;
+  }
+
+  .footer-links { list-style: none; }
+
+  .footer-links li { margin-bottom: 0.6rem; }
+
+  .footer-links a {
+    font-size: 0.82rem; color: var(--text-dim);
+    text-decoration: none; transition: color 0.25s;
+  }
+
+  .footer-links a:hover { color: var(--gold-light); }
+
+  .footer-divider {
+    height: 1px;
+    background: linear-gradient(to right, transparent, var(--glass-border), transparent);
+    margin-bottom: 1.5rem;
+  }
+
+  .footer-bottom {
+    display: flex; justify-content: space-between; align-items: center;
+    flex-wrap: wrap; gap: 1rem;
+  }
+
+  .footer-copy { font-size: 0.75rem; color: var(--text-dim); }
+
+  .footer-socials { display: flex; gap: 12px; }
+
+  .social-btn {
+    width: 34px; height: 34px; border-radius: 8px;
+    background: var(--glass); border: 1px solid var(--glass-border);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.85rem; cursor: pointer;
+    transition: all 0.25s; color: var(--gold-pale); text-decoration: none;
+  }
+
+  .social-btn:hover {
+    background: rgba(201,168,76,0.15);
+    border-color: var(--gold); color: var(--gold);
+  }
+
+  /* ── Responsive ── */
+  @media (max-width: 1024px) {
+    .content-grid { grid-template-columns: 1fr; }
+    .summary-card { position: static; }
+    .footer-top { grid-template-columns: 1fr 1fr; }
+  }
+
+  @media (max-width: 768px) {
+    .nav-links { display: none; }
+    .nav-mobile-btn { display: block; }
+    .action-grid { grid-template-columns: 1fr; }
+    .footer-top { grid-template-columns: 1fr; gap: 2rem; }
+    .main { padding: 1rem 1rem 3rem; }
+  }
+
+  /* ── Confetti ── */
+  .confetti-container {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    pointer-events: none; z-index: 200; overflow: hidden;
+  }
+
+  .confetti-piece {
+    position: absolute; width: 8px; height: 8px;
+    border-radius: 2px;
+    animation: confettiFall linear forwards;
+  }
+
+  @keyframes confettiFall {
+    0% { transform: translateY(-20px) rotate(0deg); opacity: 1; }
+    100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+  }
+
+  /* ── Shimmer effect ── */
+  .shimmer {
+    position: relative; overflow: hidden;
+  }
+
+  .shimmer::after {
+    content: '';
+    position: absolute; top: 0; left: -100%;
+    width: 60%; height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(201,168,76,0.08), transparent);
+    animation: shimmer 3s ease infinite;
+  }
+
+  @keyframes shimmer {
+    100% { left: 150%; }
+  }
+</style>
+</head>
+<body>
+<a href="pricing.html" style="display:inline-flex;align-items:center;gap:6px;color:var(--gold-light,#c9a227);text-decoration:none;font-size:13px;padding:8px 16px;opacity:0.85;transition:opacity .2s" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.85">← Back to Pricing</a>
+
+<div class="stars"></div>
+<div class="confetti-container" id="confettiContainer"></div>
+
+<!-- NAVBAR -->
+<nav>
+  <div class="nav-inner">
+    <a href="index.html" class="logo">
+      <div class="logo-icon">✦</div>
+      <div>
+        <span class="logo-text">CLJN</span>
+        <span class="logo-sub">Digital Ministry Platform</span>
+      </div>
+    </a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="ministers.html">Ministers</a></li>
+      <li><a href="ministers.html">Services</a></li>
+      <li><a href="dashboard.html">Community</a></li>
+      <li><a href="auth.html" class="nav-cta">✦ Connect Now</a></li>
+    </ul>
+    <div class="nav-user">
+      <div class="avatar">JS</div>
+      <button class="nav-mobile-btn" onclick="this.textContent = this.textContent === '☰' ? '✕' : '☰'">☰</button>
+    </div>
+  </div>
+</nav>
+
+<!-- TOGGLE -->
+<div class="toggle-bar">
+  <button class="toggle-btn active-success" id="btnSuccess" onclick="showState('success')">✅ Payment Success</button>
+  <button class="toggle-btn" id="btnFail" onclick="showState('fail')">❌ Payment Failed</button>
+</div>
+
+<!-- ════════════════ SUCCESS STATE ════════════════ -->
+<div class="state visible" id="stateSuccess">
+<div class="main">
+
+  <!-- Hero -->
+  <div class="status-hero">
+    <div class="status-icon-wrap success-wrap">
+      <svg viewBox="0 0 52 52" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="26" cy="26" r="25" stroke="#22c77a" stroke-width="1.5" stroke-dasharray="4 4"/>
+        <path d="M14 26L22 34L38 18" stroke="#22c77a" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+    <div class="status-badge s-badge">✦ Transaction Verified</div>
+    <h1 class="status-heading">Payment Successful</h1>
+    <p class="status-sub">Your divine journey begins now. Your subscription has been activated and your first consultation is ready to begin.</p>
+  </div>
+
+  <!-- Content Grid -->
+  <div class="content-grid">
+
+    <!-- LEFT: Details + Actions -->
+    <div>
+
+      <!-- Transaction Details -->
+      <div class="glass-card shimmer" style="animation-delay:0.1s">
+        <div class="card-title">✦ Transaction Details</div>
+        <div class="detail-row">
+          <span class="detail-label">Transaction ID</span>
+          <span class="detail-value"><span class="txn-id">DC-2026-7X9K4M2P</span></span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">Subscription Plan</span>
+          <span class="detail-value">CLJN Premium – Annual</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">Sessions Included</span>
+          <span class="detail-value">12 Consultations / Year</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">Activation Date</span>
+          <span class="detail-value">May 25, 2026 · 10:42 AM</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">Next Renewal</span>
+          <span class="detail-value">May 25, 2027</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">Status</span>
+          <span class="detail-value" style="color:var(--success)">● Active & Verified</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">Assigned Spiritual Advisor</span>
+          <span class="detail-value">Rev. Emmanuel Okafor</span>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="glass-card" style="margin-top:1.25rem; animation-delay:0.2s">
+        <div class="card-title">✦ Continue Your Journey</div>
+        <div class="action-grid">
+          <a href="dashboard.html" class="btn btn-primary btn-full" onclick="ripple(this)">
+            🏛️ &nbsp;Go to Dashboard
+          </a>
+          <a href="dashboard.html" class="btn btn-primary" onclick="ripple(this)">
+            🕊️ &nbsp;Start Consultation
+          </a>
+          <a href="minister-profile.html" class="btn btn-secondary" onclick="ripple(this)">
+            👥 &nbsp;Browse Ministers
+          </a>
+        </div>
+        <div class="support-note" style="margin-top:1.2rem">
+          📧 &nbsp;A confirmation receipt has been sent to <strong>john.solomon@gmail.com</strong>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- RIGHT: Summary Card -->
+    <div>
+      <div class="glass-card summary-card shimmer" style="animation-delay:0.15s">
+        <div class="card-title">✦ Payment Summary</div>
+
+        <div class="plan-header">
+          <div class="plan-icon">👑</div>
+          <div>
+            <div class="plan-name">CLJN Premium</div>
+            <div class="plan-tier">✦ Annual Covenant Plan</div>
+          </div>
+        </div>
+
+        <div class="amount-display">
+          <div class="amount-label">Total Charged</div>
+          <div class="amount-value">$299</div>
+          <div class="amount-period">per year · billed annually</div>
+        </div>
+
+        <div class="detail-row">
+          <span class="detail-label">Subtotal</span>
+          <span class="detail-value">$299.00</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">Discount Applied</span>
+          <span class="detail-value" style="color:var(--success)">−$60.00</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">Tax (GST)</span>
+          <span class="detail-value">$0.00</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">Total Paid</span>
+          <span class="detail-value" style="color:var(--gold-light); font-size:1.1rem">$299.00</span>
+        </div>
+
+        <div class="method-badge">
+          <span class="method-icon">💳</span>
+          <div class="method-info">
+            <div class="method-name">Visa Platinum •••• 4291</div>
+            <div class="method-detail">Exp. 09/28 · Processed via Stripe</div>
+          </div>
+        </div>
+
+        <ul class="features-list">
+          <li>12 Premium Spiritual Consultations</li>
+          <li>Access to All Senior Ministers</li>
+          <li>Priority Session Booking</li>
+          <li>Exclusive Community Access</li>
+          <li>Sacred Scripture Library</li>
+          <li>24/7 Prayer Support Line</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Recommended Ministers -->
+  <div class="ministers-section">
+    <div class="section-heading">Recommended Ministers for You</div>
+    <div class="slider-wrap">
+      <div class="slider-track" id="sliderTrack">
+        <!-- Ministers (duplicated for infinite scroll) -->
+      </div>
+    </div>
+  </div>
+
+</div><!-- /main -->
+</div><!-- /stateSuccess -->
+
+
+<!-- ════════════════ FAILED STATE ════════════════ -->
+<div class="state" id="stateFail">
+<div class="main">
+
+  <!-- Hero -->
+  <div class="status-hero">
+    <div class="status-icon-wrap fail-wrap">
+      <svg viewBox="0 0 52 52" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="26" cy="26" r="25" stroke="#e05252" stroke-width="1.5" stroke-dasharray="4 4"/>
+        <path d="M18 18L34 34M34 18L18 34" stroke="#e05252" stroke-width="3" stroke-linecap="round"/>
+      </svg>
+    </div>
+    <div class="status-badge f-badge">⚠ Transaction Declined</div>
+    <h1 class="status-heading fail-heading">Payment Unsuccessful</h1>
+    <p class="status-sub">We were unable to process your payment. Please review the details below and try again, or contact our sacred support team for assistance.</p>
+  </div>
+
+  <!-- Content Grid -->
+  <div class="content-grid">
+
+    <!-- LEFT -->
+    <div>
+
+      <!-- Error Info -->
+      <div class="glass-card" style="animation-delay:0.1s">
+        <div class="card-title">⚠ Error Information</div>
+
+        <div class="error-box">
+          <span class="error-icon">🚫</span>
+          <div>
+            <div class="error-title">Decline Code: INSUFFICIENT_FUNDS</div>
+            <div class="error-desc">Your card was declined due to insufficient funds. Please use a different payment method or ensure your account has adequate balance before retrying.</div>
+          </div>
+        </div>
+
+        <div class="detail-row">
+          <span class="detail-label">Attempt ID</span>
+          <span class="detail-value"><span class="txn-id">ATT-2026-F4X8R1</span></span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">Attempted On</span>
+          <span class="detail-value">May 25, 2026 · 10:38 AM</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">Payment Method</span>
+          <span class="detail-value">Visa •••• 4291</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">Amount</span>
+          <span class="detail-value">$299.00</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">Status</span>
+          <span class="detail-value" style="color:var(--error)">● Declined</span>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="glass-card" style="margin-top:1.25rem; animation-delay:0.2s">
+        <div class="card-title">✦ Resolution Options</div>
+        <div class="action-grid">
+          <a href="pricing.html" class="btn btn-danger btn-full" onclick="ripple(this)">
+            🔄 &nbsp;Retry Payment
+          </a>
+          <a href="minister-profile.html" class="btn btn-secondary" onclick="ripple(this)">
+            💳 &nbsp;Change Payment Method
+          </a>
+          <a href="minister-profile.html" class="btn btn-secondary" onclick="ripple(this)">
+            🎧 &nbsp;Contact Support
+          </a>
+        </div>
+        <div class="support-note" style="margin-top:1.2rem">
+          🛡️ &nbsp;No charges were made to your account. Your payment information is <strong>100% secure</strong>.
+        </div>
+      </div>
+
+      <!-- Help -->
+      <div class="glass-card" style="margin-top:1.25rem; animation-delay:0.25s">
+        <div class="card-title">✦ Need Help?</div>
+        <div class="detail-row">
+          <span class="detail-label">📞 Sacred Support Line</span>
+          <span class="detail-value">+1 (800) DIVINE-1</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">✉ Email Support</span>
+          <span class="detail-value">support@cljn.org</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">💬 Live Chat</span>
+          <span class="detail-value" style="color:var(--success)">● Available Now</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">🕐 Response Time</span>
+          <span class="detail-value">Under 2 Hours</span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- RIGHT: Summary -->
+    <div>
+      <div class="glass-card summary-card" style="animation-delay:0.15s">
+        <div class="card-title">✦ Attempted Purchase</div>
+
+        <div class="plan-header">
+          <div class="plan-icon">👑</div>
+          <div>
+            <div class="plan-name">CLJN Premium</div>
+            <div class="plan-tier">✦ Annual Covenant Plan</div>
+          </div>
+        </div>
+
+        <div class="amount-display">
+          <div class="amount-label">Amount Attempted</div>
+          <div class="amount-value" style="background:linear-gradient(135deg,#ff9a9a,#e05252); -webkit-background-clip:text;">$299</div>
+          <div class="amount-period">per year · billed annually</div>
+        </div>
+
+        <div class="detail-row">
+          <span class="detail-label">Payment Method</span>
+          <span class="detail-value">Visa •••• 4291</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">Failure Reason</span>
+          <span class="detail-value" style="color:var(--error)">Insufficient Funds</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">Charges Applied</span>
+          <span class="detail-value" style="color:var(--success)">None · $0.00</span>
+        </div>
+
+        <div class="method-badge" style="border-color:rgba(224,82,82,0.35); background:rgba(224,82,82,0.08)">
+          <span class="method-icon">❌</span>
+          <div class="method-info">
+            <div class="method-name" style="color:var(--error)">Card Declined</div>
+            <div class="method-detail">Visa Platinum •••• 4291</div>
+          </div>
+        </div>
+
+        <ul class="features-list">
+          <li>12 Premium Spiritual Consultations</li>
+          <li>Access to All Senior Ministers</li>
+          <li>Priority Session Booking</li>
+          <li>Exclusive Community Access</li>
+          <li>Sacred Scripture Library</li>
+          <li>24/7 Prayer Support Line</li>
+        </ul>
+
+        <a href="pricing.html" class="btn btn-danger" style="width:100%; margin-top:1.5rem" onclick="ripple(this)">
+          🔄 &nbsp;Try Again
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Ministers Slider (also visible on fail) -->
+  <div class="ministers-section">
+    <div class="section-heading">Explore Our Ministers While You Resolve</div>
+    <div class="slider-wrap">
+      <div class="slider-track" id="sliderTrack2"></div>
+    </div>
+  </div>
+
+</div>
+</div><!-- /stateFail -->
+
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <a href="index.html" class="logo">
+          <div class="logo-icon" style="width:38px;height:38px;font-size:17px;">✦</div>
+          <div>
+            <span class="logo-text" style="font-size:1.1rem">CLJN</span>
+            <span class="logo-sub">Digital Ministry Platform</span>
+          </div>
+        </a>
+        <p>Bridging sacred wisdom with modern souls. Connect with anointed ministers, receive spiritual guidance, and walk your divine path with clarity and purpose.</p>
+      </div>
+      <div>
+        <div class="footer-heading">Platform</div>
+        <ul class="footer-links">
+          <li><a href="ministers.html">Browse Ministers</a></li>
+          <li><a href="minister-profile.html">Book Consultation</a></li>
+          <li><a href="ministers.html">Prayer Requests</a></li>
+          <li><a href="bookmarks.html">Scripture Library</a></li>
+          <li><a href="dashboard.html">Community Forum</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer-heading">Support</div>
+        <ul class="footer-links">
+          <li><a href="faq.html">Help Center</a></li>
+          <li><a href="contact.html">Contact Us</a></li>
+          <li><a href="pricing.html">Billing & Plans</a></li>
+          <li><a href="#">Refund Policy</a></li>
+          <li><a href="#">Live Chat</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer-heading">Legal</div>
+        <ul class="footer-links">
+          <li><a href="terms.html">Terms of Service</a></li>
+          <li><a href="terms.html">Privacy Policy</a></li>
+          <li><a href="#">Cookie Policy</a></li>
+          <li><a href="#">Minister Guidelines</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-divider"></div>
+    <div class="footer-bottom">
+      <div class="footer-copy">© 2026 CLJN · All Rights Reserved · Built with ✦ Sacred Purpose</div>
+      <div class="footer-socials">
+        <a href="#" class="social-btn">𝕏</a>
+        <a href="#" class="social-btn">in</a>
+        <a href="#" class="social-btn">f</a>
+        <a href="#" class="social-btn">▶</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  /* ── Minister Data ── */
+  const ministers = [
+    { emoji:'🕊️', name:'Rev. Emmanuel Okafor', title:'Senior Prophet', stars:'★★★★★', tag:'Prophecy · Healing' },
+    { emoji:'🙏', name:'Pastor Grace Adeyemi', title:'Deliverance Minister', stars:'★★★★★', tag:'Deliverance · Prayer' },
+    { emoji:'✝️', name:'Bishop Daniel Cole', title:'Apostolic Leader', stars:'★★★★☆', tag:'Marriage · Family' },
+    { emoji:'📖', name:'Dr. Ruth Mensah', title:'Biblical Counselor', stars:'★★★★★', tag:'Counseling · Healing' },
+    { emoji:'🌿', name:'Pastor James Kariuki', title:'Restoration Minister', stars:'★★★★★', tag:'Restoration · Peace' },
+    { emoji:'🕯️', name:'Evangelist Sarah Boateng', title:'Missions & Evangelism', stars:'★★★★☆', tag:'Missions · Youth' },
+    { emoji:'👐', name:'Rev. Michael Asante', title:'Intercessory Minister', stars:'★★★★★', tag:'Intercession · Warfare' },
+    { emoji:'🌟', name:'Pastor Lydia Nwosu', title:'Women\'s Ministry Lead', stars:'★★★★★', tag:'Women · Purpose' },
+  ];
+
+  function buildSlider(trackId) {
+    const track = document.getElementById(trackId);
+    const all = [...ministers, ...ministers]; // duplicate for infinite
+    all.forEach(m => {
+      const card = document.createElement('div');
+      card.className = 'minister-card';
+      card.innerHTML = `
+        <div class="minister-avatar">${m.emoji}</div>
+        <div class="minister-name">${m.name}</div>
+        <div class="minister-title">${m.title}</div>
+        <div class="minister-stars">${m.stars}</div>
+        <div class="minister-tag">${m.tag}</div>
+      `;
+      card.onclick = () => alert(`Booking consultation with ${m.name}…`);
+      track.appendChild(card);
+    });
+  }
+
+  buildSlider('sliderTrack');
+  buildSlider('sliderTrack2');
+
+  /* ── State Toggle ── */
+  function showState(state) {
+    document.getElementById('stateSuccess').classList.toggle('visible', state === 'success');
+    document.getElementById('stateFail').classList.toggle('visible', state === 'fail');
+    document.getElementById('btnSuccess').className = 'toggle-btn' + (state === 'success' ? ' active-success' : '');
+    document.getElementById('btnFail').className = 'toggle-btn' + (state === 'fail' ? ' active-fail' : '');
+    if (state === 'success') { launchConfetti(); setTimeout(() => { window.location.href = 'dashboard.html'; }, 4000); }
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  /* ── Confetti ── */
+  function launchConfetti() {
+    const container = document.getElementById('confettiContainer');
+    container.innerHTML = '';
+    const colors = ['#c9a84c','#e6c96b','#ffffff','#1a3a8f','#22c77a','#f5e6b0'];
+    for (let i = 0; i < 80; i++) {
+      const piece = document.createElement('div');
+      piece.className = 'confetti-piece';
+      piece.style.cssText = `
+        left: ${Math.random() * 100}%;
+        background: ${colors[Math.floor(Math.random() * colors.length)]};
+        width: ${4 + Math.random() * 8}px;
+        height: ${4 + Math.random() * 8}px;
+        border-radius: ${Math.random() > 0.5 ? '50%' : '2px'};
+        animation-duration: ${2 + Math.random() * 3}s;
+        animation-delay: ${Math.random() * 1.5}s;
+      `;
+      container.appendChild(piece);
+    }
+    setTimeout(() => container.innerHTML = '', 6000);
+  }
+
+  /* ── Ripple ── */
+  function ripple(el) {
+    el.style.transform = 'scale(0.97)';
+    setTimeout(() => el.style.transform = '', 150);
+  }
+
+  /* ── Init confetti on load ── */
+  window.addEventListener('load', () => {
+    setTimeout(launchConfetti, 400);
+  });
+</script>
+</body>
+</html>

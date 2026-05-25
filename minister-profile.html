@@ -1,0 +1,3142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rev. Emmanuel Osei — CLJN Ministry Platform</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&family=Cinzel:wght@400;500;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+:root {
+  --royal-blue: #0a1628;
+  --royal-mid: #0d2347;
+  --royal-light: #1a3a6b;
+  --gold: #c9a84c;
+  --gold-light: #e8c97a;
+  --gold-pale: #f4e4b8;
+  --white: #ffffff;
+  --off-white: #f8f6f0;
+  --glass: rgba(255,255,255,0.06);
+  --glass-border: rgba(201,168,76,0.25);
+  --text-light: rgba(255,255,255,0.75);
+  --text-muted: rgba(255,255,255,0.45);
+  --shadow-gold: 0 8px 40px rgba(201,168,76,0.15);
+  --shadow-deep: 0 20px 60px rgba(0,0,0,0.5);
+  --radius: 16px;
+  --radius-sm: 10px;
+  --transition: all 0.35s cubic-bezier(0.4,0,0.2,1);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--royal-blue);
+  color: var(--white);
+  overflow-x: hidden;
+}
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--royal-blue); }
+::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 3px; }
+
+/* ══════════════════════════════════════
+   NAVBAR
+══════════════════════════════════════ */
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  background: rgba(10,22,40,0.92);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--glass-border);
+  padding: 0 5%;
+  height: 72px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: var(--transition);
+}
+
+.nav-logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+}
+
+.nav-logo-icon {
+  width: 42px;
+  height: 42px;
+  background: linear-gradient(135deg, var(--gold), var(--gold-light));
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  color: var(--royal-blue);
+  font-weight: 700;
+}
+
+.nav-logo-text {
+  font-family: 'Cinzel', serif;
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--white);
+  letter-spacing: 0.5px;
+  line-height: 1.1;
+}
+
+.nav-logo-sub {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 10px;
+  color: var(--gold);
+  font-weight: 400;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  list-style: none;
+}
+
+.nav-links a {
+  text-decoration: none;
+  color: var(--text-light);
+  font-size: 14px;
+  font-weight: 500;
+  padding: 8px 16px;
+  border-radius: 8px;
+  transition: var(--transition);
+  letter-spacing: 0.3px;
+}
+
+.nav-links a:hover, .nav-links a.active {
+  color: var(--gold);
+  background: rgba(201,168,76,0.1);
+}
+
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.btn-outline-nav {
+  padding: 8px 20px;
+  border: 1px solid var(--glass-border);
+  background: transparent;
+  color: var(--white);
+  border-radius: 8px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.btn-outline-nav:hover { border-color: var(--gold); color: var(--gold); }
+
+.btn-gold-nav {
+  padding: 9px 22px;
+  background: linear-gradient(135deg, var(--gold), var(--gold-light));
+  color: var(--royal-blue);
+  border: none;
+  border-radius: 8px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: var(--transition);
+  letter-spacing: 0.3px;
+}
+
+.btn-gold-nav:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(201,168,76,0.35); }
+
+.hamburger {
+  display: none;
+  background: none;
+  border: none;
+  color: var(--white);
+  font-size: 22px;
+  cursor: pointer;
+}
+
+.mobile-nav {
+  display: none;
+  position: absolute;
+  top: 72px;
+  left: 0;
+  right: 0;
+  background: rgba(10,22,40,0.98);
+  border-bottom: 1px solid var(--glass-border);
+  padding: 20px 5%;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.mobile-nav.open { display: flex; }
+.mobile-nav a { color: var(--text-light); text-decoration: none; padding: 12px; border-radius: 8px; font-weight: 500; transition: var(--transition); }
+.mobile-nav a:hover { color: var(--gold); background: rgba(201,168,76,0.08); }
+
+/* ══════════════════════════════════════
+   HERO / PROFILE SECTION
+══════════════════════════════════════ */
+.hero-section {
+  background: linear-gradient(160deg, var(--royal-mid) 0%, var(--royal-blue) 60%);
+  padding: 60px 5% 50px;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-section::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23c9a84c' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+}
+
+.hero-grid {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 40px;
+  align-items: start;
+  max-width: 1300px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 1;
+}
+
+/* LEFT: profile image */
+.profile-image-wrap {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.profile-ring {
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--gold), var(--gold-light), var(--gold));
+  padding: 4px;
+  position: relative;
+}
+
+.profile-img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+  background: linear-gradient(135deg, #1a3a6b, #0d2347);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 72px;
+  overflow: hidden;
+}
+
+.profile-img-inner {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: linear-gradient(145deg, #1e4080, #0d2347);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 72px;
+}
+
+.verified-badge {
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+  width: 40px;
+  height: 40px;
+  background: linear-gradient(135deg, var(--gold), var(--gold-light));
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--royal-blue);
+  font-size: 16px;
+  border: 3px solid var(--royal-blue);
+  box-shadow: 0 4px 16px rgba(201,168,76,0.4);
+}
+
+.online-status {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(0,0,0,0.7);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  padding: 4px 10px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #22c55e;
+  box-shadow: 0 0 8px #22c55e;
+  animation: pulse-green 2s infinite;
+}
+
+@keyframes pulse-green {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.7; transform: scale(1.2); }
+}
+
+.save-btn {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  width: 38px;
+  height: 38px;
+  background: rgba(255,255,255,0.1);
+  backdrop-filter: blur(10px);
+  border-radius: 50%;
+  border: 1px solid var(--glass-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: var(--transition);
+  font-size: 16px;
+}
+
+.save-btn:hover, .save-btn.saved { color: #ef4444; background: rgba(239,68,68,0.15); border-color: rgba(239,68,68,0.3); }
+
+/* CENTER: info */
+.profile-info { min-width: 0; }
+
+.minister-name {
+  font-family: 'Cinzel', serif;
+  font-size: 36px;
+  font-weight: 700;
+  line-height: 1.1;
+  background: linear-gradient(135deg, var(--white) 0%, var(--gold-light) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 6px;
+}
+
+.minister-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 20px;
+  font-style: italic;
+  color: var(--gold);
+  margin-bottom: 4px;
+  font-weight: 500;
+}
+
+.minister-ministry {
+  font-size: 14px;
+  color: var(--text-light);
+  margin-bottom: 16px;
+  letter-spacing: 0.3px;
+}
+
+.info-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.info-chip {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  border-radius: 20px;
+  padding: 5px 12px;
+  font-size: 12px;
+  color: var(--text-light);
+}
+
+.info-chip i { color: var(--gold); font-size: 11px; }
+
+.expertise-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.tag {
+  background: rgba(201,168,76,0.12);
+  border: 1px solid rgba(201,168,76,0.3);
+  color: var(--gold-light);
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 500;
+  transition: var(--transition);
+}
+
+.tag:hover { background: rgba(201,168,76,0.2); }
+
+.bio-preview {
+  font-size: 14px;
+  color: var(--text-light);
+  line-height: 1.7;
+  max-width: 600px;
+  margin-bottom: 16px;
+}
+
+.rating-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.stars {
+  display: flex;
+  gap: 2px;
+}
+
+.stars i { color: var(--gold); font-size: 15px; }
+
+.rating-num {
+  font-family: 'Cinzel', serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--gold-light);
+}
+
+.rating-count { font-size: 13px; color: var(--text-muted); }
+
+.fee-badge {
+  background: linear-gradient(135deg, rgba(201,168,76,0.2), rgba(201,168,76,0.08));
+  border: 1px solid var(--glass-border);
+  border-radius: 10px;
+  padding: 6px 14px;
+  font-size: 13px;
+  margin-left: auto;
+}
+
+.fee-badge span { color: var(--gold); font-weight: 700; font-size: 18px; }
+
+/* RIGHT: action card */
+.action-card {
+  width: 280px;
+  background: var(--glass);
+  backdrop-filter: blur(20px);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius);
+  padding: 28px 24px;
+  flex-shrink: 0;
+}
+
+.action-card-title {
+  font-family: 'Cinzel', serif;
+  font-size: 14px;
+  color: var(--gold);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.btn-primary {
+  width: 100%;
+  padding: 13px;
+  background: linear-gradient(135deg, var(--gold), var(--gold-light));
+  color: var(--royal-blue);
+  border: none;
+  border-radius: var(--radius-sm);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: var(--transition);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(201,168,76,0.35); }
+
+.btn-secondary {
+  width: 100%;
+  padding: 11px;
+  background: transparent;
+  color: var(--white);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-sm);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: var(--transition);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.btn-secondary:hover { border-color: var(--gold); color: var(--gold); background: rgba(201,168,76,0.06); }
+
+.action-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid var(--glass-border);
+}
+
+.stat-item {
+  text-align: center;
+}
+
+.stat-num {
+  font-family: 'Cinzel', serif;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--gold-light);
+  line-height: 1;
+}
+
+.stat-label {
+  font-size: 10px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-top: 3px;
+}
+
+/* ══════════════════════════════════════
+   SECTION COMMONS
+══════════════════════════════════════ */
+.section {
+  padding: 70px 5%;
+  max-width: 1300px;
+  margin: 0 auto;
+}
+
+.section-header {
+  text-align: center;
+  margin-bottom: 50px;
+}
+
+.section-tag {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--gold);
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  background: rgba(201,168,76,0.1);
+  border: 1px solid rgba(201,168,76,0.2);
+  padding: 5px 16px;
+  border-radius: 20px;
+  margin-bottom: 14px;
+}
+
+.section-title {
+  font-family: 'Cinzel', serif;
+  font-size: 32px;
+  font-weight: 700;
+  background: linear-gradient(135deg, var(--white), var(--gold-light));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 12px;
+  line-height: 1.2;
+}
+
+.section-subtitle {
+  font-size: 15px;
+  color: var(--text-muted);
+  max-width: 500px;
+  margin: 0 auto;
+  line-height: 1.7;
+}
+
+.divider {
+  border: none;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--glass-border), transparent);
+  margin: 0;
+}
+
+/* ══════════════════════════════════════
+   ABOUT SECTION
+══════════════════════════════════════ */
+.about-card {
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius);
+  padding: 40px;
+}
+
+.about-content {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+}
+
+.about-text p {
+  font-size: 15px;
+  color: var(--text-light);
+  line-height: 1.8;
+  margin-bottom: 16px;
+}
+
+.about-text-collapsed { max-height: 200px; overflow: hidden; position: relative; }
+.about-text-collapsed::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 80px;
+  background: linear-gradient(transparent, var(--glass));
+}
+
+.read-more-btn {
+  background: none;
+  border: none;
+  color: var(--gold);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 0;
+  transition: var(--transition);
+  font-family: 'DM Sans', sans-serif;
+}
+
+.read-more-btn:hover { color: var(--gold-light); }
+
+.about-highlights {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.highlight-item {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--glass-border);
+  border-left: 3px solid var(--gold);
+  border-radius: var(--radius-sm);
+  padding: 16px 20px;
+}
+
+.highlight-label {
+  font-size: 10px;
+  color: var(--gold);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin-bottom: 4px;
+  font-weight: 600;
+}
+
+.highlight-text { font-size: 14px; color: var(--text-light); line-height: 1.6; }
+
+/* ══════════════════════════════════════
+   SPECIALIZATIONS
+══════════════════════════════════════ */
+.spec-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+.spec-card {
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius);
+  padding: 28px 24px;
+  cursor: pointer;
+  transition: var(--transition);
+  position: relative;
+  overflow: hidden;
+}
+
+.spec-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(201,168,76,0.08), transparent);
+  opacity: 0;
+  transition: var(--transition);
+}
+
+.spec-card:hover { transform: translateY(-4px); border-color: rgba(201,168,76,0.4); box-shadow: var(--shadow-gold); }
+.spec-card:hover::before { opacity: 1; }
+
+.spec-icon {
+  width: 52px;
+  height: 52px;
+  background: linear-gradient(135deg, rgba(201,168,76,0.2), rgba(201,168,76,0.05));
+  border: 1px solid rgba(201,168,76,0.3);
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  margin-bottom: 16px;
+}
+
+.spec-name {
+  font-family: 'Cinzel', serif;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--white);
+  margin-bottom: 8px;
+}
+
+.spec-desc { font-size: 13px; color: var(--text-muted); line-height: 1.6; margin-bottom: 12px; }
+
+.spec-years {
+  font-size: 12px;
+  color: var(--gold);
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+/* ══════════════════════════════════════
+   PACKAGES
+══════════════════════════════════════ */
+.packages-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  align-items: start;
+}
+
+.pkg-card {
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius);
+  padding: 32px 28px;
+  transition: var(--transition);
+  position: relative;
+  overflow: hidden;
+}
+
+.pkg-card.featured {
+  border-color: var(--gold);
+  background: linear-gradient(160deg, rgba(201,168,76,0.1), var(--glass));
+}
+
+.pkg-popular-badge {
+  position: absolute;
+  top: 16px;
+  right: -28px;
+  background: linear-gradient(135deg, var(--gold), var(--gold-light));
+  color: var(--royal-blue);
+  font-size: 10px;
+  font-weight: 700;
+  padding: 4px 40px;
+  transform: rotate(35deg);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.pkg-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-gold); }
+
+.pkg-name {
+  font-family: 'Cinzel', serif;
+  font-size: 14px;
+  color: var(--gold);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-bottom: 16px;
+}
+
+.pkg-price {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 48px;
+  font-weight: 700;
+  color: var(--white);
+  line-height: 1;
+  margin-bottom: 4px;
+}
+
+.pkg-price span { font-size: 22px; }
+.pkg-price sub { font-size: 14px; color: var(--text-muted); font-family: 'DM Sans'; }
+
+.pkg-duration {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-bottom: 24px;
+}
+
+.pkg-features {
+  list-style: none;
+  margin-bottom: 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.pkg-features li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  color: var(--text-light);
+}
+
+.pkg-features li i { color: var(--gold); font-size: 11px; }
+.pkg-features li.disabled i { color: var(--text-muted); }
+.pkg-features li.disabled { color: var(--text-muted); }
+
+.pkg-avail {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.pkg-avail i { color: #22c55e; }
+
+/* ══════════════════════════════════════
+   SCHEDULE SECTION
+══════════════════════════════════════ */
+.schedule-wrap {
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius);
+  padding: 40px;
+}
+
+.schedule-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+}
+
+.days-row {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 28px;
+}
+
+.day-btn {
+  padding: 10px 18px;
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  border-radius: 10px;
+  color: var(--text-light);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: var(--transition);
+  font-family: 'DM Sans', sans-serif;
+}
+
+.day-btn:hover { border-color: var(--gold); color: var(--gold); }
+.day-btn.active { background: linear-gradient(135deg, var(--gold), var(--gold-light)); color: var(--royal-blue); border-color: var(--gold); font-weight: 700; }
+.day-btn.unavail { opacity: 0.4; cursor: not-allowed; }
+
+.slots-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-bottom: 28px;
+}
+
+.slot-btn {
+  padding: 10px;
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-sm);
+  color: var(--text-light);
+  font-size: 12px;
+  text-align: center;
+  cursor: pointer;
+  transition: var(--transition);
+  font-family: 'DM Sans', sans-serif;
+}
+
+.slot-btn:hover { border-color: var(--gold); color: var(--gold); }
+.slot-btn.active { background: rgba(201,168,76,0.15); border-color: var(--gold); color: var(--gold); font-weight: 600; }
+.slot-btn.booked { opacity: 0.35; cursor: not-allowed; text-decoration: line-through; }
+
+.form-group { margin-bottom: 18px; }
+.form-label { font-size: 12px; color: var(--gold); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; display: block; font-weight: 600; }
+
+.form-control {
+  width: 100%;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-sm);
+  padding: 12px 16px;
+  color: var(--white);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  transition: var(--transition);
+  outline: none;
+}
+
+.form-control:focus { border-color: var(--gold); box-shadow: 0 0 0 3px rgba(201,168,76,0.1); }
+.form-control option { background: var(--royal-mid); }
+
+textarea.form-control { resize: none; height: 100px; }
+
+/* ══════════════════════════════════════
+   SERMONS
+══════════════════════════════════════ */
+.sermons-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+.sermon-card {
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  transition: var(--transition);
+  cursor: pointer;
+}
+
+.sermon-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-gold); border-color: rgba(201,168,76,0.3); }
+
+.sermon-thumb {
+  width: 100%;
+  height: 150px;
+  background: linear-gradient(135deg, #1a3a6b, #0d2347);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.sermon-thumb::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, transparent, rgba(0,0,0,0.4));
+}
+
+.sermon-play-btn {
+  width: 48px;
+  height: 48px;
+  background: linear-gradient(135deg, var(--gold), var(--gold-light));
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--royal-blue);
+  font-size: 16px;
+  z-index: 1;
+  position: relative;
+  box-shadow: 0 4px 16px rgba(201,168,76,0.4);
+  transition: var(--transition);
+}
+
+.sermon-card:hover .sermon-play-btn { transform: scale(1.1); }
+
+.sermon-body { padding: 18px; }
+
+.sermon-cat {
+  font-size: 10px;
+  color: var(--gold);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.sermon-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--white);
+  margin-bottom: 8px;
+  line-height: 1.3;
+}
+
+.sermon-meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-bottom: 14px;
+}
+
+.sermon-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.btn-sm {
+  padding: 6px 14px;
+  border-radius: 7px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-family: 'DM Sans', sans-serif;
+}
+
+.btn-sm-gold {
+  background: linear-gradient(135deg, var(--gold), var(--gold-light));
+  color: var(--royal-blue);
+  border: none;
+}
+
+.btn-sm-gold:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(201,168,76,0.3); }
+
+.btn-sm-outline {
+  background: transparent;
+  color: var(--text-light);
+  border: 1px solid var(--glass-border);
+}
+
+.btn-sm-outline:hover { border-color: var(--gold); color: var(--gold); }
+
+/* Audio Player */
+.audio-player {
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius);
+  padding: 20px 24px;
+  margin-top: 20px;
+  display: none;
+}
+
+.audio-player.active { display: block; animation: fadeIn 0.3s ease; }
+
+.player-top {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 14px;
+}
+
+.player-art {
+  width: 52px;
+  height: 52px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #1a3a6b, #0d2347);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  flex-shrink: 0;
+}
+
+.player-info { flex: 1; }
+.player-title { font-size: 15px; font-weight: 600; margin-bottom: 3px; }
+.player-artist { font-size: 12px; color: var(--text-muted); }
+
+.player-controls {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 12px;
+}
+
+.player-btn {
+  background: none;
+  border: none;
+  color: var(--text-light);
+  font-size: 18px;
+  cursor: pointer;
+  transition: var(--transition);
+  padding: 4px;
+}
+
+.player-btn:hover { color: var(--gold); }
+.player-btn.play { width: 42px; height: 42px; background: linear-gradient(135deg, var(--gold), var(--gold-light)); color: var(--royal-blue); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px; }
+.player-btn.play:hover { transform: scale(1.05); }
+
+.progress-bar {
+  flex: 1;
+  height: 4px;
+  background: rgba(255,255,255,0.1);
+  border-radius: 4px;
+  cursor: pointer;
+  position: relative;
+}
+
+.progress-fill {
+  height: 100%;
+  width: 35%;
+  background: linear-gradient(90deg, var(--gold), var(--gold-light));
+  border-radius: 4px;
+  transition: width 0.1s;
+}
+
+.time { font-size: 11px; color: var(--text-muted); }
+
+/* ══════════════════════════════════════
+   ARTICLES
+══════════════════════════════════════ */
+.articles-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+.article-card {
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.article-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-gold); border-color: rgba(201,168,76,0.3); }
+
+.article-img {
+  width: 100%;
+  height: 140px;
+  background: linear-gradient(135deg, #1a3a6b 0%, #2a1a5b 50%, #0d2347 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 36px;
+  position: relative;
+}
+
+.article-body { padding: 18px; }
+.article-cat { font-size: 10px; color: var(--gold); text-transform: uppercase; letter-spacing: 2px; font-weight: 600; margin-bottom: 8px; }
+
+.article-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--white);
+  margin-bottom: 8px;
+  line-height: 1.3;
+}
+
+.article-desc { font-size: 13px; color: var(--text-muted); line-height: 1.6; margin-bottom: 14px; }
+.article-date { font-size: 11px; color: var(--text-muted); }
+
+/* ══════════════════════════════════════
+   REVIEWS
+══════════════════════════════════════ */
+.reviews-layout {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 32px;
+}
+
+.rating-summary {
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius);
+  padding: 28px;
+}
+
+.big-rating {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.big-rating-num {
+  font-family: 'Cinzel', serif;
+  font-size: 64px;
+  font-weight: 700;
+  color: var(--gold-light);
+  line-height: 1;
+}
+
+.big-stars {
+  display: flex;
+  justify-content: center;
+  gap: 4px;
+  margin: 8px 0 4px;
+}
+
+.big-stars i { color: var(--gold); font-size: 18px; }
+.big-rating-count { font-size: 13px; color: var(--text-muted); }
+
+.rating-bars { display: flex; flex-direction: column; gap: 10px; }
+
+.rating-bar-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+}
+
+.bar-label { width: 20px; color: var(--text-muted); text-align: right; flex-shrink: 0; }
+
+.bar-track {
+  flex: 1;
+  height: 6px;
+  background: rgba(255,255,255,0.08);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--gold), var(--gold-light));
+  border-radius: 4px;
+  transition: width 1s ease;
+}
+
+.bar-pct { width: 30px; color: var(--text-muted); font-size: 12px; }
+
+.reviews-right {}
+
+.reviews-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.sort-select {
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  color: var(--white);
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  cursor: pointer;
+  outline: none;
+}
+
+.sort-select option { background: var(--royal-mid); }
+
+.reviews-list { display: flex; flex-direction: column; gap: 14px; }
+
+.review-card {
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius);
+  padding: 22px;
+  transition: var(--transition);
+}
+
+.review-card:hover { border-color: rgba(201,168,76,0.25); }
+
+.review-top {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  margin-bottom: 14px;
+}
+
+.reviewer-img {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #1a3a6b, #2a1a5b);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+  border: 2px solid var(--glass-border);
+}
+
+.reviewer-info { flex: 1; }
+.reviewer-name { font-size: 15px; font-weight: 600; margin-bottom: 2px; }
+.reviewer-meta { font-size: 12px; color: var(--text-muted); display: flex; align-items: center; gap: 8px; }
+
+.review-stars { display: flex; gap: 2px; }
+.review-stars i { color: var(--gold); font-size: 13px; }
+
+.session-badge {
+  background: rgba(201,168,76,0.12);
+  border: 1px solid rgba(201,168,76,0.25);
+  color: var(--gold);
+  font-size: 10px;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  margin-left: auto;
+}
+
+.review-title { font-weight: 600; font-size: 14px; margin-bottom: 6px; }
+.review-text { font-size: 13px; color: var(--text-light); line-height: 1.7; }
+
+/* ══════════════════════════════════════
+   RELATED MINISTERS
+══════════════════════════════════════ */
+.related-slider-wrap { overflow: hidden; position: relative; }
+
+.related-slider {
+  display: flex;
+  gap: 20px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  padding-bottom: 12px;
+  scrollbar-width: none;
+}
+
+.related-slider::-webkit-scrollbar { display: none; }
+
+.related-card {
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius);
+  padding: 24px 20px;
+  text-align: center;
+  min-width: 200px;
+  scroll-snap-align: start;
+  transition: var(--transition);
+  flex-shrink: 0;
+}
+
+.related-card:hover { transform: translateY(-4px); border-color: rgba(201,168,76,0.3); box-shadow: var(--shadow-gold); }
+
+.related-img {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #1a3a6b, #0d2347);
+  margin: 0 auto 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  border: 2px solid var(--glass-border);
+}
+
+.related-name { font-family: 'Cinzel', serif; font-size: 13px; font-weight: 600; margin-bottom: 4px; }
+.related-spec { font-size: 11px; color: var(--gold); margin-bottom: 8px; }
+.related-stars { display: flex; justify-content: center; gap: 2px; margin-bottom: 4px; }
+.related-stars i { color: var(--gold); font-size: 11px; }
+.related-exp { font-size: 11px; color: var(--text-muted); margin-bottom: 14px; }
+
+/* ══════════════════════════════════════
+   FAQ
+══════════════════════════════════════ */
+.faq-list { max-width: 800px; margin: 0 auto; display: flex; flex-direction: column; gap: 12px; }
+
+.faq-item {
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  transition: var(--transition);
+}
+
+.faq-item.open { border-color: rgba(201,168,76,0.3); }
+
+.faq-q {
+  padding: 20px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 15px;
+  gap: 12px;
+  user-select: none;
+}
+
+.faq-icon {
+  width: 28px;
+  height: 28px;
+  background: rgba(201,168,76,0.1);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--gold);
+  font-size: 12px;
+  flex-shrink: 0;
+  transition: var(--transition);
+}
+
+.faq-item.open .faq-icon { background: rgba(201,168,76,0.2); transform: rotate(45deg); }
+
+.faq-a {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.4s ease, padding 0.3s ease;
+}
+
+.faq-a-inner {
+  padding: 0 24px 20px;
+  font-size: 14px;
+  color: var(--text-muted);
+  line-height: 1.7;
+}
+
+.faq-item.open .faq-a { max-height: 300px; }
+
+/* ══════════════════════════════════════
+   FOOTER
+══════════════════════════════════════ */
+footer {
+  background: var(--royal-mid);
+  border-top: 1px solid var(--glass-border);
+  padding: 60px 5% 30px;
+}
+
+.footer-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 40px;
+  max-width: 1300px;
+  margin: 0 auto 40px;
+}
+
+.footer-brand {}
+
+.footer-brand-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.footer-brand p {
+  font-size: 14px;
+  color: var(--text-muted);
+  line-height: 1.7;
+  margin-bottom: 20px;
+}
+
+.social-links { display: flex; gap: 10px; }
+
+.social-btn {
+  width: 38px;
+  height: 38px;
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-muted);
+  font-size: 14px;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.social-btn:hover { border-color: var(--gold); color: var(--gold); }
+
+.footer-col h4 {
+  font-family: 'Cinzel', serif;
+  font-size: 12px;
+  color: var(--gold);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 18px;
+}
+
+.footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+.footer-col ul li a { color: var(--text-muted); text-decoration: none; font-size: 14px; transition: var(--transition); }
+.footer-col ul li a:hover { color: var(--gold); }
+
+.footer-bottom {
+  max-width: 1300px;
+  margin: 0 auto;
+  padding-top: 24px;
+  border-top: 1px solid var(--glass-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+/* ══════════════════════════════════════
+   MODALS
+══════════════════════════════════════ */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.75);
+  backdrop-filter: blur(8px);
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.modal-overlay.open { opacity: 1; pointer-events: all; }
+
+.modal {
+  background: #0d1f3b;
+  border: 1px solid var(--glass-border);
+  border-radius: 20px;
+  width: 100%;
+  max-width: 520px;
+  max-height: 90vh;
+  overflow-y: auto;
+  transform: translateY(20px) scale(0.97);
+  transition: transform 0.35s cubic-bezier(0.4,0,0.2,1);
+  box-shadow: var(--shadow-deep);
+}
+
+.modal-overlay.open .modal { transform: translateY(0) scale(1); }
+
+.modal-header {
+  padding: 28px 28px 0;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+
+.modal-title {
+  font-family: 'Cinzel', serif;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--white);
+}
+
+.modal-subtitle { font-size: 13px; color: var(--text-muted); margin-top: 4px; }
+
+.modal-close {
+  width: 36px;
+  height: 36px;
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--text-muted);
+  font-size: 16px;
+  transition: var(--transition);
+  flex-shrink: 0;
+}
+
+.modal-close:hover { color: var(--gold); border-color: var(--gold); }
+
+.modal-body { padding: 0 28px 28px; }
+
+.modal-footer {
+  padding: 0 28px 28px;
+  display: flex;
+  gap: 12px;
+}
+
+.btn-modal-confirm {
+  flex: 1;
+  padding: 13px;
+  background: linear-gradient(135deg, var(--gold), var(--gold-light));
+  color: var(--royal-blue);
+  border: none;
+  border-radius: 10px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.btn-modal-confirm:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(201,168,76,0.3); }
+
+.btn-modal-cancel {
+  flex: 1;
+  padding: 13px;
+  background: transparent;
+  color: var(--text-light);
+  border: 1px solid var(--glass-border);
+  border-radius: 10px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.btn-modal-cancel:hover { border-color: var(--gold); color: var(--gold); }
+
+.price-summary {
+  background: rgba(201,168,76,0.06);
+  border: 1px solid rgba(201,168,76,0.2);
+  border-radius: 10px;
+  padding: 16px;
+  margin-top: 16px;
+}
+
+.price-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+  padding: 6px 0;
+}
+
+.price-row.total {
+  border-top: 1px solid var(--glass-border);
+  margin-top: 8px;
+  padding-top: 12px;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--gold-light);
+}
+
+/* PLAN PILLS */
+.plan-pills {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+
+.plan-pill {
+  padding: 8px 18px;
+  border-radius: 8px;
+  border: 1px solid var(--glass-border);
+  background: transparent;
+  color: var(--text-light);
+  font-size: 13px;
+  cursor: pointer;
+  transition: var(--transition);
+  font-family: 'DM Sans', sans-serif;
+}
+
+.plan-pill.active { background: rgba(201,168,76,0.15); border-color: var(--gold); color: var(--gold); font-weight: 600; }
+
+/* SHARE MODAL */
+.share-options {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.share-opt {
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  border-radius: 12px;
+  padding: 16px 12px;
+  text-align: center;
+  cursor: pointer;
+  transition: var(--transition);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.share-opt:hover { border-color: var(--gold); background: rgba(201,168,76,0.06); }
+.share-opt i { font-size: 22px; }
+.share-opt span { font-size: 12px; color: var(--text-muted); }
+.share-opt:nth-child(1) i { color: #1877f2; }
+.share-opt:nth-child(2) i { color: #25d366; }
+.share-opt:nth-child(3) i { color: var(--gold); }
+.share-opt:nth-child(4) i { color: #1da1f2; }
+.share-opt:nth-child(5) i { color: #e91e63; }
+
+.copy-link-row {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.copy-link-input {
+  flex: 1;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid var(--glass-border);
+  border-radius: 8px;
+  padding: 10px 14px;
+  color: var(--text-muted);
+  font-size: 13px;
+  outline: none;
+  font-family: 'DM Sans', sans-serif;
+}
+
+.btn-copy {
+  padding: 10px 18px;
+  background: linear-gradient(135deg, var(--gold), var(--gold-light));
+  color: var(--royal-blue);
+  border: none;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 13px;
+  cursor: pointer;
+  transition: var(--transition);
+  font-family: 'DM Sans', sans-serif;
+}
+
+.btn-copy:hover { opacity: 0.9; }
+
+/* CHAT MODAL */
+.chat-modal { max-width: 420px; }
+
+.chat-header {
+  padding: 20px 24px;
+  background: var(--glass);
+  border-bottom: 1px solid var(--glass-border);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.chat-header-img {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #1a3a6b, #0d2347);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  position: relative;
+  flex-shrink: 0;
+}
+
+.chat-online-dot {
+  position: absolute;
+  bottom: 1px;
+  right: 1px;
+  width: 11px;
+  height: 11px;
+  background: #22c55e;
+  border-radius: 50%;
+  border: 2px solid var(--royal-mid);
+  box-shadow: 0 0 6px #22c55e;
+}
+
+.chat-header-info .chat-name { font-weight: 600; font-size: 15px; }
+.chat-header-info .chat-status { font-size: 12px; color: #22c55e; }
+.chat-close { margin-left: auto; background: none; border: none; color: var(--text-muted); font-size: 20px; cursor: pointer; transition: var(--transition); }
+.chat-close:hover { color: var(--gold); }
+
+.chat-messages {
+  height: 300px;
+  overflow-y: auto;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.chat-msg {
+  max-width: 75%;
+  animation: fadeIn 0.3s ease;
+}
+
+.chat-msg.received { align-self: flex-start; }
+.chat-msg.sent { align-self: flex-end; }
+
+.chat-bubble {
+  padding: 10px 14px;
+  border-radius: 14px;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.received .chat-bubble {
+  background: rgba(255,255,255,0.08);
+  border: 1px solid var(--glass-border);
+  border-radius: 4px 14px 14px 14px;
+}
+
+.sent .chat-bubble {
+  background: linear-gradient(135deg, rgba(201,168,76,0.25), rgba(201,168,76,0.12));
+  border: 1px solid rgba(201,168,76,0.3);
+  border-radius: 14px 4px 14px 14px;
+}
+
+.chat-time { font-size: 10px; color: var(--text-muted); margin-top: 3px; padding: 0 4px; }
+.received .chat-time { text-align: left; }
+.sent .chat-time { text-align: right; }
+
+.typing-indicator {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+  padding: 10px 14px;
+  background: rgba(255,255,255,0.06);
+  border-radius: 4px 14px 14px 14px;
+  width: fit-content;
+}
+
+.typing-indicator span {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--gold);
+  animation: typing 1.4s infinite;
+}
+
+.typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
+.typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes typing {
+  0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+  30% { transform: translateY(-6px); opacity: 1; }
+}
+
+.chat-input-area {
+  padding: 16px 20px;
+  border-top: 1px solid var(--glass-border);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.chat-input {
+  flex: 1;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid var(--glass-border);
+  border-radius: 20px;
+  padding: 10px 16px;
+  color: var(--white);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  outline: none;
+  transition: var(--transition);
+}
+
+.chat-input:focus { border-color: var(--gold); }
+.chat-input-icons { display: flex; gap: 8px; }
+.chat-icon-btn { background: none; border: none; color: var(--text-muted); font-size: 18px; cursor: pointer; transition: var(--transition); }
+.chat-icon-btn:hover { color: var(--gold); }
+
+.chat-send {
+  width: 38px;
+  height: 38px;
+  background: linear-gradient(135deg, var(--gold), var(--gold-light));
+  color: var(--royal-blue);
+  border: none;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  cursor: pointer;
+  transition: var(--transition);
+  flex-shrink: 0;
+}
+
+.chat-send:hover { transform: scale(1.05); }
+
+/* REVIEW MODAL */
+.star-select { display: flex; gap: 6px; margin-bottom: 16px; }
+.star-select i { font-size: 28px; color: rgba(255,255,255,0.2); cursor: pointer; transition: var(--transition); }
+.star-select i.active, .star-select i:hover { color: var(--gold); }
+
+/* ARTICLE READING MODAL */
+.article-modal { max-width: 680px; }
+.article-modal-content p { font-size: 15px; color: var(--text-light); line-height: 1.85; margin-bottom: 16px; }
+.article-modal-header-img {
+  width: 100%;
+  height: 200px;
+  background: linear-gradient(135deg, #1a3a6b, #2a1a5b);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 56px;
+  margin-bottom: 20px;
+}
+
+/* SKELETON */
+.skeleton {
+  background: linear-gradient(90deg, rgba(255,255,255,0.04) 25%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0.04) 75%);
+  background-size: 400% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 8px;
+}
+
+@keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+
+/* ANIMATIONS */
+@keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes slideUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+
+.animate-in { animation: slideUp 0.6s ease forwards; }
+
+/* ══════════════════════════════════════
+   TOAST
+══════════════════════════════════════ */
+.toast {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  background: #0d2347;
+  border: 1px solid var(--gold);
+  border-radius: 12px;
+  padding: 14px 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  z-index: 3000;
+  transform: translateY(80px);
+  opacity: 0;
+  transition: all 0.4s cubic-bezier(0.4,0,0.2,1);
+  box-shadow: var(--shadow-gold);
+}
+
+.toast.show { transform: translateY(0); opacity: 1; }
+.toast i { color: var(--gold); }
+
+/* ══════════════════════════════════════
+   RESPONSIVE
+══════════════════════════════════════ */
+@media (max-width: 1024px) {
+  .hero-grid { grid-template-columns: 1fr; text-align: center; }
+  .profile-image-wrap { margin: 0 auto; }
+  .action-card { width: 100%; }
+  .info-chips { justify-content: center; }
+  .expertise-tags { justify-content: center; }
+  .rating-row { justify-content: center; }
+  .fee-badge { margin: 0 auto; }
+  .spec-grid { grid-template-columns: repeat(2, 1fr); }
+  .packages-grid { grid-template-columns: 1fr; }
+  .reviews-layout { grid-template-columns: 1fr; }
+  .footer-grid { grid-template-columns: 1fr 1fr; }
+}
+
+@media (max-width: 768px) {
+  .nav-links, .nav-actions { display: none; }
+  .hamburger { display: block; }
+  .spec-grid { grid-template-columns: 1fr; }
+  .sermons-grid, .articles-grid { grid-template-columns: 1fr; }
+  .schedule-grid { grid-template-columns: 1fr; }
+  .about-content { grid-template-columns: 1fr; }
+  .footer-grid { grid-template-columns: 1fr; }
+  .footer-bottom { flex-direction: column; gap: 8px; text-align: center; }
+  .minister-name { font-size: 26px; }
+}
+</style>
+</head>
+<body>
+<a href="ministers.html" style="display:inline-flex;align-items:center;gap:6px;color:var(--gold);text-decoration:none;font-size:14px;margin-bottom:16px;opacity:0.85;transition:opacity .2s" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.85">← Back to Ministers</a>
+
+<!-- ══════════════════════════════════════
+     NAVBAR
+══════════════════════════════════════ -->
+<nav class="navbar">
+  <a class="nav-logo" href="index.html">
+    <div class="nav-logo-icon">✝</div>
+    <div>
+      <div class="nav-logo-text">CLJN</div>
+      <div class="nav-logo-sub">Ministry Platform</div>
+    </div>
+  </a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="ministers.html" class="active">Ministers</a></li>
+    <li><a href="index.html#how">About</a></li>
+    <li><a href="pricing.html">Pricing</a></li>
+    <li><a href="contact.html">Contact</a></li>
+  </ul>
+  <div class="nav-actions">
+    <button class="btn-outline-nav" onclick="window.location.href='auth.html'">Login</button>
+    <button class="btn-outline-nav" onclick="window.location.href='auth.html'">Register</button>
+    <button class="btn-gold-nav" onclick="showToast('🔍 Opening minister finder...')"><i class="fas fa-search"></i> Find Minister</button>
+  </div>
+  <button class="hamburger" onclick="toggleMobile()"><i class="fas fa-bars"></i></button>
+</nav>
+
+<div class="mobile-nav" id="mobileNav">
+  <a href="index.html">Home</a>
+  <a href="ministers.html" style="color:var(--gold)">Ministers</a>
+  <a href="index.html#how">About</a>
+  <a href="pricing.html">Pricing</a>
+  <a href="contact.html">Contact</a>
+  <a href="#" onclick="window.location.href='auth.html'">Login</a>
+  <a href="#" onclick="window.location.href='auth.html'">Register</a>
+</div>
+
+<!-- ══════════════════════════════════════
+     HERO PROFILE
+══════════════════════════════════════ -->
+<section class="hero-section">
+  <div class="hero-grid">
+    <!-- Left -->
+    <div class="profile-image-wrap">
+      <div class="profile-ring">
+        <div class="profile-img">
+          <div class="profile-img-inner">✝</div>
+        </div>
+      </div>
+      <div class="online-status"><span class="status-dot"></span>Online</div>
+      <div class="verified-badge" title="Verified Minister"><i class="fas fa-check"></i></div>
+      <button class="save-btn" id="saveBtn" onclick="toggleSave()" title="Save Minister">
+        <i class="far fa-heart"></i>
+      </button>
+    </div>
+
+    <!-- Center -->
+    <div class="profile-info">
+      <div class="minister-name">Rev. Emmanuel Osei</div>
+      <div class="minister-title">Senior Prophet & Healing Minister</div>
+      <div class="minister-ministry">🏛️ Tabernacle of Grace International Ministry</div>
+      <div class="info-chips">
+        <span class="info-chip"><i class="fas fa-globe"></i> Ghana, West Africa</span>
+        <span class="info-chip"><i class="fas fa-language"></i> English, Twi, French</span>
+        <span class="info-chip"><i class="fas fa-star"></i> 24 Years Experience</span>
+        <span class="info-chip"><i class="fas fa-certificate"></i> Verified & Certified</span>
+      </div>
+      <div class="expertise-tags">
+        <span class="tag">Healing</span>
+        <span class="tag">Prophecy</span>
+        <span class="tag">Deliverance</span>
+        <span class="tag">Counseling</span>
+        <span class="tag">Bible Teaching</span>
+        <span class="tag">Marriage Ministry</span>
+      </div>
+      <p class="bio-preview">
+        Prophet Emmanuel Osei is an internationally recognized minister of the gospel with over two decades of transformative ministry. His prophetic gift and healing anointing have brought restoration to thousands across Africa, Europe, and North America...
+      </p>
+      <div class="rating-row">
+        <div class="stars">
+          <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+          <i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
+        </div>
+        <span class="rating-num">4.9</span>
+        <span class="rating-count">(1,248 reviews)</span>
+        <div class="fee-badge">From <span>$45</span> /session</div>
+      </div>
+    </div>
+
+    <!-- Right: Action Card -->
+    <div class="action-card">
+      <div class="action-card-title">Connect Now</div>
+      <button class="btn-primary" onclick="window.location.href='payment.html'">
+        <i class="fas fa-crown"></i> Subscribe Now
+      </button>
+      <button class="btn-secondary" onclick="window.location.href='dashboard.html'">
+        <i class="fas fa-comments"></i> Quick Chat
+      </button>
+      <button class="btn-secondary" onclick="window.location.href='payment.html'">
+        <i class="fas fa-calendar-check"></i> Book Consultation
+      </button>
+      <button class="btn-secondary" onclick="openModal('shareModal')">
+        <i class="fas fa-share-alt"></i> Share Profile
+      </button>
+      <div class="action-stats">
+        <div class="stat-item">
+          <div class="stat-num">12.4K</div>
+          <div class="stat-label">Subscribers</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-num">3,892</div>
+          <div class="stat-label">Sessions</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-num">486</div>
+          <div class="stat-label">Sermons</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-num">24</div>
+          <div class="stat-label">Yrs Ministry</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ══════════════════════════════════════
+     ABOUT SECTION
+══════════════════════════════════════ -->
+<div style="padding: 70px 5%; max-width:1300px; margin:0 auto;">
+  <div class="section-header">
+    <div class="section-tag">Biography</div>
+    <div class="section-title">About the Minister</div>
+    <div class="section-subtitle">A life surrendered to divine purpose and spiritual excellence</div>
+  </div>
+
+  <div class="about-card">
+    <div class="about-content">
+      <div>
+        <div class="about-text" id="aboutText" style="position:relative;">
+          <div id="bioContent" class="about-text-collapsed">
+            <p>Prophet Emmanuel Osei was born in Kumasi, Ghana, in 1975, into a family deeply rooted in Christian faith. From a young age, he demonstrated an exceptional sensitivity to spiritual matters, and by age 16, he had already begun preaching in his local church to considerable acclaim.</p>
+            <p>After completing his theological studies at the West Africa Seminary of Theology, Prophet Osei launched his itinerant ministry in 1999. Within the first decade, he had ministered in over 47 countries across Africa, Europe, and the Americas, with documented miracles, healings, and prophetic utterances that have transformed countless lives.</p>
+            <p>He founded the Tabernacle of Grace International Ministry in 2005, which today operates 38 branches across 12 nations, with a global online congregation exceeding 500,000 followers. His signature "Fire and Glory" crusades have attracted crowds of up to 80,000 attendees.</p>
+            <p>Prophet Osei holds a Master's degree in Theology from Oxford Centre for Mission Studies and a Doctorate in Ministry from Regent University, Virginia. He is also a prolific author with 14 published books on prayer, healing, and prophetic ministry.</p>
+          </div>
+        </div>
+        <button class="read-more-btn" id="readMoreBtn" onclick="toggleReadMore()">
+          <i class="fas fa-chevron-down" id="readMoreIcon"></i> Read Full Biography
+        </button>
+      </div>
+      <div class="about-highlights">
+        <div class="highlight-item">
+          <div class="highlight-label">Spiritual Journey</div>
+          <div class="highlight-text">Called to ministry at age 16 through a divine encounter; ordained as prophet at 22 after years of mentorship under Bishop Samuel Asare.</div>
+        </div>
+        <div class="highlight-item">
+          <div class="highlight-label">Mission Statement</div>
+          <div class="highlight-text">"To bring the manifest presence of God to every nation, healing the broken, setting captives free, and raising a generation of Kingdom ambassadors."</div>
+        </div>
+        <div class="highlight-item">
+          <div class="highlight-label">Ministry Focus</div>
+          <div class="highlight-text">Prophetic ministry, healing crusades, pastoral counseling, youth empowerment, and intercessory prayer networks across 12 nations.</div>
+        </div>
+        <div class="highlight-item">
+          <div class="highlight-label">Specializations</div>
+          <div class="highlight-text">Deliverance ministry, inner healing, prophetic counseling, marriage restoration, and breakthrough prayer for business and career.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ══════════════════════════════════════
+     SPECIALIZATIONS
+══════════════════════════════════════ -->
+<div style="padding: 70px 5%; max-width:1300px; margin:0 auto;">
+  <div class="section-header">
+    <div class="section-tag">Expertise</div>
+    <div class="section-title">Areas of Specialization</div>
+    <div class="section-subtitle">Anointed across diverse spiritual disciplines</div>
+  </div>
+  <div class="spec-grid">
+    <div class="spec-card">
+      <div class="spec-icon">🙌</div>
+      <div class="spec-name">Healing Ministry</div>
+      <div class="spec-desc">Divine healing through prayer, laying on of hands, and anointing oil. Documented cases of miraculous healings across physical and emotional ailments.</div>
+      <div class="spec-years"><i class="fas fa-clock"></i> 20 years of practice</div>
+    </div>
+    <div class="spec-card">
+      <div class="spec-icon">💬</div>
+      <div class="spec-name">Spiritual Counseling</div>
+      <div class="spec-desc">One-on-one guidance combining biblical wisdom with prophetic insight to navigate life's most challenging seasons and crossroads.</div>
+      <div class="spec-years"><i class="fas fa-clock"></i> 18 years of practice</div>
+    </div>
+    <div class="spec-card">
+      <div class="spec-icon">⚔️</div>
+      <div class="spec-name">Deliverance Ministry</div>
+      <div class="spec-desc">Spiritual warfare and deliverance from bondage, generational curses, and oppressive forces through the authority of Christ.</div>
+      <div class="spec-years"><i class="fas fa-clock"></i> 22 years of practice</div>
+    </div>
+    <div class="spec-card">
+      <div class="spec-icon">🙏</div>
+      <div class="spec-name">Intercessory Prayer</div>
+      <div class="spec-desc">Strategic intercession and prayer warfare for individuals, families, nations, and the body of Christ globally.</div>
+      <div class="spec-years"><i class="fas fa-clock"></i> 24 years of practice</div>
+    </div>
+    <div class="spec-card">
+      <div class="spec-icon">🔮</div>
+      <div class="spec-name">Prophetic Ministry</div>
+      <div class="spec-desc">Delivering accurate prophetic words, personal prophecy, and prophetic intercession that have been verified and fulfilled worldwide.</div>
+      <div class="spec-years"><i class="fas fa-clock"></i> 20 years of practice</div>
+    </div>
+    <div class="spec-card">
+      <div class="spec-icon">📖</div>
+      <div class="spec-name">Bible Teaching</div>
+      <div class="spec-desc">In-depth expository preaching and teaching that makes scripture practical, transformative, and applicable to modern-day life.</div>
+      <div class="spec-years"><i class="fas fa-clock"></i> 24 years of practice</div>
+    </div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ══════════════════════════════════════
+     PACKAGES
+══════════════════════════════════════ -->
+<div style="padding: 70px 5%; max-width:1300px; margin:0 auto;">
+  <div class="section-header">
+    <div class="section-tag">Consultation</div>
+    <div class="section-title">Spiritual Guidance Packages</div>
+    <div class="section-subtitle">Choose the level of spiritual support that aligns with your journey</div>
+  </div>
+  <div class="packages-grid">
+    <!-- Basic -->
+    <div class="pkg-card">
+      <div class="pkg-name">Basic Consultation</div>
+      <div class="pkg-price"><span>$</span>45 <sub>/session</sub></div>
+      <div class="pkg-duration"><i class="fas fa-clock" style="color:var(--gold)"></i> 30 minutes · One-time session</div>
+      <ul class="pkg-features">
+        <li><i class="fas fa-check-circle"></i> Prophetic prayer & word</li>
+        <li><i class="fas fa-check-circle"></i> Spiritual guidance session</li>
+        <li><i class="fas fa-check-circle"></i> Written prayer notes</li>
+        <li><i class="fas fa-check-circle"></i> Email follow-up</li>
+        <li class="disabled"><i class="fas fa-times-circle"></i> Personal prophecy recording</li>
+        <li class="disabled"><i class="fas fa-times-circle"></i> Priority scheduling</li>
+      </ul>
+      <div class="pkg-avail"><i class="fas fa-circle"></i> 8 slots available this week</div>
+      <button class="btn-primary" onclick="window.location.href='payment.html'"><i class="fas fa-calendar-plus"></i> Book Session</button>
+      <button class="btn-secondary" style="margin-top:8px" onclick="window.location.href='payment.html'">Subscribe Monthly</button>
+    </div>
+    <!-- Premium - Featured -->
+    <div class="pkg-card featured" style="overflow:hidden">
+      <div class="pkg-popular-badge">Most Popular</div>
+      <div class="pkg-name" style="color:var(--gold-light)">Premium Guidance</div>
+      <div class="pkg-price"><span>$</span>120 <sub>/session</sub></div>
+      <div class="pkg-duration"><i class="fas fa-clock" style="color:var(--gold)"></i> 60 minutes · Includes recording</div>
+      <ul class="pkg-features">
+        <li><i class="fas fa-check-circle"></i> Deep prophetic consultation</li>
+        <li><i class="fas fa-check-circle"></i> Personal prophecy with recording</li>
+        <li><i class="fas fa-check-circle"></i> Prayer & spiritual warfare</li>
+        <li><i class="fas fa-check-circle"></i> Written prophetic word document</li>
+        <li><i class="fas fa-check-circle"></i> 30-day prayer follow-up</li>
+        <li class="disabled"><i class="fas fa-times-circle"></i> Ongoing mentorship access</li>
+      </ul>
+      <div class="pkg-avail"><i class="fas fa-circle"></i> 4 slots available this week</div>
+      <button class="btn-primary" onclick="window.location.href='payment.html'"><i class="fas fa-crown"></i> Book Premium Session</button>
+      <button class="btn-secondary" style="margin-top:8px" onclick="window.location.href='payment.html'">Subscribe Monthly</button>
+    </div>
+    <!-- Mentorship -->
+    <div class="pkg-card">
+      <div class="pkg-name">One-on-One Mentorship</div>
+      <div class="pkg-price"><span>$</span>350 <sub>/month</sub></div>
+      <div class="pkg-duration"><i class="fas fa-clock" style="color:var(--gold)"></i> 4 sessions/month · Unlimited chat</div>
+      <ul class="pkg-features">
+        <li><i class="fas fa-check-circle"></i> Weekly 60-min sessions</li>
+        <li><i class="fas fa-check-circle"></i> 24/7 priority chat access</li>
+        <li><i class="fas fa-check-circle"></i> Monthly prophetic word</li>
+        <li><i class="fas fa-check-circle"></i> Exclusive teaching library</li>
+        <li><i class="fas fa-check-circle"></i> Personal intercession coverage</li>
+        <li><i class="fas fa-check-circle"></i> Annual spiritual audit session</li>
+      </ul>
+      <div class="pkg-avail"><i class="fas fa-circle" style="color:#f59e0b"></i> 2 mentorship spots available</div>
+      <button class="btn-primary" onclick="window.location.href='payment.html'"><i class="fas fa-user-graduate"></i> Begin Mentorship</button>
+      <button class="btn-secondary" style="margin-top:8px" onclick="window.location.href='payment.html'">Learn More</button>
+    </div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ══════════════════════════════════════
+     SCHEDULE
+══════════════════════════════════════ -->
+<div style="padding: 70px 5%; max-width:1300px; margin:0 auto;">
+  <div class="section-header">
+    <div class="section-tag">Availability</div>
+    <div class="section-title">Book an Appointment</div>
+    <div class="section-subtitle">Select your preferred day and time slot below</div>
+  </div>
+  <div class="schedule-wrap">
+    <div class="schedule-grid">
+      <div>
+        <div class="form-label">Select Day</div>
+        <div class="days-row">
+          <button class="day-btn unavail">Sun</button>
+          <button class="day-btn active" onclick="selectDay(this)">Mon</button>
+          <button class="day-btn" onclick="selectDay(this)">Tue</button>
+          <button class="day-btn" onclick="selectDay(this)">Wed</button>
+          <button class="day-btn" onclick="selectDay(this)">Thu</button>
+          <button class="day-btn" onclick="selectDay(this)">Fri</button>
+          <button class="day-btn unavail">Sat</button>
+        </div>
+        <div class="form-label">Available Time Slots</div>
+        <div class="slots-grid">
+          <button class="slot-btn booked" disabled>9:00 AM</button>
+          <button class="slot-btn" onclick="selectSlot(this)">10:00 AM</button>
+          <button class="slot-btn active" onclick="selectSlot(this)">11:00 AM</button>
+          <button class="slot-btn" onclick="selectSlot(this)">12:00 PM</button>
+          <button class="slot-btn booked" disabled>1:00 PM</button>
+          <button class="slot-btn" onclick="selectSlot(this)">2:00 PM</button>
+          <button class="slot-btn" onclick="selectSlot(this)">3:00 PM</button>
+          <button class="slot-btn booked" disabled>4:00 PM</button>
+          <button class="slot-btn" onclick="selectSlot(this)">5:00 PM</button>
+        </div>
+        <div style="display:flex;gap:16px;font-size:12px;color:var(--text-muted);margin-top:12px">
+          <span><span style="display:inline-block;width:10px;height:10px;background:rgba(201,168,76,0.5);border-radius:3px;margin-right:5px;"></span>Available</span>
+          <span><span style="display:inline-block;width:10px;height:10px;background:rgba(255,255,255,0.15);border-radius:3px;opacity:0.4;margin-right:5px;"></span>Booked</span>
+          <span><span style="display:inline-block;width:10px;height:10px;background:linear-gradient(135deg,var(--gold),var(--gold-light));border-radius:3px;margin-right:5px;"></span>Selected</span>
+        </div>
+      </div>
+      <div>
+        <div class="form-group">
+          <label class="form-label">Session Type</label>
+          <select class="form-control">
+            <option>Basic Consultation (30 min — $45)</option>
+            <option>Premium Guidance (60 min — $120)</option>
+            <option>Mentorship Session (60 min — included)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Your Name</label>
+          <input class="form-control" type="text" placeholder="Enter your full name">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Email Address</label>
+          <input class="form-control" type="email" placeholder="your@email.com">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Prayer Notes / Topic</label>
+          <textarea class="form-control" placeholder="Briefly describe what you'd like prayer and guidance for..."></textarea>
+        </div>
+        <div style="display:flex;gap:12px;">
+          <button class="btn-primary" style="flex:1" onclick="showToast('✅ Session booked successfully! Confirmation sent.')"><i class="fas fa-calendar-check"></i> Confirm Booking</button>
+          <button class="btn-secondary" style="flex:1" onclick="showToast('Booking cancelled.')">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ══════════════════════════════════════
+     SERMONS
+══════════════════════════════════════ -->
+<div style="padding: 70px 5%; max-width:1300px; margin:0 auto;">
+  <div class="section-header">
+    <div class="section-tag">Audio Ministry</div>
+    <div class="section-title">Sermons & Messages</div>
+    <div class="section-subtitle">Transformative teachings available on demand</div>
+  </div>
+  <div id="audioPlayer" class="audio-player">
+    <div class="player-top">
+      <div class="player-art">🎵</div>
+      <div class="player-info">
+        <div class="player-title" id="playerTitle">The Fire of God's Glory</div>
+        <div class="player-artist">Rev. Emmanuel Osei · Healing Ministry</div>
+      </div>
+    </div>
+    <div class="player-controls">
+      <button class="player-btn"><i class="fas fa-backward-step"></i></button>
+      <button class="player-btn play" id="playPauseBtn" onclick="togglePlay()"><i class="fas fa-pause" id="playIcon"></i></button>
+      <button class="player-btn"><i class="fas fa-forward-step"></i></button>
+      <div class="progress-bar" onclick="seekAudio(event)">
+        <div class="progress-fill" id="progressFill"></div>
+      </div>
+      <span class="time" id="currentTime">14:23</span>
+      <span class="time" style="color:var(--text-muted)">/ 42:17</span>
+    </div>
+  </div>
+
+  <div class="sermons-grid" style="margin-top:20px">
+    <div class="sermon-card">
+      <div class="sermon-thumb" style="background:linear-gradient(135deg,#1a3a6b,#2d1060)">
+        <div class="sermon-play-btn" onclick="playSermon('The Fire of God\'s Glory')"><i class="fas fa-play"></i></div>
+      </div>
+      <div class="sermon-body">
+        <div class="sermon-cat">Healing Ministry</div>
+        <div class="sermon-title">The Fire of God's Glory</div>
+        <div class="sermon-meta"><span><i class="fas fa-clock"></i> 42:17</span><span><i class="fas fa-calendar"></i> Mar 12, 2025</span></div>
+        <div class="sermon-actions">
+          <button class="btn-sm btn-sm-gold" onclick="playSermon('The Fire of God\'s Glory')"><i class="fas fa-play"></i> Play</button>
+          <button class="btn-sm btn-sm-outline" onclick="showToast('💾 Sermon saved!')"><i class="far fa-bookmark"></i></button>
+          <button class="btn-sm btn-sm-outline" onclick="showToast('⬇️ Downloading...')"><i class="fas fa-download"></i></button>
+        </div>
+      </div>
+    </div>
+    <div class="sermon-card">
+      <div class="sermon-thumb" style="background:linear-gradient(135deg,#0d2347,#1a4020)">
+        <div class="sermon-play-btn" onclick="playSermon('Breaking Every Chain')"><i class="fas fa-play"></i></div>
+      </div>
+      <div class="sermon-body">
+        <div class="sermon-cat">Deliverance</div>
+        <div class="sermon-title">Breaking Every Chain</div>
+        <div class="sermon-meta"><span><i class="fas fa-clock"></i> 58:04</span><span><i class="fas fa-calendar"></i> Feb 28, 2025</span></div>
+        <div class="sermon-actions">
+          <button class="btn-sm btn-sm-gold" onclick="playSermon('Breaking Every Chain')"><i class="fas fa-play"></i> Play</button>
+          <button class="btn-sm btn-sm-outline" onclick="showToast('💾 Sermon saved!')"><i class="far fa-bookmark"></i></button>
+          <button class="btn-sm btn-sm-outline" onclick="showToast('⬇️ Downloading...')"><i class="fas fa-download"></i></button>
+        </div>
+      </div>
+    </div>
+    <div class="sermon-card">
+      <div class="sermon-thumb" style="background:linear-gradient(135deg,#2d1060,#0d2347)">
+        <div class="sermon-play-btn" onclick="playSermon('Prophetic Destiny Alignment')"><i class="fas fa-play"></i></div>
+      </div>
+      <div class="sermon-body">
+        <div class="sermon-cat">Prophecy</div>
+        <div class="sermon-title">Prophetic Destiny Alignment</div>
+        <div class="sermon-meta"><span><i class="fas fa-clock"></i> 51:40</span><span><i class="fas fa-calendar"></i> Jan 15, 2025</span></div>
+        <div class="sermon-actions">
+          <button class="btn-sm btn-sm-gold" onclick="playSermon('Prophetic Destiny Alignment')"><i class="fas fa-play"></i> Play</button>
+          <button class="btn-sm btn-sm-outline" onclick="showToast('💾 Sermon saved!')"><i class="far fa-bookmark"></i></button>
+          <button class="btn-sm btn-sm-outline" onclick="showToast('⬇️ Downloading...')"><i class="fas fa-download"></i></button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ══════════════════════════════════════
+     ARTICLES
+══════════════════════════════════════ -->
+<div style="padding: 70px 5%; max-width:1300px; margin:0 auto;">
+  <div class="section-header">
+    <div class="section-tag">Written Teachings</div>
+    <div class="section-title">Articles & Devotionals</div>
+    <div class="section-subtitle">Spirit-filled insights for daily Kingdom living</div>
+  </div>
+  <div class="articles-grid">
+    <div class="article-card" onclick="openArticle('Understanding the Prophetic Season We Are In', 'Prophecy')">
+      <div class="article-img">📜</div>
+      <div class="article-body">
+        <div class="article-cat">Prophecy</div>
+        <div class="article-title">Understanding the Prophetic Season We Are In</div>
+        <div class="article-desc">A deep dive into the spiritual significance of current world events through the lens of biblical prophecy and divine revelation.</div>
+        <div style="display:flex;align-items:center;justify-content:space-between;">
+          <div class="article-date"><i class="fas fa-calendar"></i> April 5, 2025</div>
+          <div style="display:flex;gap:8px">
+            <button class="btn-sm btn-sm-gold" onclick="event.stopPropagation();openArticle('Understanding the Prophetic Season We Are In','Prophecy')">Read More</button>
+            <button class="btn-sm btn-sm-outline" onclick="event.stopPropagation();showToast('📌 Article saved!')"><i class="far fa-bookmark"></i></button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="article-card" onclick="openArticle('5 Prayers for Marital Breakthrough', 'Marriage')">
+      <div class="article-img">💍</div>
+      <div class="article-body">
+        <div class="article-cat">Marriage</div>
+        <div class="article-title">5 Prayers for Marital Breakthrough</div>
+        <div class="article-desc">Powerful, scripture-backed prayers designed to restore harmony, rekindle love, and invite divine intervention into your marriage.</div>
+        <div style="display:flex;align-items:center;justify-content:space-between;">
+          <div class="article-date"><i class="fas fa-calendar"></i> March 20, 2025</div>
+          <div style="display:flex;gap:8px">
+            <button class="btn-sm btn-sm-gold" onclick="event.stopPropagation();openArticle('5 Prayers for Marital Breakthrough','Marriage')">Read More</button>
+            <button class="btn-sm btn-sm-outline" onclick="event.stopPropagation();showToast('📌 Article saved!')"><i class="far fa-bookmark"></i></button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="article-card" onclick="openArticle('Walking in Spiritual Health: A Kingdom Perspective', 'Healing')">
+      <div class="article-img">✨</div>
+      <div class="article-body">
+        <div class="article-cat">Healing</div>
+        <div class="article-title">Walking in Spiritual Health: A Kingdom Perspective</div>
+        <div class="article-desc">Biblical foundations for accessing God's healing covenant and maintaining wholeness in body, soul, and spirit every day.</div>
+        <div style="display:flex;align-items:center;justify-content:space-between;">
+          <div class="article-date"><i class="fas fa-calendar"></i> Feb 10, 2025</div>
+          <div style="display:flex;gap:8px">
+            <button class="btn-sm btn-sm-gold" onclick="event.stopPropagation();openArticle('Walking in Spiritual Health','Healing')">Read More</button>
+            <button class="btn-sm btn-sm-outline" onclick="event.stopPropagation();showToast('📌 Article saved!')"><i class="far fa-bookmark"></i></button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ══════════════════════════════════════
+     REVIEWS
+══════════════════════════════════════ -->
+<div style="padding: 70px 5%; max-width:1300px; margin:0 auto;">
+  <div class="section-header">
+    <div class="section-tag">Testimonials</div>
+    <div class="section-title">Reviews & Testimonials</div>
+    <div class="section-subtitle">What the community is saying about their experience</div>
+  </div>
+  <div class="reviews-layout">
+    <div class="rating-summary">
+      <div class="big-rating">
+        <div class="big-rating-num">4.9</div>
+        <div class="big-stars">
+          <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
+        </div>
+        <div class="big-rating-count">Based on 1,248 reviews</div>
+      </div>
+      <div class="rating-bars">
+        <div class="rating-bar-row"><span class="bar-label">5</span><div class="bar-track"><div class="bar-fill" style="width:88%"></div></div><span class="bar-pct">88%</span></div>
+        <div class="rating-bar-row"><span class="bar-label">4</span><div class="bar-track"><div class="bar-fill" style="width:8%"></div></div><span class="bar-pct">8%</span></div>
+        <div class="rating-bar-row"><span class="bar-label">3</span><div class="bar-track"><div class="bar-fill" style="width:3%"></div></div><span class="bar-pct">3%</span></div>
+        <div class="rating-bar-row"><span class="bar-label">2</span><div class="bar-track"><div class="bar-fill" style="width:1%"></div></div><span class="bar-pct">1%</span></div>
+        <div class="rating-bar-row"><span class="bar-label">1</span><div class="bar-track"><div class="bar-fill" style="width:0%"></div></div><span class="bar-pct">0%</span></div>
+      </div>
+      <button class="btn-primary" style="margin-top:24px" onclick="openModal('reviewModal')"><i class="fas fa-pen"></i> Write a Review</button>
+    </div>
+    <div class="reviews-right">
+      <div class="reviews-header">
+        <div style="font-family:'Cinzel',serif;font-size:16px">1,248 Reviews</div>
+        <div style="display:flex;gap:12px;align-items:center">
+          <select class="sort-select">
+            <option>Most Recent</option>
+            <option>Highest Rated</option>
+            <option>Most Helpful</option>
+          </select>
+        </div>
+      </div>
+      <div class="reviews-list">
+        <div class="review-card">
+          <div class="review-top">
+            <div class="reviewer-img">👩🏾</div>
+            <div class="reviewer-info">
+              <div class="reviewer-name">Sarah Mensah</div>
+              <div class="reviewer-meta"><span>🇬🇭 Ghana</span> · <span>March 2025</span></div>
+            </div>
+            <div class="review-stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+            <div class="session-badge">Premium Guidance</div>
+          </div>
+          <div class="review-title">Life-changing prophetic session</div>
+          <div class="review-text">Prophet Osei gave me a word that was so specific and accurate, it could only have come from God. He knew details about my situation that I had told no one. His prayer broke a 7-year pattern of delay in my life. I am deeply grateful.</div>
+        </div>
+        <div class="review-card">
+          <div class="review-top">
+            <div class="reviewer-img">👨🏽</div>
+            <div class="reviewer-info">
+              <div class="reviewer-name">James Okonkwo</div>
+              <div class="reviewer-meta"><span>🇳🇬 Nigeria</span> · <span>February 2025</span></div>
+            </div>
+            <div class="review-stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+            <div class="session-badge">Mentorship</div>
+          </div>
+          <div class="review-title">Outstanding spiritual mentor</div>
+          <div class="review-text">Three months into the mentorship program and the transformation is unbelievable. My business turned around, my marriage is restored, and I walk in a new level of spiritual authority. This investment is priceless.</div>
+        </div>
+        <div class="review-card">
+          <div class="review-top">
+            <div class="reviewer-img">👩🏻</div>
+            <div class="reviewer-info">
+              <div class="reviewer-name">Amelia Torres</div>
+              <div class="reviewer-meta"><span>🇺🇸 United States</span> · <span>January 2025</span></div>
+            </div>
+            <div class="review-stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i></div>
+            <div class="session-badge">Basic Consultation</div>
+          </div>
+          <div class="review-title">Genuine, compassionate minister</div>
+          <div class="review-text">I was skeptical at first, but Prophet Osei's authenticity won me over immediately. No gimmicks, just pure faith and powerful prayer. Will definitely book another session soon.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ══════════════════════════════════════
+     RELATED MINISTERS
+══════════════════════════════════════ -->
+<div style="padding: 70px 5%; max-width:1300px; margin:0 auto;">
+  <div class="section-header">
+    <div class="section-tag">Discover More</div>
+    <div class="section-title">Related Ministers</div>
+    <div class="section-subtitle">Explore other anointed ministers on our platform</div>
+  </div>
+  <div class="related-slider-wrap">
+    <div class="related-slider">
+      <div class="related-card">
+        <div class="related-img">🙏</div>
+        <div class="related-name">Bishop Grace Adeyemi</div>
+        <div class="related-spec">Marriage & Family</div>
+        <div class="related-stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+        <div class="related-exp">18 yrs experience</div>
+        <button class="btn-sm btn-sm-gold" onclick="showToast('Viewing Bishop Grace Adeyemi...')">View Profile</button>
+      </div>
+      <div class="related-card">
+        <div class="related-img">✝</div>
+        <div class="related-name">Pastor Daniel Mwangi</div>
+        <div class="related-spec">Deliverance Ministry</div>
+        <div class="related-stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i></div>
+        <div class="related-exp">15 yrs experience</div>
+        <button class="btn-sm btn-sm-gold" onclick="showToast('Viewing Pastor Daniel Mwangi...')">View Profile</button>
+      </div>
+      <div class="related-card">
+        <div class="related-img">🕊️</div>
+        <div class="related-name">Prophetess Ruth Kimani</div>
+        <div class="related-spec">Intercession & Prayer</div>
+        <div class="related-stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+        <div class="related-exp">20 yrs experience</div>
+        <button class="btn-sm btn-sm-gold" onclick="showToast('Viewing Prophetess Ruth Kimani...')">View Profile</button>
+      </div>
+      <div class="related-card">
+        <div class="related-img">📖</div>
+        <div class="related-name">Rev. Michael Asante</div>
+        <div class="related-spec">Bible Teaching & Preaching</div>
+        <div class="related-stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i></div>
+        <div class="related-exp">12 yrs experience</div>
+        <button class="btn-sm btn-sm-gold" onclick="showToast('Viewing Rev. Michael Asante...')">View Profile</button>
+      </div>
+      <div class="related-card">
+        <div class="related-img">⚡</div>
+        <div class="related-name">Apostle Felix Boateng</div>
+        <div class="related-spec">Healing & Miracles</div>
+        <div class="related-stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i></div>
+        <div class="related-exp">22 yrs experience</div>
+        <button class="btn-sm btn-sm-gold" onclick="showToast('Viewing Apostle Felix Boateng...')">View Profile</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ══════════════════════════════════════
+     FAQ
+══════════════════════════════════════ -->
+<div style="padding: 70px 5%; max-width:1300px; margin:0 auto;">
+  <div class="section-header">
+    <div class="section-tag">Help</div>
+    <div class="section-title">Frequently Asked Questions</div>
+    <div class="section-subtitle">Everything you need to know before booking</div>
+  </div>
+  <div class="faq-list">
+    <div class="faq-item open">
+      <div class="faq-q" onclick="toggleFaq(this)">
+        <span>How does the consultation process work?</span>
+        <div class="faq-icon"><i class="fas fa-plus"></i></div>
+      </div>
+      <div class="faq-a">
+        <div class="faq-a-inner">After booking your session, you will receive a confirmation email with a secure video call link. At your scheduled time, simply join the link and connect with Prophet Osei directly. Sessions are conducted via secure video conferencing, and recordings are provided for Premium and Mentorship packages.</div>
+      </div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">
+        <span>What is your refund and cancellation policy?</span>
+        <div class="faq-icon"><i class="fas fa-plus"></i></div>
+      </div>
+      <div class="faq-a">
+        <div class="faq-a-inner">You may reschedule or cancel your session up to 24 hours before the appointment for a full refund. Cancellations within 24 hours of the session are eligible for a 50% refund or credit toward a future session. Monthly subscriptions can be cancelled at any time with no future charges.</div>
+      </div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">
+        <span>How do I know when Prophet Osei is available?</span>
+        <div class="faq-icon"><i class="fas fa-plus"></i></div>
+      </div>
+      <div class="faq-a">
+        <div class="faq-a-inner">The booking calendar above displays real-time availability. Slots marked in gold are open for booking, while greyed-out slots are already reserved. Prophet Osei is generally available Monday through Friday, with limited weekend availability for emergency consultations.</div>
+      </div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">
+        <span>What does a monthly subscription include?</span>
+        <div class="faq-icon"><i class="fas fa-plus"></i></div>
+      </div>
+      <div class="faq-a">
+        <div class="faq-a-inner">Monthly subscribers receive priority booking privileges, discounted session rates, access to exclusive teaching content, a monthly personal prophetic word, and inclusion in the Prophet's personal prayer list. Mentorship subscribers additionally receive 24/7 chat access and weekly sessions.</div>
+      </div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">
+        <span>Is my personal information kept confidential?</span>
+        <div class="faq-icon"><i class="fas fa-plus"></i></div>
+      </div>
+      <div class="faq-a">
+        <div class="faq-a-inner">Absolutely. All sessions are strictly confidential. Personal information shared during consultations is never disclosed to third parties. Our platform is GDPR compliant and uses end-to-end encryption for all communications and session recordings.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     FOOTER
+══════════════════════════════════════ -->
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <div class="footer-brand-logo">
+        <div class="nav-logo-icon">✝</div>
+        <div>
+          <div class="nav-logo-text">CLJN</div>
+          <div class="nav-logo-sub">Ministry Platform</div>
+        </div>
+      </div>
+      <p>Connecting believers with anointed ministers for spiritual guidance, healing, and transformative encounters with God. Trusted by thousands worldwide.</p>
+      <div class="social-links">
+        <div class="social-btn" onclick="showToast('Facebook page coming soon')"><i class="fab fa-facebook-f"></i></div>
+        <div class="social-btn" onclick="showToast('Twitter / X coming soon')"><i class="fab fa-twitter"></i></div>
+        <div class="social-btn" onclick="showToast('Instagram coming soon')"><i class="fab fa-instagram"></i></div>
+        <div class="social-btn" onclick="showToast('YouTube channel coming soon')"><i class="fab fa-youtube"></i></div>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h4>Platform</h4>
+      <ul>
+        <li><a href="#">Find a Minister</a></li>
+        <li><a href="#">Browse Sermons</a></li>
+        <li><a href="#">Prayer Requests</a></li>
+        <li><a href="#">Live Events</a></li>
+        <li><a href="#">Devotionals</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Support</h4>
+      <ul>
+        <li><a href="#">Help Center</a></li>
+        <li><a href="#">Contact Us</a></li>
+        <li><a href="pricing.html">Pricing</a></li>
+        <li><a href="#">Refund Policy</a></li>
+        <li><a href="terms.html">Privacy Policy</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Ministry</h4>
+      <ul>
+        <li><a href="minister-register.html">Become a Minister</a></li>
+        <li><a href="#">Minister Dashboard</a></li>
+        <li><a href="#">Ministry Resources</a></li>
+        <li><a href="#">Partnership</a></li>
+        <li><a href="#">About Us</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2025 CLJN Ministry Platform. All rights reserved.</span>
+    <span style="color:var(--gold)">Built with Faith · Powered by Technology</span>
+  </div>
+</footer>
+
+<!-- ══════════════════════════════════════
+     MODALS
+══════════════════════════════════════ -->
+
+<!-- Subscribe Modal -->
+<div class="modal-overlay" id="subscribeModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div>
+        <div class="modal-title">Book a Consultation</div>
+        <div class="modal-subtitle">Select your package and complete payment</div>
+      </div>
+      <button class="modal-close" onclick="closeModal('subscribeModal')"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="modal-body">
+      <div class="form-label">Select Plan</div>
+      <div class="plan-pills">
+        <button class="plan-pill active" onclick="selectPlan(this,'Basic','$45')">Basic — $45</button>
+        <button class="plan-pill" onclick="selectPlan(this,'Premium','$120')">Premium — $120</button>
+        <button class="plan-pill" onclick="selectPlan(this,'Mentorship','$350')">Mentorship — $350/mo</button>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Duration</label>
+        <select class="form-control">
+          <option>One-time session</option>
+          <option>Monthly subscription</option>
+          <option>Quarterly (save 15%)</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Payment Method</label>
+        <select class="form-control">
+          <option>💳 Credit / Debit Card</option>
+          <option>🏦 Bank Transfer</option>
+          <option>📱 Mobile Money</option>
+          <option>₿ Cryptocurrency</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Coupon Code</label>
+        <div style="display:flex;gap:8px">
+          <input class="form-control" placeholder="Enter coupon code" id="couponInput" style="flex:1">
+          <button class="btn-copy" onclick="applyCoupon()">Apply</button>
+        </div>
+      </div>
+      <div class="price-summary">
+        <div class="price-row"><span>Package</span><span id="summaryPlan">Basic Consultation</span></div>
+        <div class="price-row"><span>Subtotal</span><span id="summaryPrice">$45.00</span></div>
+        <div class="price-row"><span>Discount</span><span style="color:#22c55e" id="summaryDiscount">—</span></div>
+        <div class="price-row total"><span>Total</span><span id="summaryTotal">$45.00</span></div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-modal-confirm" onclick="confirmBooking()"><i class="fas fa-lock"></i> Confirm & Pay</button>
+      <button class="btn-modal-cancel" onclick="closeModal('subscribeModal')">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- Chat Modal -->
+<div class="modal-overlay" id="chatModal">
+  <div class="modal chat-modal" style="padding:0;max-width:420px">
+    <div class="chat-header">
+      <div class="chat-header-img">
+        ✝
+        <span class="chat-online-dot"></span>
+      </div>
+      <div class="chat-header-info">
+        <div class="chat-name">Rev. Emmanuel Osei</div>
+        <div class="chat-status">● Online now</div>
+      </div>
+      <button class="chat-close" onclick="closeModal('chatModal')"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="chat-messages" id="chatMessages">
+      <div class="chat-msg received">
+        <div class="chat-bubble">Peace be with you! 🙏 How may I serve you in the Spirit today?</div>
+        <div class="chat-time">10:32 AM</div>
+      </div>
+      <div class="chat-msg sent">
+        <div class="chat-bubble">Good day Prophet, I would like to discuss a situation I've been facing in my marriage.</div>
+        <div class="chat-time">10:34 AM</div>
+      </div>
+      <div class="chat-msg received">
+        <div class="chat-bubble">I hear you, and God sees you. Tell me more — this is a safe space for healing and truth. ✝️</div>
+        <div class="chat-time">10:35 AM</div>
+      </div>
+    </div>
+    <div class="chat-input-area">
+      <div class="chat-input-icons">
+        <button class="chat-icon-btn" onclick="showToast('😊 Emoji picker')"><i class="far fa-smile"></i></button>
+        <button class="chat-icon-btn" onclick="showToast('📎 Attach file')"><i class="fas fa-paperclip"></i></button>
+        <button class="chat-icon-btn" onclick="showToast('🎤 Voice note')"><i class="fas fa-microphone"></i></button>
+      </div>
+      <input class="chat-input" id="chatInput" placeholder="Type a message..." onkeypress="handleChatKey(event)">
+      <button class="chat-send" onclick="sendChatMsg()"><i class="fas fa-paper-plane"></i></button>
+    </div>
+  </div>
+</div>
+
+<!-- Share Modal -->
+<div class="modal-overlay" id="shareModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div>
+        <div class="modal-title">Share Profile</div>
+        <div class="modal-subtitle">Share Rev. Emmanuel Osei's profile</div>
+      </div>
+      <button class="modal-close" onclick="closeModal('shareModal')"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="modal-body">
+      <div class="share-options">
+        <div class="share-opt" onclick="showToast('📘 Sharing on Facebook...')"><i class="fab fa-facebook-f"></i><span>Facebook</span></div>
+        <div class="share-opt" onclick="showToast('💬 Opening WhatsApp...')"><i class="fab fa-whatsapp"></i><span>WhatsApp</span></div>
+        <div class="share-opt" onclick="showToast('📧 Opening email...')"><i class="fas fa-envelope"></i><span>Email</span></div>
+        <div class="share-opt" onclick="showToast('🐦 Sharing on X/Twitter...')"><i class="fab fa-twitter"></i><span>X / Twitter</span></div>
+        <div class="share-opt" onclick="showToast('📸 Sharing on Instagram...')"><i class="fab fa-instagram"></i><span>Instagram</span></div>
+      </div>
+      <div class="form-label" style="margin-top:16px">Or copy link</div>
+      <div class="copy-link-row">
+        <input class="copy-link-input" value="https://divinepath.com/ministers/emmanuel-osei" readonly id="copyLinkInput">
+        <button class="btn-copy" onclick="copyLink()">Copy</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Review Modal -->
+<div class="modal-overlay" id="reviewModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div>
+        <div class="modal-title">Write a Review</div>
+        <div class="modal-subtitle">Share your experience with the community</div>
+      </div>
+      <button class="modal-close" onclick="closeModal('reviewModal')"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="modal-body">
+      <div class="form-label">Your Rating</div>
+      <div class="star-select" id="starSelect">
+        <i class="far fa-star" onclick="setRating(1)"></i>
+        <i class="far fa-star" onclick="setRating(2)"></i>
+        <i class="far fa-star" onclick="setRating(3)"></i>
+        <i class="far fa-star" onclick="setRating(4)"></i>
+        <i class="far fa-star" onclick="setRating(5)"></i>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Review Title</label>
+        <input class="form-control" placeholder="Summarize your experience in one line">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Your Review</label>
+        <textarea class="form-control" style="height:130px" placeholder="Tell others about your session. Was the prophecy accurate? How did you feel? Would you recommend?"></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-modal-confirm" onclick="submitReview()"><i class="fas fa-paper-plane"></i> Submit Review</button>
+      <button class="btn-modal-cancel" onclick="closeModal('reviewModal')">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- Article Modal -->
+<div class="modal-overlay" id="articleModal">
+  <div class="modal article-modal">
+    <div class="modal-header">
+      <div>
+        <div class="modal-title" id="articleModalTitle">Article</div>
+        <div class="modal-subtitle" id="articleModalCat">Category</div>
+      </div>
+      <button class="modal-close" onclick="closeModal('articleModal')"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="modal-body article-modal-content">
+      <div class="article-modal-header-img" id="articleModalEmoji">📜</div>
+      <p>The world is shifting. The prophetic clocks of Heaven are ticking with unparalleled precision, and for those with spiritual ears to hear, the sounds of transition are unmistakable. We are living in a season that ancient prophets foresaw and longed to witness.</p>
+      <p>In Amos 3:7, the Scriptures declare that God does nothing without first revealing His secrets to His servants the prophets. This principle remains as active today as it was in the days of Isaiah, Jeremiah, or Ezekiel. God is speaking — the question is whether we are attuned to His frequency.</p>
+      <p>There are three key spiritual markers that indicate the season we are in: an acceleration of prophetic fulfillment, a global hunger for authentic spiritual encounters, and an unprecedented convergence of kingdom purposes across nations and generations. Each of these merits deep reflection and prayerful response.</p>
+      <p>As ministers of the gospel, we are called not merely to observe these signs, but to proclaim them with clarity and boldness. The harvest fields are ripe, the laborers are being raised up, and the sound of abundance is coming like the sound of rushing waters...</p>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-modal-confirm" onclick="showToast('📌 Article saved to your library!');closeModal('articleModal')"><i class="far fa-bookmark"></i> Save Article</button>
+      <button class="btn-modal-cancel" onclick="closeModal('articleModal')">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast">
+  <i class="fas fa-check-circle"></i>
+  <span id="toastMsg"></span>
+</div>
+
+<!-- ══════════════════════════════════════
+     JAVASCRIPT
+══════════════════════════════════════ -->
+<script>
+// NAVBAR
+function toggleMobile() {
+  document.getElementById('mobileNav').classList.toggle('open');
+}
+
+// MODALS
+function openModal(id) {
+  document.getElementById(id).classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal(id) {
+  document.getElementById(id).classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+// Close modal on overlay click
+document.querySelectorAll('.modal-overlay').forEach(overlay => {
+  overlay.addEventListener('click', function(e) {
+    if (e.target === this) closeModal(this.id);
+  });
+});
+
+// SAVE TOGGLE
+let saved = false;
+function toggleSave() {
+  saved = !saved;
+  const btn = document.getElementById('saveBtn');
+  btn.innerHTML = saved ? '<i class="fas fa-heart" style="color:#ef4444"></i>' : '<i class="far fa-heart"></i>';
+  btn.classList.toggle('saved', saved);
+  showToast(saved ? '❤️ Minister saved to your list!' : '💔 Removed from saved list');
+}
+
+// FAQ
+function toggleFaq(q) {
+  const item = q.parentElement;
+  const isOpen = item.classList.contains('open');
+  document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+  if (!isOpen) item.classList.add('open');
+}
+
+// READ MORE
+let expanded = false;
+function toggleReadMore() {
+  expanded = !expanded;
+  const bio = document.getElementById('bioContent');
+  const btn = document.getElementById('readMoreBtn');
+  const icon = document.getElementById('readMoreIcon');
+  if (expanded) {
+    bio.classList.remove('about-text-collapsed');
+    btn.innerHTML = '<i class="fas fa-chevron-up" id="readMoreIcon"></i> Show Less';
+  } else {
+    bio.classList.add('about-text-collapsed');
+    btn.innerHTML = '<i class="fas fa-chevron-down" id="readMoreIcon"></i> Read Full Biography';
+  }
+}
+
+// SCHEDULE
+function selectDay(el) {
+  document.querySelectorAll('.day-btn:not(.unavail)').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+}
+
+function selectSlot(el) {
+  document.querySelectorAll('.slot-btn:not(.booked)').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+}
+
+// AUDIO PLAYER
+let playing = true;
+let progressValue = 35;
+let playInterval;
+
+function playSermon(title) {
+  document.getElementById('playerTitle').textContent = title;
+  const player = document.getElementById('audioPlayer');
+  player.classList.add('active');
+  playing = true;
+  document.getElementById('playIcon').className = 'fas fa-pause';
+  startProgress();
+  player.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  showToast('▶️ Now playing: ' + title);
+}
+
+function togglePlay() {
+  playing = !playing;
+  document.getElementById('playIcon').className = playing ? 'fas fa-pause' : 'fas fa-play';
+  if (playing) startProgress(); else clearInterval(playInterval);
+}
+
+function startProgress() {
+  clearInterval(playInterval);
+  playInterval = setInterval(() => {
+    if (progressValue < 100) {
+      progressValue += 0.05;
+      document.getElementById('progressFill').style.width = progressValue + '%';
+      const secs = Math.floor(progressValue * 0.4217 * 60);
+      const m = Math.floor(secs / 60);
+      const s = secs % 60;
+      document.getElementById('currentTime').textContent = m + ':' + (s < 10 ? '0' : '') + s;
+    }
+  }, 200);
+}
+
+function seekAudio(e) {
+  const bar = e.currentTarget;
+  const rect = bar.getBoundingClientRect();
+  const pct = Math.min(100, Math.max(0, (e.clientX - rect.left) / rect.width * 100));
+  progressValue = pct;
+  document.getElementById('progressFill').style.width = pct + '%';
+}
+
+// SUBSCRIPTION MODAL
+function selectPlan(el, name, price) {
+  document.querySelectorAll('.plan-pill').forEach(p => p.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('summaryPlan').textContent = name + ' Consultation';
+  document.getElementById('summaryPrice').textContent = price + '.00';
+  document.getElementById('summaryTotal').textContent = price + '.00';
+  document.getElementById('summaryDiscount').textContent = '—';
+}
+
+function applyCoupon() {
+  const code = document.getElementById('couponInput').value.toUpperCase();
+  if (code === 'GRACE25') {
+    document.getElementById('summaryDiscount').textContent = '-25%';
+    showToast('🎉 Coupon applied! 25% discount activated.');
+    const priceEl = document.getElementById('summaryPrice');
+    const curPrice = priceEl.textContent;
+    const num = parseFloat(curPrice.replace('$', '').replace('.00', ''));
+    document.getElementById('summaryTotal').textContent = '$' + (num * 0.75).toFixed(2);
+  } else {
+    showToast('❌ Invalid coupon code. Try GRACE25!');
+  }
+}
+
+function confirmBooking() {
+  closeModal('subscribeModal');
+  showToast('🎉 Redirecting to payment...');
+  setTimeout(function(){ window.location.href = 'payment.html'; }, 700);
+}
+
+// CHAT
+function handleChatKey(e) {
+  if (e.key === 'Enter') sendChatMsg();
+}
+
+function sendChatMsg() {
+  const input = document.getElementById('chatInput');
+  const msg = input.value.trim();
+  if (!msg) return;
+  const container = document.getElementById('chatMessages');
+  const now = new Date();
+  const time = now.getHours() + ':' + (now.getMinutes() < 10 ? '0' : '') + now.getMinutes() + ' ' + (now.getHours() >= 12 ? 'PM' : 'AM');
+
+  const sentDiv = document.createElement('div');
+  sentDiv.className = 'chat-msg sent';
+  sentDiv.innerHTML = `<div class="chat-bubble">${msg}</div><div class="chat-time">${time}</div>`;
+  container.appendChild(sentDiv);
+  input.value = '';
+  container.scrollTop = container.scrollHeight;
+
+  // Typing indicator
+  const typing = document.createElement('div');
+  typing.className = 'chat-msg received';
+  typing.innerHTML = `<div class="typing-indicator"><span></span><span></span><span></span></div>`;
+  container.appendChild(typing);
+  container.scrollTop = container.scrollHeight;
+
+  const replies = [
+    "The Lord sees your situation and He is working on your behalf. 🙏",
+    "Let's pray together: Father, we bring this to You in faith...",
+    "I sense a breakthrough is coming. Stand firm in your faith! ✝️",
+    "God's timing is perfect. Trust the process, beloved.",
+    "You are not alone in this. Heaven is fighting for you."
+  ];
+
+  setTimeout(() => {
+    container.removeChild(typing);
+    const replyDiv = document.createElement('div');
+    replyDiv.className = 'chat-msg received';
+    const replyTime = new Date();
+    const rt = replyTime.getHours() + ':' + (replyTime.getMinutes() < 10 ? '0' : '') + replyTime.getMinutes() + ' ' + (replyTime.getHours() >= 12 ? 'PM' : 'AM');
+    replyDiv.innerHTML = `<div class="chat-bubble">${replies[Math.floor(Math.random() * replies.length)]}</div><div class="chat-time">${rt}</div>`;
+    container.appendChild(replyDiv);
+    container.scrollTop = container.scrollHeight;
+  }, 1800);
+}
+
+// SHARE
+function copyLink() {
+  const input = document.getElementById('copyLinkInput');
+  input.select();
+  document.execCommand('copy');
+  showToast('🔗 Link copied to clipboard!');
+}
+
+// REVIEWS
+let selectedRating = 0;
+function setRating(n) {
+  selectedRating = n;
+  const stars = document.querySelectorAll('#starSelect i');
+  stars.forEach((s, i) => {
+    s.className = i < n ? 'fas fa-star active' : 'far fa-star';
+  });
+}
+
+function submitReview() {
+  if (selectedRating === 0) { showToast('⭐ Please select a rating!'); return; }
+  closeModal('reviewModal');
+  showToast('🙏 Thank you! Your review has been submitted.');
+}
+
+// ARTICLE MODAL
+const articleEmojis = { 'Prophecy': '📜', 'Marriage': '💍', 'Healing': '✨' };
+function openArticle(title, cat) {
+  document.getElementById('articleModalTitle').textContent = title;
+  document.getElementById('articleModalCat').textContent = cat;
+  document.getElementById('articleModalEmoji').textContent = articleEmojis[cat] || '📄';
+  openModal('articleModal');
+}
+
+// TOAST
+let toastTimer;
+function showToast(msg) {
+  const toast = document.getElementById('toast');
+  document.getElementById('toastMsg').textContent = msg;
+  toast.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => toast.classList.remove('show'), 3000);
+}
+
+// KEYBOARD ESCAPE
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    document.querySelectorAll('.modal-overlay.open').forEach(m => closeModal(m.id));
+  }
+});
+</script>
+</body>
+</html>

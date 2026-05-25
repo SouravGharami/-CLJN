@@ -1,0 +1,3027 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CLJN — Subscriber Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Cinzel:wght@400;500;600;700&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Raleway:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --navy: #0a0e1a;
+  --navy-mid: #0f1629;
+  --navy-light: #162040;
+  --navy-card: #111827;
+  --gold: #c9a84c;
+  --gold-light: #e8c97a;
+  --gold-pale: #f5e4b3;
+  --gold-dim: #8a6f2e;
+  --crimson: #8b1a2e;
+  --crimson-light: #b02240;
+  --white: #ffffff;
+  --off-white: #e8e4d9;
+  --gray: #8a8fa8;
+  --gray-light: #b0b5cc;
+  --sidebar-w: 270px;
+  --sidebar-collapsed: 72px;
+  --topbar-h: 72px;
+  --glass: rgba(255,255,255,0.04);
+  --glass-border: rgba(201,168,76,0.15);
+  --glass-hover: rgba(255,255,255,0.07);
+  --gold-glow: 0 0 30px rgba(201,168,76,0.2);
+  --gold-glow-strong: 0 0 50px rgba(201,168,76,0.35);
+  --shadow-deep: 0 20px 60px rgba(0,0,0,0.5);
+  --shadow-card: 0 8px 32px rgba(0,0,0,0.4);
+  --radius: 16px;
+  --radius-sm: 10px;
+  --radius-lg: 24px;
+  --transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Raleway', sans-serif;
+  background: var(--navy);
+  color: var(--off-white);
+  min-height: 100vh;
+  overflow-x: hidden;
+  position: relative;
+}
+
+/* COSMIC BACKGROUND */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 80% 50% at 15% 20%, rgba(201,168,76,0.06) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 60% at 85% 80%, rgba(139,26,46,0.08) 0%, transparent 60%),
+    radial-gradient(ellipse 40% 40% at 50% 50%, rgba(22,32,64,0.5) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* STAR PARTICLES */
+.stars {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.star {
+  position: absolute;
+  background: var(--gold-pale);
+  border-radius: 50%;
+  animation: twinkle var(--dur, 3s) ease-in-out infinite;
+  animation-delay: var(--delay, 0s);
+  opacity: 0;
+}
+
+@keyframes twinkle {
+  0%, 100% { opacity: 0; transform: scale(0.5); }
+  50% { opacity: var(--op, 0.4); transform: scale(1); }
+}
+
+/* LAYOUT */
+.dashboard-wrap {
+  display: flex;
+  min-height: 100vh;
+  position: relative;
+  z-index: 1;
+}
+
+/* ===== SIDEBAR ===== */
+.sidebar {
+  width: var(--sidebar-w);
+  min-height: 100vh;
+  background: rgba(10,14,26,0.95);
+  backdrop-filter: blur(20px);
+  border-right: 1px solid var(--glass-border);
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  transition: var(--transition);
+  overflow: hidden;
+}
+
+.sidebar.collapsed {
+  width: var(--sidebar-collapsed);
+}
+
+.sidebar-glow {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 300px;
+  background: radial-gradient(ellipse at top left, rgba(201,168,76,0.1) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+/* Logo */
+.sidebar-logo {
+  padding: 28px 20px 24px;
+  border-bottom: 1px solid var(--glass-border);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+.logo-emblem {
+  width: 42px;
+  height: 42px;
+  background: linear-gradient(135deg, var(--gold) 0%, var(--gold-dim) 100%);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+  flex-shrink: 0;
+  box-shadow: 0 0 20px rgba(201,168,76,0.3);
+  position: relative;
+}
+
+.logo-emblem::after {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, rgba(201,168,76,0.4), transparent);
+  z-index: -1;
+}
+
+.logo-text {
+  overflow: hidden;
+  transition: var(--transition);
+}
+
+.sidebar.collapsed .logo-text { opacity: 0; width: 0; }
+
+.logo-name {
+  font-family: 'Cinzel', serif;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--gold);
+  letter-spacing: 1px;
+  white-space: nowrap;
+}
+
+.logo-tagline {
+  font-size: 0.65rem;
+  color: var(--gray);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+/* Nav */
+.sidebar-nav {
+  flex: 1;
+  padding: 16px 12px;
+  overflow-y: auto;
+  scrollbar-width: none;
+}
+
+.sidebar-nav::-webkit-scrollbar { display: none; }
+
+.nav-section-label {
+  font-size: 0.6rem;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--gray);
+  padding: 8px 10px 4px;
+  overflow: hidden;
+  white-space: nowrap;
+  transition: var(--transition);
+}
+
+.sidebar.collapsed .nav-section-label { opacity: 0; }
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 12px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: var(--transition);
+  position: relative;
+  margin-bottom: 2px;
+  white-space: nowrap;
+  text-decoration: none;
+  color: var(--gray-light);
+}
+
+.nav-item:hover {
+  background: var(--glass-hover);
+  color: var(--off-white);
+}
+
+.nav-item.active {
+  background: linear-gradient(135deg, rgba(201,168,76,0.15), rgba(201,168,76,0.05));
+  color: var(--gold);
+  border: 1px solid rgba(201,168,76,0.2);
+}
+
+.nav-item.active::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 20%; bottom: 20%;
+  width: 3px;
+  background: linear-gradient(to bottom, var(--gold), var(--gold-dim));
+  border-radius: 0 3px 3px 0;
+  box-shadow: 0 0 8px var(--gold);
+}
+
+.nav-icon {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  flex-shrink: 0;
+  transition: var(--transition);
+}
+
+.nav-item.active .nav-icon {
+  background: rgba(201,168,76,0.15);
+}
+
+.nav-label {
+  font-size: 0.85rem;
+  font-weight: 500;
+  transition: var(--transition);
+  flex: 1;
+}
+
+.sidebar.collapsed .nav-label,
+.sidebar.collapsed .nav-badge { opacity: 0; width: 0; overflow: hidden; }
+
+.nav-badge {
+  background: linear-gradient(135deg, var(--gold), var(--gold-dim));
+  color: var(--navy);
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 20px;
+  flex-shrink: 0;
+}
+
+/* User Profile Card */
+.sidebar-profile {
+  padding: 16px 12px;
+  border-top: 1px solid var(--glass-border);
+  flex-shrink: 0;
+}
+
+.profile-card {
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-sm);
+  padding: 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.profile-card:hover { background: var(--glass-hover); }
+
+.profile-avatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--gold), var(--crimson));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Cinzel', serif;
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: var(--white);
+  flex-shrink: 0;
+  border: 2px solid rgba(201,168,76,0.4);
+}
+
+.profile-info {
+  overflow: hidden;
+  transition: var(--transition);
+  flex: 1;
+}
+
+.sidebar.collapsed .profile-info { opacity: 0; width: 0; }
+
+.profile-name {
+  font-family: 'Cinzel', serif;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--off-white);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.profile-plan {
+  font-size: 0.65rem;
+  color: var(--gold);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.sidebar-logout {
+  margin: 0 12px 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  color: var(--gray);
+  cursor: pointer;
+  transition: var(--transition);
+  border: 1px solid transparent;
+}
+
+.sidebar-logout:hover {
+  color: #e55;
+  border-color: rgba(220,50,50,0.2);
+  background: rgba(220,50,50,0.06);
+}
+
+.sidebar.collapsed .sidebar-logout span { opacity: 0; width: 0; overflow: hidden; }
+
+/* COLLAPSE TOGGLE */
+.sidebar-toggle {
+  position: fixed;
+  top: calc(var(--topbar-h) + 16px);
+  left: calc(var(--sidebar-w) - 14px);
+  width: 28px;
+  height: 28px;
+  background: var(--navy-mid);
+  border: 1px solid var(--glass-border);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 101;
+  transition: var(--transition);
+  color: var(--gold);
+  font-size: 0.8rem;
+}
+
+.sidebar.collapsed ~ .sidebar-toggle,
+.sidebar-toggle.collapsed-btn {
+  left: calc(var(--sidebar-collapsed) - 14px);
+}
+
+/* ===== MAIN CONTENT ===== */
+.main-content {
+  margin-left: var(--sidebar-w);
+  flex: 1;
+  transition: var(--transition);
+  min-width: 0;
+}
+
+.main-content.expanded { margin-left: var(--sidebar-collapsed); }
+
+/* ===== TOPBAR ===== */
+.topbar {
+  height: var(--topbar-h);
+  background: rgba(10,14,26,0.85);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--glass-border);
+  position: sticky;
+  top: 0;
+  z-index: 90;
+  display: flex;
+  align-items: center;
+  padding: 0 28px;
+  gap: 20px;
+}
+
+.topbar-search {
+  flex: 1;
+  max-width: 380px;
+  position: relative;
+}
+
+.topbar-search input {
+  width: 100%;
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  border-radius: 30px;
+  padding: 10px 18px 10px 44px;
+  color: var(--off-white);
+  font-family: 'Raleway', sans-serif;
+  font-size: 0.85rem;
+  outline: none;
+  transition: var(--transition);
+}
+
+.topbar-search input::placeholder { color: var(--gray); }
+.topbar-search input:focus {
+  border-color: rgba(201,168,76,0.4);
+  background: var(--glass-hover);
+  box-shadow: 0 0 20px rgba(201,168,76,0.1);
+}
+
+.search-icon {
+  position: absolute;
+  left: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--gray);
+  font-size: 1rem;
+}
+
+.topbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: auto;
+}
+
+.topbar-btn {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: var(--transition);
+  position: relative;
+  color: var(--gray-light);
+  font-size: 1.1rem;
+}
+
+.topbar-btn:hover {
+  background: var(--glass-hover);
+  border-color: rgba(201,168,76,0.3);
+  color: var(--gold);
+}
+
+.notif-dot {
+  position: absolute;
+  top: 7px; right: 7px;
+  width: 9px; height: 9px;
+  background: var(--gold);
+  border-radius: 50%;
+  border: 2px solid var(--navy);
+  animation: pulse-dot 2s ease-in-out infinite;
+}
+
+@keyframes pulse-dot {
+  0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(201,168,76,0.4); }
+  50% { transform: scale(1.1); box-shadow: 0 0 0 4px rgba(201,168,76,0); }
+}
+
+.notif-count {
+  position: absolute;
+  top: 4px; right: 4px;
+  background: var(--gold);
+  color: var(--navy);
+  font-size: 0.55rem;
+  font-weight: 800;
+  width: 16px; height: 16px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1.5px solid var(--navy);
+}
+
+.topbar-avatar {
+  width: 42px; height: 42px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--gold), var(--crimson));
+  border: 2px solid rgba(201,168,76,0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Cinzel', serif;
+  font-weight: 700;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: var(--transition);
+  position: relative;
+  box-shadow: 0 0 15px rgba(201,168,76,0.2);
+}
+
+.topbar-avatar:hover { box-shadow: 0 0 25px rgba(201,168,76,0.4); }
+
+.online-dot {
+  position: absolute;
+  bottom: 1px; right: 1px;
+  width: 10px; height: 10px;
+  background: #4caf82;
+  border-radius: 50%;
+  border: 2px solid var(--navy);
+}
+
+/* DROPDOWN */
+.dropdown {
+  position: absolute;
+  top: calc(100% + 12px);
+  right: 0;
+  background: var(--navy-mid);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius);
+  padding: 8px;
+  min-width: 200px;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-10px);
+  transition: var(--transition);
+  z-index: 200;
+  backdrop-filter: blur(20px);
+  box-shadow: var(--shadow-deep);
+}
+
+.dropdown.open {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.dropdown-item {
+  padding: 10px 14px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.82rem;
+  color: var(--gray-light);
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.dropdown-item:hover {
+  background: var(--glass-hover);
+  color: var(--gold);
+}
+
+.dropdown-divider {
+  height: 1px;
+  background: var(--glass-border);
+  margin: 6px 0;
+}
+
+/* ===== PAGE CONTENT ===== */
+.page-content {
+  padding: 32px 28px;
+  max-width: 1400px;
+}
+
+.section { margin-bottom: 40px; display: none; }
+.section.active { display: block; }
+
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+
+.section-title {
+  font-family: 'Cinzel', serif;
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: var(--gold);
+  letter-spacing: 0.5px;
+}
+
+.section-sub {
+  font-size: 0.8rem;
+  color: var(--gray);
+  margin-top: 3px;
+}
+
+.section-link {
+  font-size: 0.78rem;
+  color: var(--gold);
+  cursor: pointer;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  opacity: 0.8;
+  transition: var(--transition);
+}
+.section-link:hover { opacity: 1; }
+
+/* ===== HERO SECTION ===== */
+.hero-section {
+  background: linear-gradient(135deg, rgba(22,32,64,0.8) 0%, rgba(10,14,26,0.6) 100%);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  padding: 40px;
+  margin-bottom: 32px;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-section::before {
+  content: '';
+  position: absolute;
+  top: -50%; right: -10%;
+  width: 400px; height: 400px;
+  background: radial-gradient(circle, rgba(201,168,76,0.08) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.hero-section::after {
+  content: '';
+  position: absolute;
+  bottom: -30%; left: -5%;
+  width: 300px; height: 300px;
+  background: radial-gradient(circle, rgba(139,26,46,0.08) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.hero-inner {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 32px;
+  flex-wrap: wrap;
+}
+
+.hero-left { flex: 1; min-width: 280px; }
+
+.hero-greeting {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 0.85rem;
+  color: var(--gold);
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+
+.hero-name {
+  font-family: 'Cinzel Decorative', serif;
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--white);
+  line-height: 1.2;
+  margin-bottom: 10px;
+}
+
+.hero-name span { color: var(--gold); }
+
+.hero-quote {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: 1.05rem;
+  color: var(--gray-light);
+  line-height: 1.7;
+  margin-bottom: 20px;
+  padding-left: 16px;
+  border-left: 2px solid var(--gold-dim);
+}
+
+.hero-plan {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: linear-gradient(135deg, rgba(201,168,76,0.15), rgba(201,168,76,0.05));
+  border: 1px solid rgba(201,168,76,0.3);
+  border-radius: 30px;
+  padding: 7px 16px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--gold);
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  margin-bottom: 24px;
+}
+
+.plan-dot {
+  width: 6px; height: 6px;
+  background: var(--gold);
+  border-radius: 50%;
+  animation: pulse-dot 2s ease-in-out infinite;
+}
+
+.hero-ctas {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--gold) 0%, var(--gold-dim) 100%);
+  color: var(--navy);
+  border: none;
+  padding: 12px 24px;
+  border-radius: 30px;
+  font-family: 'Cinzel', serif;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: var(--transition);
+  box-shadow: 0 4px 20px rgba(201,168,76,0.25);
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(201,168,76,0.4);
+}
+
+.btn-outline {
+  background: transparent;
+  color: var(--gold);
+  border: 1px solid rgba(201,168,76,0.4);
+  padding: 12px 24px;
+  border-radius: 30px;
+  font-family: 'Cinzel', serif;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.btn-outline:hover {
+  background: rgba(201,168,76,0.08);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 20px rgba(201,168,76,0.15);
+}
+
+.hero-right {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 220px;
+}
+
+.hero-reminder {
+  background: rgba(139,26,46,0.12);
+  border: 1px solid rgba(139,26,46,0.25);
+  border-radius: var(--radius);
+  padding: 18px;
+}
+
+.reminder-label {
+  font-size: 0.65rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--crimson-light);
+  margin-bottom: 6px;
+}
+
+.reminder-title {
+  font-family: 'Cinzel', serif;
+  font-size: 0.9rem;
+  color: var(--off-white);
+  margin-bottom: 4px;
+}
+
+.reminder-time {
+  font-size: 0.8rem;
+  color: var(--gray);
+}
+
+.reminder-time span { color: var(--gold); font-weight: 600; }
+
+/* ===== STATS GRID ===== */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+  gap: 16px;
+  margin-bottom: 40px;
+}
+
+.stat-card {
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius);
+  padding: 22px 20px;
+  position: relative;
+  overflow: hidden;
+  transition: var(--transition);
+  cursor: default;
+}
+
+.stat-card::before {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  transform: scaleX(0);
+  transition: var(--transition);
+}
+
+.stat-card:hover {
+  background: var(--glass-hover);
+  transform: translateY(-3px);
+  box-shadow: var(--gold-glow);
+  border-color: rgba(201,168,76,0.3);
+}
+
+.stat-card:hover::before { transform: scaleX(1); }
+
+.stat-icon {
+  font-size: 1.6rem;
+  margin-bottom: 14px;
+  display: block;
+}
+
+.stat-value {
+  font-family: 'Cinzel', serif;
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--gold);
+  line-height: 1;
+  margin-bottom: 6px;
+}
+
+.stat-label {
+  font-size: 0.75rem;
+  color: var(--gray);
+  letter-spacing: 0.5px;
+}
+
+/* ===== MINISTERS SECTION ===== */
+.ministers-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.minister-card {
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius);
+  padding: 20px 24px;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  transition: var(--transition);
+  cursor: default;
+  flex-wrap: wrap;
+}
+
+.minister-card:hover {
+  background: var(--glass-hover);
+  border-color: rgba(201,168,76,0.25);
+  box-shadow: var(--shadow-card);
+}
+
+.minister-avatar {
+  width: 58px; height: 58px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--gold-dim), var(--crimson));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Cinzel', serif;
+  font-weight: 700;
+  font-size: 1.3rem;
+  color: var(--white);
+  flex-shrink: 0;
+  border: 2px solid rgba(201,168,76,0.3);
+  position: relative;
+}
+
+.minister-status {
+  position: absolute;
+  bottom: 2px; right: 2px;
+  width: 12px; height: 12px;
+  border-radius: 50%;
+  border: 2px solid var(--navy-card);
+}
+
+.minister-status.online { background: #4caf82; box-shadow: 0 0 6px #4caf82; }
+.minister-status.away { background: var(--gold); }
+.minister-status.offline { background: var(--gray); }
+
+.minister-info { flex: 1; min-width: 140px; }
+
+.minister-name {
+  font-family: 'Cinzel', serif;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--off-white);
+  margin-bottom: 3px;
+}
+
+.minister-specialty {
+  font-size: 0.78rem;
+  color: var(--gold);
+  margin-bottom: 4px;
+}
+
+.minister-last {
+  font-size: 0.72rem;
+  color: var(--gray);
+}
+
+.minister-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.btn-sm {
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-family: 'Cinzel', serif;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  transition: var(--transition);
+  border: none;
+}
+
+.btn-sm-gold {
+  background: linear-gradient(135deg, var(--gold), var(--gold-dim));
+  color: var(--navy);
+}
+
+.btn-sm-gold:hover { transform: translateY(-1px); box-shadow: 0 4px 15px rgba(201,168,76,0.3); }
+
+.btn-sm-outline {
+  background: transparent;
+  color: var(--gold);
+  border: 1px solid rgba(201,168,76,0.35);
+}
+
+.btn-sm-outline:hover {
+  background: rgba(201,168,76,0.08);
+  transform: translateY(-1px);
+}
+
+/* ===== SERMONS SECTION ===== */
+.sermons-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 18px;
+}
+
+.sermon-card {
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  transition: var(--transition);
+}
+
+.sermon-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-deep);
+  border-color: rgba(201,168,76,0.25);
+}
+
+.sermon-thumb {
+  height: 140px;
+  background: linear-gradient(135deg, var(--navy-light), var(--navy-mid));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 3rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.sermon-thumb::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, transparent 40%, rgba(10,14,26,0.8));
+}
+
+.sermon-duration {
+  position: absolute;
+  bottom: 10px; right: 12px;
+  background: rgba(0,0,0,0.6);
+  backdrop-filter: blur(6px);
+  border-radius: 20px;
+  padding: 3px 10px;
+  font-size: 0.72rem;
+  color: var(--off-white);
+  z-index: 1;
+}
+
+.sermon-body { padding: 16px; }
+
+.sermon-title {
+  font-family: 'Cinzel', serif;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--off-white);
+  margin-bottom: 5px;
+  line-height: 1.4;
+}
+
+.sermon-minister {
+  font-size: 0.75rem;
+  color: var(--gold);
+  margin-bottom: 14px;
+}
+
+/* Audio Player */
+.audio-player {
+  background: rgba(0,0,0,0.2);
+  border-radius: 8px;
+  padding: 10px;
+  margin-bottom: 12px;
+}
+
+.player-progress {
+  height: 3px;
+  background: rgba(255,255,255,0.1);
+  border-radius: 3px;
+  margin-bottom: 8px;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.player-bar {
+  height: 100%;
+  background: linear-gradient(90deg, var(--gold), var(--gold-dim));
+  border-radius: 3px;
+  transition: width 0.1s;
+}
+
+.player-controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.player-btns {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.player-btn {
+  background: none;
+  border: none;
+  color: var(--gray-light);
+  cursor: pointer;
+  font-size: 1rem;
+  transition: var(--transition);
+  padding: 4px;
+}
+
+.player-btn:hover { color: var(--gold); }
+.player-btn.play-btn {
+  width: 30px; height: 30px;
+  background: var(--gold);
+  border-radius: 50%;
+  color: var(--navy);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+}
+
+.player-time {
+  font-size: 0.68rem;
+  color: var(--gray);
+}
+
+.sermon-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.sermon-btn {
+  flex: 1;
+  padding: 7px;
+  border-radius: 8px;
+  font-size: 0.72rem;
+  font-family: 'Raleway', sans-serif;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+  text-align: center;
+  border: 1px solid var(--glass-border);
+  background: var(--glass);
+  color: var(--gray-light);
+}
+
+.sermon-btn:hover {
+  background: rgba(201,168,76,0.1);
+  border-color: rgba(201,168,76,0.3);
+  color: var(--gold);
+}
+
+/* ===== CONSULTATION SECTION ===== */
+.consultations-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 18px;
+}
+
+.consult-card {
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius);
+  padding: 24px;
+  transition: var(--transition);
+  position: relative;
+  overflow: hidden;
+}
+
+.consult-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--gold), var(--crimson));
+}
+
+.consult-card:hover {
+  background: var(--glass-hover);
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-card);
+}
+
+.live-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(139,26,46,0.2);
+  border: 1px solid rgba(139,26,46,0.35);
+  border-radius: 20px;
+  padding: 3px 10px;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: #e55c7a;
+  margin-bottom: 14px;
+}
+
+.live-pulse {
+  width: 6px; height: 6px;
+  background: #e55c7a;
+  border-radius: 50%;
+  animation: pulse-dot 1.5s ease-in-out infinite;
+}
+
+.consult-minister {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.consult-avatar {
+  width: 46px; height: 46px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--gold-dim), var(--navy-light));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Cinzel', serif;
+  font-weight: 700;
+  font-size: 1.1rem;
+  border: 2px solid rgba(201,168,76,0.3);
+}
+
+.consult-name {
+  font-family: 'Cinzel', serif;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--off-white);
+}
+
+.consult-type { font-size: 0.75rem; color: var(--gold); }
+
+.countdown-wrap {
+  background: rgba(0,0,0,0.2);
+  border-radius: 10px;
+  padding: 14px;
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+.countdown-label {
+  font-size: 0.65rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--gray);
+  margin-bottom: 8px;
+}
+
+.countdown-timer {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+}
+
+.countdown-unit {
+  text-align: center;
+}
+
+.countdown-num {
+  font-family: 'Cinzel', serif;
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--gold);
+  display: block;
+  line-height: 1;
+}
+
+.countdown-text {
+  font-size: 0.6rem;
+  color: var(--gray);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.countdown-sep {
+  font-family: 'Cinzel', serif;
+  font-size: 1.2rem;
+  color: var(--gold-dim);
+  padding-top: 2px;
+}
+
+/* ===== NOTIFICATIONS ===== */
+.notif-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.notif-item {
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius);
+  padding: 16px 20px;
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  transition: var(--transition);
+  cursor: pointer;
+}
+
+.notif-item.unread {
+  border-color: rgba(201,168,76,0.2);
+  background: rgba(201,168,76,0.04);
+}
+
+.notif-item:hover {
+  background: var(--glass-hover);
+  transform: translateX(4px);
+}
+
+.notif-icon-wrap {
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  flex-shrink: 0;
+}
+
+.notif-body { flex: 1; }
+
+.notif-title {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--off-white);
+  margin-bottom: 3px;
+}
+
+.notif-item.unread .notif-title { color: var(--white); }
+
+.notif-text {
+  font-size: 0.77rem;
+  color: var(--gray);
+  line-height: 1.5;
+}
+
+.notif-time {
+  font-size: 0.68rem;
+  color: var(--gray);
+  white-space: nowrap;
+  flex-shrink: 0;
+  padding-top: 2px;
+}
+
+.unread-dot {
+  width: 7px; height: 7px;
+  background: var(--gold);
+  border-radius: 50%;
+  flex-shrink: 0;
+  margin-top: 6px;
+}
+
+/* ===== TIMELINE ===== */
+.timeline {
+  position: relative;
+  padding-left: 32px;
+}
+
+.timeline::before {
+  content: '';
+  position: absolute;
+  left: 10px; top: 0; bottom: 0;
+  width: 1px;
+  background: linear-gradient(to bottom, var(--gold), transparent);
+}
+
+.timeline-item {
+  position: relative;
+  margin-bottom: 28px;
+}
+
+.timeline-dot {
+  position: absolute;
+  left: -26px; top: 4px;
+  width: 12px; height: 12px;
+  border-radius: 50%;
+  background: var(--gold);
+  border: 2px solid var(--navy);
+  box-shadow: 0 0 10px rgba(201,168,76,0.4);
+}
+
+.timeline-card {
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-sm);
+  padding: 14px 18px;
+  transition: var(--transition);
+}
+
+.timeline-card:hover {
+  background: var(--glass-hover);
+  border-color: rgba(201,168,76,0.2);
+}
+
+.timeline-type {
+  font-size: 0.65rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 4px;
+}
+
+.timeline-title {
+  font-family: 'Cinzel', serif;
+  font-size: 0.88rem;
+  color: var(--off-white);
+  margin-bottom: 4px;
+}
+
+.timeline-meta {
+  font-size: 0.73rem;
+  color: var(--gray);
+}
+
+/* ===== BILLING SECTION ===== */
+.billing-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.billing-plan-card {
+  background: linear-gradient(135deg, rgba(201,168,76,0.1), rgba(22,32,64,0.5));
+  border: 1px solid rgba(201,168,76,0.3);
+  border-radius: var(--radius-lg);
+  padding: 28px;
+  position: relative;
+  overflow: hidden;
+}
+
+.billing-plan-card::before {
+  content: '✦';
+  position: absolute;
+  top: -20px; right: -20px;
+  font-size: 8rem;
+  color: rgba(201,168,76,0.05);
+  font-family: serif;
+}
+
+.plan-name {
+  font-family: 'Cinzel Decorative', serif;
+  font-size: 1.1rem;
+  color: var(--gold);
+  margin-bottom: 4px;
+}
+
+.plan-price {
+  font-family: 'Cinzel', serif;
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: var(--white);
+  margin-bottom: 4px;
+}
+
+.plan-price span {
+  font-size: 0.9rem;
+  color: var(--gray);
+  font-weight: 400;
+}
+
+.plan-renewal {
+  font-size: 0.78rem;
+  color: var(--gray);
+  margin-bottom: 20px;
+}
+
+.plan-features {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 22px;
+}
+
+.plan-features li {
+  font-size: 0.8rem;
+  color: var(--gray-light);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.plan-features li::before {
+  content: '✦';
+  color: var(--gold);
+  font-size: 0.6rem;
+}
+
+.billing-history {
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.billing-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.billing-table th {
+  font-size: 0.65rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--gray);
+  padding: 14px 18px;
+  text-align: left;
+  border-bottom: 1px solid var(--glass-border);
+}
+
+.billing-table td {
+  padding: 13px 18px;
+  font-size: 0.82rem;
+  color: var(--gray-light);
+  border-bottom: 1px solid rgba(255,255,255,0.03);
+}
+
+.billing-table tr:hover td { background: var(--glass-hover); }
+
+.status-paid {
+  background: rgba(76,175,130,0.15);
+  color: #4caf82;
+  border: 1px solid rgba(76,175,130,0.25);
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 0.68rem;
+  font-weight: 700;
+  display: inline-block;
+}
+
+/* ===== SAVED CONTENT ===== */
+.saved-tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.tab-btn {
+  padding: 8px 18px;
+  border-radius: 20px;
+  font-size: 0.78rem;
+  font-family: 'Cinzel', serif;
+  font-weight: 500;
+  cursor: pointer;
+  transition: var(--transition);
+  border: 1px solid var(--glass-border);
+  background: var(--glass);
+  color: var(--gray-light);
+}
+
+.tab-btn.active {
+  background: linear-gradient(135deg, rgba(201,168,76,0.2), rgba(201,168,76,0.05));
+  border-color: rgba(201,168,76,0.35);
+  color: var(--gold);
+}
+
+.saved-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 14px;
+}
+
+.saved-card {
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius);
+  padding: 18px;
+  transition: var(--transition);
+  cursor: pointer;
+}
+
+.saved-card:hover {
+  background: var(--glass-hover);
+  border-color: rgba(201,168,76,0.25);
+  transform: translateY(-2px);
+}
+
+.saved-icon {
+  font-size: 1.6rem;
+  margin-bottom: 10px;
+}
+
+.saved-title {
+  font-family: 'Cinzel', serif;
+  font-size: 0.83rem;
+  color: var(--off-white);
+  margin-bottom: 4px;
+  line-height: 1.4;
+}
+
+.saved-meta {
+  font-size: 0.72rem;
+  color: var(--gray);
+}
+
+/* ===== SETTINGS ===== */
+.settings-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.settings-card {
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius);
+  padding: 24px;
+}
+
+.settings-card-title {
+  font-family: 'Cinzel', serif;
+  font-size: 0.95rem;
+  color: var(--gold);
+  margin-bottom: 20px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--glass-border);
+}
+
+.form-group { margin-bottom: 16px; }
+
+.form-label {
+  font-size: 0.75rem;
+  color: var(--gray);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  display: block;
+  margin-bottom: 7px;
+}
+
+.form-input {
+  width: 100%;
+  background: rgba(0,0,0,0.2);
+  border: 1px solid var(--glass-border);
+  border-radius: 8px;
+  padding: 10px 14px;
+  color: var(--off-white);
+  font-family: 'Raleway', sans-serif;
+  font-size: 0.85rem;
+  outline: none;
+  transition: var(--transition);
+}
+
+.form-input:focus {
+  border-color: rgba(201,168,76,0.4);
+  box-shadow: 0 0 15px rgba(201,168,76,0.1);
+}
+
+.form-input::placeholder { color: var(--gray); }
+
+.toggle-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+}
+
+.toggle-label {
+  font-size: 0.82rem;
+  color: var(--gray-light);
+}
+
+.toggle {
+  width: 40px; height: 22px;
+  background: var(--glass-border);
+  border-radius: 20px;
+  position: relative;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.toggle.on {
+  background: linear-gradient(135deg, var(--gold), var(--gold-dim));
+}
+
+.toggle::after {
+  content: '';
+  position: absolute;
+  top: 3px; left: 3px;
+  width: 16px; height: 16px;
+  background: var(--white);
+  border-radius: 50%;
+  transition: var(--transition);
+}
+
+.toggle.on::after { left: 21px; }
+
+/* ===== RIGHT PANEL ===== */
+.right-panel {
+  width: 280px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  position: sticky;
+  top: calc(var(--topbar-h) + 32px);
+  align-self: flex-start;
+}
+
+.panel-card {
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius);
+  padding: 20px;
+}
+
+.panel-title {
+  font-family: 'Cinzel', serif;
+  font-size: 0.85rem;
+  color: var(--gold);
+  margin-bottom: 14px;
+  letter-spacing: 0.5px;
+}
+
+.verse-text {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: 1.0rem;
+  color: var(--off-white);
+  line-height: 1.7;
+  margin-bottom: 8px;
+}
+
+.verse-ref {
+  font-size: 0.72rem;
+  color: var(--gold);
+  letter-spacing: 1px;
+}
+
+.prayer-textarea {
+  width: 100%;
+  background: rgba(0,0,0,0.2);
+  border: 1px solid var(--glass-border);
+  border-radius: 8px;
+  padding: 10px 12px;
+  color: var(--off-white);
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 0.95rem;
+  height: 80px;
+  resize: none;
+  outline: none;
+  transition: var(--transition);
+  margin-bottom: 10px;
+}
+
+.prayer-textarea:focus {
+  border-color: rgba(201,168,76,0.3);
+}
+
+.prayer-textarea::placeholder { color: var(--gray); }
+
+.event-item {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+}
+
+.event-item:last-child { border-bottom: none; }
+
+.event-date-badge {
+  background: rgba(201,168,76,0.12);
+  border: 1px solid rgba(201,168,76,0.2);
+  border-radius: 8px;
+  padding: 6px 10px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.event-day {
+  font-family: 'Cinzel', serif;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--gold);
+  display: block;
+  line-height: 1;
+}
+
+.event-month {
+  font-size: 0.6rem;
+  color: var(--gray);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.event-title {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--off-white);
+  margin-bottom: 3px;
+}
+
+.event-time { font-size: 0.7rem; color: var(--gray); }
+
+/* CONTENT WRAPPER */
+.content-with-panel {
+  display: flex;
+  gap: 28px;
+  align-items: flex-start;
+}
+
+.content-main { flex: 1; min-width: 0; }
+
+/* ===== MOBILE OVERLAY ===== */
+.mobile-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  backdrop-filter: blur(4px);
+  z-index: 99;
+}
+
+/* ===== SCROLLBAR ===== */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb {
+  background: rgba(201,168,76,0.2);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover { background: rgba(201,168,76,0.4); }
+
+/* ===== ANIMATIONS ===== */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.anim-fade-up {
+  animation: fadeInUp 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.delay-1 { animation-delay: 0.1s; opacity: 0; }
+.delay-2 { animation-delay: 0.2s; opacity: 0; }
+.delay-3 { animation-delay: 0.3s; opacity: 0; }
+.delay-4 { animation-delay: 0.4s; opacity: 0; }
+.delay-5 { animation-delay: 0.5s; opacity: 0; }
+.delay-6 { animation-delay: 0.6s; opacity: 0; }
+
+/* ===== MOBILE MENU TOGGLE ===== */
+.mobile-menu-btn {
+  display: none;
+  width: 40px; height: 40px;
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  border-radius: 8px;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--gold);
+  font-size: 1.1rem;
+  margin-right: 12px;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 1200px) {
+  .right-panel { display: none; }
+  .content-with-panel { display: block; }
+  .billing-grid { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 900px) {
+  .settings-grid { grid-template-columns: 1fr; }
+  .stats-grid { grid-template-columns: repeat(3, 1fr); }
+}
+
+@media (max-width: 768px) {
+  :root {
+    --sidebar-w: 270px;
+    --topbar-h: 60px;
+  }
+
+  .sidebar {
+    transform: translateX(-100%);
+    z-index: 200;
+  }
+
+  .sidebar.mobile-open {
+    transform: translateX(0);
+  }
+
+  .mobile-overlay { display: block; }
+
+  .main-content {
+    margin-left: 0 !important;
+  }
+
+  .mobile-menu-btn { display: flex; }
+
+  .sidebar-toggle { display: none; }
+
+  .page-content { padding: 20px 16px; }
+
+  .hero-inner { flex-direction: column; }
+
+  .hero-right { width: 100%; }
+
+  .stats-grid { grid-template-columns: repeat(2, 1fr); }
+
+  .sermons-grid { grid-template-columns: 1fr; }
+
+  .consultations-grid { grid-template-columns: 1fr; }
+
+  .minister-card { flex-direction: column; align-items: flex-start; }
+
+  .billing-grid { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 480px) {
+  .stats-grid { grid-template-columns: repeat(2, 1fr); }
+  .hero-name { font-size: 1.4rem; }
+  .topbar-search { display: none; }
+}
+</style>
+</head>
+<body>
+
+<!-- Stars -->
+<div class="stars" id="stars"></div>
+
+<!-- Mobile Overlay -->
+<div class="mobile-overlay" id="mobileOverlay" onclick="closeMobileSidebar()"></div>
+
+<div class="dashboard-wrap">
+
+  <!-- ===== SIDEBAR ===== -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-glow"></div>
+
+    <!-- Logo -->
+    <div class="sidebar-logo">
+      <div class="logo-emblem">✦</div>
+      <div class="logo-text">
+        <div class="logo-name">CLJN</div>
+        <div class="logo-tagline">Sacred Portal</div>
+      </div>
+    </div>
+
+    <!-- Nav -->
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">Main</div>
+      <a class="nav-item active" href="dashboard.html">
+        <div class="nav-icon">⬡</div>
+        <span class="nav-label">Dashboard</span>
+      </a>
+      <a class="nav-item" href="ministers.html">
+        <div class="nav-icon">👑</div>
+        <span class="nav-label">My Ministers</span>
+        <span class="nav-badge">4</span>
+      </a>
+      <a class="nav-item" href="dashboard.html#messages">
+        <div class="nav-icon">✉</div>
+        <span class="nav-label">Messages</span>
+        <span class="nav-badge">3</span>
+      </a>
+
+      <div class="nav-section-label" style="margin-top:12px;">Content</div>
+      <a class="nav-item" href="bookmarks.html">
+        <div class="nav-icon">🎙</div>
+        <span class="nav-label">Sermons</span>
+      </a>
+      <a class="nav-item" href="bookmarks.html">
+        <div class="nav-icon">🔖</div>
+        <span class="nav-label">Saved Content</span>
+      </a>
+
+      <div class="nav-section-label" style="margin-top:12px;">Sessions</div>
+      <a class="nav-item" href="dashboard.html#sessions">
+        <div class="nav-icon">📅</div>
+        <span class="nav-label">Book Sessions</span>
+      </a>
+      <a class="nav-item" href="notifications.html">
+        <div class="nav-icon">🔔</div>
+        <span class="nav-label">Notifications</span>
+        <span class="nav-badge">7</span>
+      </a>
+
+      <div class="nav-section-label" style="margin-top:12px;">Account</div>
+      <a class="nav-item" href="pricing.html">
+        <div class="nav-icon">💎</div>
+        <span class="nav-label">Billing & Plan</span>
+      </a>
+      <a class="nav-item" href="settings.html">
+        <div class="nav-icon">⚙</div>
+        <span class="nav-label">Settings</span>
+      </a>
+    </nav>
+
+    <!-- Profile -->
+    <div class="sidebar-profile">
+      <div class="profile-card">
+        <div class="profile-avatar">EO</div>
+        <div class="profile-info">
+          <div class="profile-name">Emmanuel Osei</div>
+          <div class="profile-plan">✦ CLJN Member</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Logout -->
+    <div class="sidebar-logout" onclick="window.location.href='index.html'" style="cursor:pointer">
+      <span>⏻</span>
+      <span>Sign Out</span>
+    </div>
+  </aside>
+
+  <!-- Sidebar Toggle -->
+  <div class="sidebar-toggle" id="sidebarToggle" onclick="toggleSidebar()">❮</div>
+
+  <!-- ===== MAIN CONTENT ===== -->
+  <div class="main-content" id="mainContent">
+
+    <!-- TOPBAR -->
+    <header class="topbar">
+      <div class="mobile-menu-btn" onclick="openMobileSidebar()">☰</div>
+
+      <div class="topbar-search">
+        <span class="search-icon">🔍</span>
+        <input type="text" placeholder="Search sermons, ministers, devotionals...">
+      </div>
+
+      <div class="topbar-actions">
+        <div class="topbar-btn" onclick="window.location.href='dashboard.html#messages'">
+          ✉
+          <div class="notif-count">3</div>
+        </div>
+        <div class="topbar-btn" onclick="window.location.href='notifications.html'">
+          🔔
+          <div class="notif-dot"></div>
+        </div>
+
+        <div style="position:relative">
+          <div class="topbar-avatar" onclick="toggleDropdown('userDropdown')">
+            EO
+            <div class="online-dot"></div>
+          </div>
+          <div class="dropdown" id="userDropdown">
+            <div class="dropdown-item" onclick="window.location.href='settings.html'">⚙ Profile Settings</div>
+            <div class="dropdown-item" onclick="window.location.href='pricing.html'">💎 My Subscription</div>
+            <div class="dropdown-divider"></div>
+            <div class="dropdown-item" style="color:#e55" onclick="window.location.href='index.html'">⏻ Sign Out</div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- PAGE CONTENT -->
+    <div class="page-content">
+      <div class="content-with-panel">
+        <div class="content-main">
+
+          <!-- ===== DASHBOARD SECTION ===== -->
+          <div class="section active" id="section-dashboard">
+
+            <!-- Hero -->
+            <div class="hero-section anim-fade-up">
+              <div class="hero-inner">
+                <div class="hero-left">
+                  <div class="hero-greeting">Welcome Back, Beloved</div>
+                  <div class="hero-name">Emmanuel <span>Osei</span></div>
+                  <div class="hero-quote">"The Lord is my shepherd; I shall not want. He makes me lie down in green pastures."<br>— Psalm 23:1-2</div>
+                  <div class="hero-plan"><div class="plan-dot"></div> CLJN Membership Active</div>
+                  <div class="hero-ctas">
+                    <button class="btn-primary" onclick="window.location.href='ministers.html'">Explore Ministers</button>
+                    <button class="btn-outline" onclick="window.location.href='dashboard.html#sessions'">Continue Session</button>
+                  </div>
+                </div>
+                <div class="hero-right">
+                  <div class="hero-reminder">
+                    <div class="reminder-label">⏰ Upcoming Consultation</div>
+                    <div class="reminder-title">Rev. Dr. Grace Mensah</div>
+                    <div class="reminder-time">Tomorrow at <span>10:30 AM</span> · Video Call</div>
+                  </div>
+                  <div class="hero-reminder" style="background:rgba(201,168,76,0.08);border-color:rgba(201,168,76,0.2)">
+                    <div class="reminder-label" style="color:var(--gold)">📖 Daily Devotional Ready</div>
+                    <div class="reminder-title">Walking in Faith</div>
+                    <div class="reminder-time">By <span>Pastor Solomon Ade</span></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Stats -->
+            <div class="stats-grid">
+              <div class="stat-card anim-fade-up delay-1">
+                <span class="stat-icon">👑</span>
+                <div class="stat-value" data-count="4">0</div>
+                <div class="stat-label">Active Subscriptions</div>
+              </div>
+              <div class="stat-card anim-fade-up delay-2">
+                <span class="stat-icon">🎙</span>
+                <div class="stat-value" data-count="47">0</div>
+                <div class="stat-label">Saved Sermons</div>
+              </div>
+              <div class="stat-card anim-fade-up delay-3">
+                <span class="stat-icon">📅</span>
+                <div class="stat-value" data-count="3">0</div>
+                <div class="stat-label">Upcoming Sessions</div>
+              </div>
+              <div class="stat-card anim-fade-up delay-4">
+                <span class="stat-icon">🤝</span>
+                <div class="stat-value" data-count="28">0</div>
+                <div class="stat-label">Total Consultations</div>
+              </div>
+              <div class="stat-card anim-fade-up delay-5">
+                <span class="stat-icon">❤</span>
+                <div class="stat-value" data-count="12">0</div>
+                <div class="stat-label">Favorite Ministers</div>
+              </div>
+              <div class="stat-card anim-fade-up delay-6">
+                <span class="stat-icon">🙏</span>
+                <div class="stat-value" data-count="19">0</div>
+                <div class="stat-label">Prayer Requests</div>
+              </div>
+            </div>
+
+            <!-- My Ministers Preview -->
+            <div class="section-header">
+              <div>
+                <div class="section-title">My Ministers</div>
+                <div class="section-sub">Your subscribed spiritual guides</div>
+              </div>
+              <div class="section-link" onclick="window.location.href='ministers.html'">View All →</div>
+            </div>
+            <div class="ministers-list" style="margin-bottom:36px">
+              <div class="minister-card anim-fade-up delay-1">
+                <div class="minister-avatar" style="background:linear-gradient(135deg,#8b6914,#2a4080)">GM<div class="minister-status online"></div></div>
+                <div class="minister-info">
+                  <div class="minister-name">Rev. Dr. Grace Mensah</div>
+                  <div class="minister-specialty">✦ Spiritual Counselling & Prayer</div>
+                  <div class="minister-last">Last interaction: 2 days ago · 5 sessions total</div>
+                </div>
+                <div class="minister-actions">
+                  <button class="btn-sm btn-sm-gold">💬 Chat</button>
+                  <button class="btn-sm btn-sm-outline">📅 Book</button>
+                </div>
+              </div>
+              <div class="minister-card anim-fade-up delay-2">
+                <div class="minister-avatar" style="background:linear-gradient(135deg,#2a6080,#6b2080)">SA<div class="minister-status away"></div></div>
+                <div class="minister-info">
+                  <div class="minister-name">Pastor Solomon Ade</div>
+                  <div class="minister-specialty">✦ Prophetic Ministry & Healing</div>
+                  <div class="minister-last">Last interaction: 5 days ago · 8 sessions total</div>
+                </div>
+                <div class="minister-actions">
+                  <button class="btn-sm btn-sm-gold">💬 Chat</button>
+                  <button class="btn-sm btn-sm-outline">📅 Book</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Recent Sermons Preview -->
+            <div class="section-header">
+              <div>
+                <div class="section-title">Recent Sermons</div>
+                <div class="section-sub">Continue where you left off</div>
+              </div>
+              <div class="section-link" onclick="window.location.href='bookmarks.html'">View Library →</div>
+            </div>
+            <div class="sermons-grid">
+              <div class="sermon-card anim-fade-up delay-1">
+                <div class="sermon-thumb">🕊<div class="sermon-duration">42:18</div></div>
+                <div class="sermon-body">
+                  <div class="sermon-title">The Power of Unwavering Faith</div>
+                  <div class="sermon-minister">Rev. Dr. Grace Mensah</div>
+                  <div class="audio-player">
+                    <div class="player-progress" onclick="seekAudio(this)"><div class="player-bar" style="width:35%"></div></div>
+                    <div class="player-controls">
+                      <div class="player-btns">
+                        <button class="player-btn">⏮</button>
+                        <button class="player-btn play-btn" onclick="togglePlay(this)">▶</button>
+                        <button class="player-btn">⏭</button>
+                      </div>
+                      <div class="player-time">14:47 / 42:18</div>
+                    </div>
+                  </div>
+                  <div class="sermon-actions">
+                    <div class="sermon-btn">🔖 Save</div>
+                    <div class="sermon-btn">⬇ Download</div>
+                    <div class="sermon-btn">↗ Share</div>
+                  </div>
+                </div>
+              </div>
+              <div class="sermon-card anim-fade-up delay-2">
+                <div class="sermon-thumb" style="background:linear-gradient(135deg,#1a2040,#0a1020)">🌅<div class="sermon-duration">38:52</div></div>
+                <div class="sermon-body">
+                  <div class="sermon-title">Walking in Spiritual Purpose</div>
+                  <div class="sermon-minister">Pastor Solomon Ade</div>
+                  <div class="audio-player">
+                    <div class="player-progress" onclick="seekAudio(this)"><div class="player-bar" style="width:0%"></div></div>
+                    <div class="player-controls">
+                      <div class="player-btns">
+                        <button class="player-btn">⏮</button>
+                        <button class="player-btn play-btn" onclick="togglePlay(this)">▶</button>
+                        <button class="player-btn">⏭</button>
+                      </div>
+                      <div class="player-time">0:00 / 38:52</div>
+                    </div>
+                  </div>
+                  <div class="sermon-actions">
+                    <div class="sermon-btn">🔖 Save</div>
+                    <div class="sermon-btn">⬇ Download</div>
+                    <div class="sermon-btn">↗ Share</div>
+                  </div>
+                </div>
+              </div>
+              <div class="sermon-card anim-fade-up delay-3">
+                <div class="sermon-thumb" style="background:linear-gradient(135deg,#201430,#0a1428)">✨<div class="sermon-duration">55:30</div></div>
+                <div class="sermon-body">
+                  <div class="sermon-title">Restoration of the Broken Spirit</div>
+                  <div class="sermon-minister">Prophetess Amara Diallo</div>
+                  <div class="audio-player">
+                    <div class="player-progress" onclick="seekAudio(this)"><div class="player-bar" style="width:68%"></div></div>
+                    <div class="player-controls">
+                      <div class="player-btns">
+                        <button class="player-btn">⏮</button>
+                        <button class="player-btn play-btn" onclick="togglePlay(this)">▶</button>
+                        <button class="player-btn">⏭</button>
+                      </div>
+                      <div class="player-time">37:44 / 55:30</div>
+                    </div>
+                  </div>
+                  <div class="sermon-actions">
+                    <div class="sermon-btn">🔖 Save</div>
+                    <div class="sermon-btn">⬇ Download</div>
+                    <div class="sermon-btn">↗ Share</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- ===== MINISTERS SECTION ===== -->
+          <div class="section" id="section-ministers">
+            <div class="section-header">
+              <div>
+                <div class="section-title">My Ministers</div>
+                <div class="section-sub">Your subscribed spiritual guides & mentors</div>
+              </div>
+            </div>
+            <div class="ministers-list">
+              <div class="minister-card">
+                <div class="minister-avatar" style="background:linear-gradient(135deg,#8b6914,#2a4080)">GM<div class="minister-status online"></div></div>
+                <div class="minister-info">
+                  <div class="minister-name">Rev. Dr. Grace Mensah</div>
+                  <div class="minister-specialty">✦ Spiritual Counselling & Prayer Ministry</div>
+                  <div class="minister-last">🟢 Online now · 5 sessions total · Member since Jan 2024</div>
+                </div>
+                <div class="minister-actions">
+                  <button class="btn-sm btn-sm-gold">💬 Chat</button>
+                  <button class="btn-sm btn-sm-outline">📅 Book</button>
+                </div>
+              </div>
+              <div class="minister-card">
+                <div class="minister-avatar" style="background:linear-gradient(135deg,#2a6080,#6b2080)">SA<div class="minister-status away"></div></div>
+                <div class="minister-info">
+                  <div class="minister-name">Pastor Solomon Ade</div>
+                  <div class="minister-specialty">✦ Prophetic Ministry & Healing</div>
+                  <div class="minister-last">🟡 Away · 8 sessions total · Member since Mar 2024</div>
+                </div>
+                <div class="minister-actions">
+                  <button class="btn-sm btn-sm-gold">💬 Chat</button>
+                  <button class="btn-sm btn-sm-outline">📅 Book</button>
+                </div>
+              </div>
+              <div class="minister-card">
+                <div class="minister-avatar" style="background:linear-gradient(135deg,#603020,#804060)">AD<div class="minister-status online"></div></div>
+                <div class="minister-info">
+                  <div class="minister-name">Prophetess Amara Diallo</div>
+                  <div class="minister-specialty">✦ Prophetic Intercession & Deliverance</div>
+                  <div class="minister-last">🟢 Online now · 3 sessions total · Member since Jun 2024</div>
+                </div>
+                <div class="minister-actions">
+                  <button class="btn-sm btn-sm-gold">💬 Chat</button>
+                  <button class="btn-sm btn-sm-outline">📅 Book</button>
+                </div>
+              </div>
+              <div class="minister-card">
+                <div class="minister-avatar" style="background:linear-gradient(135deg,#206040,#204060)">JK<div class="minister-status offline"></div></div>
+                <div class="minister-info">
+                  <div class="minister-name">Bishop James Kofi</div>
+                  <div class="minister-specialty">✦ Marriage Counselling & Family Ministry</div>
+                  <div class="minister-last">⚫ Offline · 12 sessions total · Member since Aug 2023</div>
+                </div>
+                <div class="minister-actions">
+                  <button class="btn-sm btn-sm-gold">💬 Chat</button>
+                  <button class="btn-sm btn-sm-outline">📅 Book</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ===== MESSAGES SECTION ===== -->
+          <div class="section" id="section-messages">
+            <div class="section-header">
+              <div>
+                <div class="section-title">Messages</div>
+                <div class="section-sub">Your spiritual conversations</div>
+              </div>
+            </div>
+            <div class="notif-list">
+              <div class="notif-item unread">
+                <div class="notif-icon-wrap">GM</div>
+                <div class="notif-body">
+                  <div class="notif-title">Rev. Dr. Grace Mensah</div>
+                  <div class="notif-text">Thank you for your session today, Emmanuel. I will be praying for your breakthrough. Remember, God's timing is always perfect...</div>
+                </div>
+                <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px">
+                  <div class="notif-time">2h ago</div>
+                  <div class="unread-dot"></div>
+                </div>
+              </div>
+              <div class="notif-item unread">
+                <div class="notif-icon-wrap">SA</div>
+                <div class="notif-body">
+                  <div class="notif-title">Pastor Solomon Ade</div>
+                  <div class="notif-text">Your prayer request has been received. I will include you in tonight's intercession service. Be blessed...</div>
+                </div>
+                <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px">
+                  <div class="notif-time">1d ago</div>
+                  <div class="unread-dot"></div>
+                </div>
+              </div>
+              <div class="notif-item">
+                <div class="notif-icon-wrap">JK</div>
+                <div class="notif-body">
+                  <div class="notif-title">Bishop James Kofi</div>
+                  <div class="notif-text">The resources I mentioned during our last session have been shared in the library. Look for "Covenant Marriage" series...</div>
+                </div>
+                <div class="notif-time">3d ago</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ===== SERMONS SECTION ===== -->
+          <div class="section" id="section-sermons">
+            <div class="section-header">
+              <div>
+                <div class="section-title">Sermon Library</div>
+                <div class="section-sub">Curated teachings from your ministers</div>
+              </div>
+            </div>
+            <div class="sermons-grid">
+              <div class="sermon-card">
+                <div class="sermon-thumb">🕊<div class="sermon-duration">42:18</div></div>
+                <div class="sermon-body">
+                  <div class="sermon-title">The Power of Unwavering Faith</div>
+                  <div class="sermon-minister">Rev. Dr. Grace Mensah</div>
+                  <div class="audio-player">
+                    <div class="player-progress" onclick="seekAudio(this)"><div class="player-bar" style="width:35%"></div></div>
+                    <div class="player-controls">
+                      <div class="player-btns">
+                        <button class="player-btn">⏮</button>
+                        <button class="player-btn play-btn" onclick="togglePlay(this)">▶</button>
+                        <button class="player-btn">⏭</button>
+                      </div>
+                      <div class="player-time">14:47 / 42:18</div>
+                    </div>
+                  </div>
+                  <div class="sermon-actions">
+                    <div class="sermon-btn">🔖 Save</div>
+                    <div class="sermon-btn">⬇ Download</div>
+                    <div class="sermon-btn">↗ Share</div>
+                  </div>
+                </div>
+              </div>
+              <div class="sermon-card">
+                <div class="sermon-thumb" style="background:linear-gradient(135deg,#1a2040,#0a1020)">🌅<div class="sermon-duration">38:52</div></div>
+                <div class="sermon-body">
+                  <div class="sermon-title">Walking in Spiritual Purpose</div>
+                  <div class="sermon-minister">Pastor Solomon Ade</div>
+                  <div class="audio-player">
+                    <div class="player-progress" onclick="seekAudio(this)"><div class="player-bar" style="width:0%"></div></div>
+                    <div class="player-controls">
+                      <div class="player-btns">
+                        <button class="player-btn">⏮</button>
+                        <button class="player-btn play-btn" onclick="togglePlay(this)">▶</button>
+                        <button class="player-btn">⏭</button>
+                      </div>
+                      <div class="player-time">0:00 / 38:52</div>
+                    </div>
+                  </div>
+                  <div class="sermon-actions">
+                    <div class="sermon-btn">🔖 Save</div>
+                    <div class="sermon-btn">⬇ Download</div>
+                    <div class="sermon-btn">↗ Share</div>
+                  </div>
+                </div>
+              </div>
+              <div class="sermon-card">
+                <div class="sermon-thumb" style="background:linear-gradient(135deg,#201430,#0a1428)">✨<div class="sermon-duration">55:30</div></div>
+                <div class="sermon-body">
+                  <div class="sermon-title">Restoration of the Broken Spirit</div>
+                  <div class="sermon-minister">Prophetess Amara Diallo</div>
+                  <div class="audio-player">
+                    <div class="player-progress" onclick="seekAudio(this)"><div class="player-bar" style="width:68%"></div></div>
+                    <div class="player-controls">
+                      <div class="player-btns">
+                        <button class="player-btn">⏮</button>
+                        <button class="player-btn play-btn" onclick="togglePlay(this)">▶</button>
+                        <button class="player-btn">⏭</button>
+                      </div>
+                      <div class="player-time">37:44 / 55:30</div>
+                    </div>
+                  </div>
+                  <div class="sermon-actions">
+                    <div class="sermon-btn">🔖 Save</div>
+                    <div class="sermon-btn">⬇ Download</div>
+                    <div class="sermon-btn">↗ Share</div>
+                  </div>
+                </div>
+              </div>
+              <div class="sermon-card">
+                <div class="sermon-thumb" style="background:linear-gradient(135deg,#143020,#0a2010)">🌿<div class="sermon-duration">29:45</div></div>
+                <div class="sermon-body">
+                  <div class="sermon-title">Covenant Blessings & Promises</div>
+                  <div class="sermon-minister">Bishop James Kofi</div>
+                  <div class="audio-player">
+                    <div class="player-progress" onclick="seekAudio(this)"><div class="player-bar" style="width:0%"></div></div>
+                    <div class="player-controls">
+                      <div class="player-btns">
+                        <button class="player-btn">⏮</button>
+                        <button class="player-btn play-btn" onclick="togglePlay(this)">▶</button>
+                        <button class="player-btn">⏭</button>
+                      </div>
+                      <div class="player-time">0:00 / 29:45</div>
+                    </div>
+                  </div>
+                  <div class="sermon-actions">
+                    <div class="sermon-btn">🔖 Save</div>
+                    <div class="sermon-btn">⬇ Download</div>
+                    <div class="sermon-btn">↗ Share</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ===== SAVED CONTENT ===== -->
+          <div class="section" id="section-saved">
+            <div class="section-header">
+              <div>
+                <div class="section-title">Saved Content</div>
+                <div class="section-sub">Your curated spiritual library</div>
+              </div>
+            </div>
+            <div class="saved-tabs">
+              <div class="tab-btn active" onclick="switchTab(this,'all')">All</div>
+              <div class="tab-btn" onclick="switchTab(this,'sermons')">Sermons</div>
+              <div class="tab-btn" onclick="switchTab(this,'devotionals')">Devotionals</div>
+              <div class="tab-btn" onclick="switchTab(this,'teachings')">Teachings</div>
+            </div>
+            <div class="saved-grid">
+              <div class="saved-card">
+                <div class="saved-icon">🎙</div>
+                <div class="saved-title">The Power of Unwavering Faith</div>
+                <div class="saved-meta">Rev. Grace Mensah · 42 min · Sermon</div>
+              </div>
+              <div class="saved-card">
+                <div class="saved-icon">📖</div>
+                <div class="saved-title">Morning Devotional: Seek First His Kingdom</div>
+                <div class="saved-meta">Pastor Solomon Ade · 5 min read · Devotional</div>
+              </div>
+              <div class="saved-card">
+                <div class="saved-icon">✨</div>
+                <div class="saved-title">Restoration of the Broken Spirit</div>
+                <div class="saved-meta">Prophetess Amara Diallo · 55 min · Sermon</div>
+              </div>
+              <div class="saved-card">
+                <div class="saved-icon">🌿</div>
+                <div class="saved-title">Walking in the Spirit Daily</div>
+                <div class="saved-meta">Bishop James Kofi · 12 min read · Teaching</div>
+              </div>
+              <div class="saved-card">
+                <div class="saved-icon">🙏</div>
+                <div class="saved-title">Prayers for Spiritual Breakthrough</div>
+                <div class="saved-meta">Rev. Grace Mensah · 8 min · Prayer Guide</div>
+              </div>
+              <div class="saved-card">
+                <div class="saved-icon">🌅</div>
+                <div class="saved-title">Covenant Blessings & Promises</div>
+                <div class="saved-meta">Bishop James Kofi · 29 min · Sermon</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ===== SESSIONS SECTION ===== -->
+          <div class="section" id="section-sessions">
+            <div class="section-header">
+              <div>
+                <div class="section-title">Live Consultations</div>
+                <div class="section-sub">Upcoming & scheduled sessions</div>
+              </div>
+            </div>
+            <div class="consultations-grid">
+              <div class="consult-card">
+                <div class="live-badge"><div class="live-pulse"></div> Upcoming</div>
+                <div class="consult-minister">
+                  <div class="consult-avatar">GM</div>
+                  <div>
+                    <div class="consult-name">Rev. Dr. Grace Mensah</div>
+                    <div class="consult-type">✦ Video Consultation · Spiritual Counselling</div>
+                  </div>
+                </div>
+                <div class="countdown-wrap">
+                  <div class="countdown-label">Session begins in</div>
+                  <div class="countdown-timer">
+                    <div class="countdown-unit">
+                      <span class="countdown-num" id="cd-hours">00</span>
+                      <span class="countdown-text">hrs</span>
+                    </div>
+                    <span class="countdown-sep">:</span>
+                    <div class="countdown-unit">
+                      <span class="countdown-num" id="cd-mins">00</span>
+                      <span class="countdown-text">min</span>
+                    </div>
+                    <span class="countdown-sep">:</span>
+                    <div class="countdown-unit">
+                      <span class="countdown-num" id="cd-secs">00</span>
+                      <span class="countdown-text">sec</span>
+                    </div>
+                  </div>
+                </div>
+                <button class="btn-primary" style="width:100%;text-align:center">🎥 Join Session</button>
+              </div>
+              <div class="consult-card">
+                <div class="live-badge" style="background:rgba(22,32,64,0.4);border-color:rgba(201,168,76,0.2);color:var(--gold)">📅 Scheduled</div>
+                <div class="consult-minister">
+                  <div class="consult-avatar" style="background:linear-gradient(135deg,#2a6080,#6b2080)">SA</div>
+                  <div>
+                    <div class="consult-name">Pastor Solomon Ade</div>
+                    <div class="consult-type">✦ Audio Call · Prophetic Ministry</div>
+                  </div>
+                </div>
+                <div class="countdown-wrap">
+                  <div class="countdown-label">Scheduled for</div>
+                  <div style="font-family:'Cinzel',serif;font-size:1rem;color:var(--gold);text-align:center;padding:8px 0">Friday, May 30 · 3:00 PM</div>
+                </div>
+                <button class="btn-outline" style="width:100%;text-align:center">📝 Manage Session</button>
+              </div>
+              <div class="consult-card">
+                <div class="live-badge" style="background:rgba(22,32,64,0.4);border-color:rgba(201,168,76,0.2);color:var(--gold)">📅 Scheduled</div>
+                <div class="consult-minister">
+                  <div class="consult-avatar" style="background:linear-gradient(135deg,#206040,#204060)">JK</div>
+                  <div>
+                    <div class="consult-name">Bishop James Kofi</div>
+                    <div class="consult-type">✦ Video Call · Family Ministry</div>
+                  </div>
+                </div>
+                <div class="countdown-wrap">
+                  <div class="countdown-label">Scheduled for</div>
+                  <div style="font-family:'Cinzel',serif;font-size:1rem;color:var(--gold);text-align:center;padding:8px 0">Saturday, Jun 1 · 11:00 AM</div>
+                </div>
+                <button class="btn-outline" style="width:100%;text-align:center">📝 Manage Session</button>
+              </div>
+            </div>
+
+            <!-- Spiritual Journey Timeline -->
+            <div class="section-header" style="margin-top:40px">
+              <div>
+                <div class="section-title">Spiritual Journey</div>
+                <div class="section-sub">Your growth milestones</div>
+              </div>
+            </div>
+            <div class="timeline">
+              <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-card">
+                  <div class="timeline-type">🎙 Sermon Completed</div>
+                  <div class="timeline-title">Restoration of the Broken Spirit</div>
+                  <div class="timeline-meta">Prophetess Amara Diallo · May 22, 2026</div>
+                </div>
+              </div>
+              <div class="timeline-item">
+                <div class="timeline-dot" style="background:var(--crimson-light)"></div>
+                <div class="timeline-card">
+                  <div class="timeline-type">🤝 Session Attended</div>
+                  <div class="timeline-title">1-on-1 Spiritual Counselling</div>
+                  <div class="timeline-meta">Rev. Dr. Grace Mensah · May 20, 2026 · 60 min</div>
+                </div>
+              </div>
+              <div class="timeline-item">
+                <div class="timeline-dot" style="background:#4caf82"></div>
+                <div class="timeline-card">
+                  <div class="timeline-type">🙏 Prayer Milestone</div>
+                  <div class="timeline-title">10th Prayer Request Submitted</div>
+                  <div class="timeline-meta">Personal milestone · May 18, 2026</div>
+                </div>
+              </div>
+              <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-card">
+                  <div class="timeline-type">🎙 Sermon Completed</div>
+                  <div class="timeline-title">Walking in Spiritual Purpose</div>
+                  <div class="timeline-meta">Pastor Solomon Ade · May 15, 2026</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ===== NOTIFICATIONS ===== -->
+          <div class="section" id="section-notifications">
+            <div class="section-header">
+              <div>
+                <div class="section-title">Notifications</div>
+                <div class="section-sub">Stay updated on your spiritual journey</div>
+              </div>
+              <div class="section-link">Mark all read</div>
+            </div>
+            <div class="notif-list">
+              <div class="notif-item unread">
+                <div class="notif-icon-wrap">💬</div>
+                <div class="notif-body">
+                  <div class="notif-title">Minister Replied to Your Message</div>
+                  <div class="notif-text">Rev. Dr. Grace Mensah has responded to your prayer request from yesterday. Tap to view her response.</div>
+                </div>
+                <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px">
+                  <div class="notif-time">2h ago</div>
+                  <div class="unread-dot"></div>
+                </div>
+              </div>
+              <div class="notif-item unread">
+                <div class="notif-icon-wrap">🎙</div>
+                <div class="notif-body">
+                  <div class="notif-title">New Sermon Uploaded</div>
+                  <div class="notif-text">Pastor Solomon Ade has uploaded a new sermon: "Spiritual Acceleration in the Season of Harvest" — 48 minutes.</div>
+                </div>
+                <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px">
+                  <div class="notif-time">5h ago</div>
+                  <div class="unread-dot"></div>
+                </div>
+              </div>
+              <div class="notif-item unread">
+                <div class="notif-icon-wrap">📅</div>
+                <div class="notif-body">
+                  <div class="notif-title">Session Reminder — Tomorrow</div>
+                  <div class="notif-text">Your consultation with Rev. Dr. Grace Mensah is scheduled for tomorrow at 10:30 AM. Prepare your questions.</div>
+                </div>
+                <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px">
+                  <div class="notif-time">8h ago</div>
+                  <div class="unread-dot"></div>
+                </div>
+              </div>
+              <div class="notif-item">
+                <div class="notif-icon-wrap">💎</div>
+                <div class="notif-body">
+                  <div class="notif-title">Subscription Renewal in 7 Days</div>
+                  <div class="notif-text">Your CLJN Membership plan renews on June 1, 2026. Your payment method on file will be charged $49.99.</div>
+                </div>
+                <div class="notif-time">1d ago</div>
+              </div>
+              <div class="notif-item">
+                <div class="notif-icon-wrap">🙏</div>
+                <div class="notif-body">
+                  <div class="notif-title">Prayer Response Received</div>
+                  <div class="notif-text">Prophetess Amara Diallo has prayed over your submitted request and left you a special voice note.</div>
+                </div>
+                <div class="notif-time">2d ago</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ===== BILLING SECTION ===== -->
+          <div class="section" id="section-billing">
+            <div class="section-header">
+              <div>
+                <div class="section-title">Billing & Subscription</div>
+                <div class="section-sub">Manage your CLJN Membership</div>
+              </div>
+            </div>
+            <div class="billing-grid">
+              <div class="billing-plan-card">
+                <div class="plan-name">CLJN Membership</div>
+                <div class="plan-price">$49<span>.99/month</span></div>
+                <div class="plan-renewal">Renews on June 1, 2026</div>
+                <ul class="plan-features">
+                  <li>Access to 4 subscribed ministers</li>
+                  <li>Unlimited sermon streaming</li>
+                  <li>5 private consultations/month</li>
+                  <li>Priority session booking</li>
+                  <li>Exclusive devotional library</li>
+                  <li>Prayer request submissions</li>
+                </ul>
+                <button class="btn-primary">Upgrade to Celestial Plan ✦</button>
+              </div>
+              <div class="billing-history">
+                <table class="billing-table">
+                  <thead>
+                    <tr>
+                      <th>Date</th>
+                      <th>Description</th>
+                      <th>Amount</th>
+                      <th>Status</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>May 1, 2026</td>
+                      <td>CLJN Membership</td>
+                      <td style="color:var(--gold)">$49.99</td>
+                      <td><span class="status-paid">Paid</span></td>
+                    </tr>
+                    <tr>
+                      <td>Apr 1, 2026</td>
+                      <td>CLJN Membership</td>
+                      <td style="color:var(--gold)">$49.99</td>
+                      <td><span class="status-paid">Paid</span></td>
+                    </tr>
+                    <tr>
+                      <td>Mar 1, 2026</td>
+                      <td>CLJN Membership</td>
+                      <td style="color:var(--gold)">$49.99</td>
+                      <td><span class="status-paid">Paid</span></td>
+                    </tr>
+                    <tr>
+                      <td>Feb 1, 2026</td>
+                      <td>CLJN Membership</td>
+                      <td style="color:var(--gold)">$49.99</td>
+                      <td><span class="status-paid">Paid</span></td>
+                    </tr>
+                    <tr>
+                      <td>Jan 1, 2026</td>
+                      <td>CLJN Membership</td>
+                      <td style="color:var(--gold)">$49.99</td>
+                      <td><span class="status-paid">Paid</span></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- ===== SETTINGS ===== -->
+          <div class="section" id="section-settings">
+            <div class="section-header">
+              <div>
+                <div class="section-title">Account Settings</div>
+                <div class="section-sub">Manage your profile & preferences</div>
+              </div>
+            </div>
+            <div class="settings-grid">
+              <div class="settings-card">
+                <div class="settings-card-title">Profile Information</div>
+                <div class="form-group">
+                  <label class="form-label">Full Name</label>
+                  <input class="form-input" type="text" value="Emmanuel Osei" placeholder="Your name">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Email Address</label>
+                  <input class="form-input" type="email" value="emmanuel@cljn.com" placeholder="Email">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Location</label>
+                  <input class="form-input" type="text" value="Accra, Ghana" placeholder="City, Country">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Language</label>
+                  <input class="form-input" type="text" value="English (UK)" placeholder="Language">
+                </div>
+                <button class="btn-primary" style="width:100%;text-align:center;margin-top:8px">Save Changes</button>
+              </div>
+              <div class="settings-card">
+                <div class="settings-card-title">Notification Settings</div>
+                <div class="toggle-row">
+                  <div class="toggle-label">Session reminders</div>
+                  <div class="toggle on" onclick="this.classList.toggle('on')"></div>
+                </div>
+                <div class="toggle-row">
+                  <div class="toggle-label">New sermon alerts</div>
+                  <div class="toggle on" onclick="this.classList.toggle('on')"></div>
+                </div>
+                <div class="toggle-row">
+                  <div class="toggle-label">Minister messages</div>
+                  <div class="toggle on" onclick="this.classList.toggle('on')"></div>
+                </div>
+                <div class="toggle-row">
+                  <div class="toggle-label">Prayer responses</div>
+                  <div class="toggle on" onclick="this.classList.toggle('on')"></div>
+                </div>
+                <div class="toggle-row">
+                  <div class="toggle-label">Billing notifications</div>
+                  <div class="toggle" onclick="this.classList.toggle('on')"></div>
+                </div>
+                <div class="toggle-row">
+                  <div class="toggle-label">Community announcements</div>
+                  <div class="toggle" onclick="this.classList.toggle('on')"></div>
+                </div>
+              </div>
+              <div class="settings-card">
+                <div class="settings-card-title">Security & Privacy</div>
+                <div class="form-group">
+                  <label class="form-label">Current Password</label>
+                  <input class="form-input" type="password" placeholder="••••••••">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">New Password</label>
+                  <input class="form-input" type="password" placeholder="Min. 8 characters">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Confirm New Password</label>
+                  <input class="form-input" type="password" placeholder="Repeat new password">
+                </div>
+                <button class="btn-outline" style="width:100%;text-align:center;margin-top:8px">Update Password</button>
+              </div>
+              <div class="settings-card">
+                <div class="settings-card-title">Privacy Controls</div>
+                <div class="toggle-row">
+                  <div class="toggle-label">Public profile visible</div>
+                  <div class="toggle" onclick="this.classList.toggle('on')"></div>
+                </div>
+                <div class="toggle-row">
+                  <div class="toggle-label">Show online status</div>
+                  <div class="toggle on" onclick="this.classList.toggle('on')"></div>
+                </div>
+                <div class="toggle-row">
+                  <div class="toggle-label">Share activity with ministers</div>
+                  <div class="toggle on" onclick="this.classList.toggle('on')"></div>
+                </div>
+                <div class="toggle-row">
+                  <div class="toggle-label">Allow session recordings</div>
+                  <div class="toggle" onclick="this.classList.toggle('on')"></div>
+                </div>
+                <div style="margin-top:20px">
+                  <button class="btn-outline" style="width:100%;text-align:center;border-color:rgba(220,50,50,0.3);color:#e55;">Delete Account</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- RIGHT PANEL -->
+        <div class="right-panel">
+          <div class="panel-card">
+            <div class="panel-title">✦ Daily Scripture</div>
+            <div class="verse-text">"For I know the plans I have for you, declares the Lord, plans to prosper you and not to harm you, plans to give you hope and a future."</div>
+            <div class="verse-ref">— Jeremiah 29:11</div>
+          </div>
+
+          <div class="panel-card">
+            <div class="panel-title">🙏 Submit Prayer Request</div>
+            <textarea class="prayer-textarea" placeholder="Share your prayer need with your minister..."></textarea>
+            <button class="btn-primary" style="width:100%;text-align:center">Send Prayer Request</button>
+          </div>
+
+          <div class="panel-card">
+            <div class="panel-title">📅 Upcoming Live Events</div>
+            <div class="event-item">
+              <div class="event-date-badge">
+                <span class="event-day">28</span>
+                <span class="event-month">May</span>
+              </div>
+              <div>
+                <div class="event-title">Community Prayer Night</div>
+                <div class="event-time">8:00 PM · Rev. Dr. Grace Mensah</div>
+              </div>
+            </div>
+            <div class="event-item">
+              <div class="event-date-badge">
+                <span class="event-day">01</span>
+                <span class="event-month">Jun</span>
+              </div>
+              <div>
+                <div class="event-title">Prophetic Webinar Series</div>
+                <div class="event-time">6:00 PM · Pastor Solomon Ade</div>
+              </div>
+            </div>
+            <div class="event-item">
+              <div class="event-date-badge">
+                <span class="event-day">05</span>
+                <span class="event-month">Jun</span>
+              </div>
+              <div>
+                <div class="event-title">Marriage Enrichment Workshop</div>
+                <div class="event-time">10:00 AM · Bishop James Kofi</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ===== STARS =====
+(function() {
+  const container = document.getElementById('stars');
+  for (let i = 0; i < 60; i++) {
+    const s = document.createElement('div');
+    s.className = 'star';
+    const size = Math.random() * 2 + 0.5;
+    s.style.cssText = `
+      width:${size}px;height:${size}px;
+      top:${Math.random()*100}%;left:${Math.random()*100}%;
+      --dur:${2+Math.random()*4}s;
+      --delay:${Math.random()*4}s;
+      --op:${0.2+Math.random()*0.5};
+    `;
+    container.appendChild(s);
+  }
+})();
+
+// ===== SIDEBAR TOGGLE =====
+let sidebarCollapsed = false;
+
+function toggleSidebar() {
+  sidebarCollapsed = !sidebarCollapsed;
+  const sidebar = document.getElementById('sidebar');
+  const mainContent = document.getElementById('mainContent');
+  const toggle = document.getElementById('sidebarToggle');
+  sidebar.classList.toggle('collapsed', sidebarCollapsed);
+  mainContent.classList.toggle('expanded', sidebarCollapsed);
+  toggle.textContent = sidebarCollapsed ? '❯' : '❮';
+  toggle.style.left = sidebarCollapsed
+    ? 'calc(var(--sidebar-collapsed) - 14px)'
+    : 'calc(var(--sidebar-w) - 14px)';
+}
+
+function openMobileSidebar() {
+  document.getElementById('sidebar').classList.add('mobile-open');
+  document.getElementById('mobileOverlay').style.display = 'block';
+}
+
+function closeMobileSidebar() {
+  document.getElementById('sidebar').classList.remove('mobile-open');
+  document.getElementById('mobileOverlay').style.display = 'none';
+}
+
+// ===== SECTION NAVIGATION =====
+function showSection(id) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  const section = document.getElementById('section-' + id);
+  if (section) section.classList.add('active');
+  const navItems = document.querySelectorAll('.nav-item');
+  navItems.forEach(item => {
+    if (item.getAttribute('onclick') && item.getAttribute('onclick').includes("'" + id + "'")) {
+      item.classList.add('active');
+    }
+  });
+  closeMobileSidebar();
+  closeAllDropdowns();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ===== DROPDOWNS =====
+function toggleDropdown(id) {
+  const dropdown = document.getElementById(id);
+  const isOpen = dropdown.classList.contains('open');
+  closeAllDropdowns();
+  if (!isOpen) dropdown.classList.add('open');
+}
+
+function closeAllDropdowns() {
+  document.querySelectorAll('.dropdown').forEach(d => d.classList.remove('open'));
+}
+
+document.addEventListener('click', function(e) {
+  if (!e.target.closest('[onclick*="toggleDropdown"]') && !e.target.closest('.dropdown')) {
+    closeAllDropdowns();
+  }
+});
+
+// ===== AUDIO PLAYER =====
+function togglePlay(btn) {
+  const isPlaying = btn.textContent === '⏸';
+  // Pause all
+  document.querySelectorAll('.play-btn').forEach(b => b.textContent = '▶');
+  if (!isPlaying) btn.textContent = '⏸';
+}
+
+function seekAudio(progressEl) {
+  // Handled via CSS click
+}
+
+// ===== ANIMATED COUNTERS =====
+function animateCounter(el, target, duration) {
+  const start = performance.now();
+  function update(currentTime) {
+    const elapsed = currentTime - start;
+    const progress = Math.min(elapsed / duration, 1);
+    const eased = 1 - Math.pow(1 - progress, 3);
+    el.textContent = Math.round(eased * target);
+    if (progress < 1) requestAnimationFrame(update);
+  }
+  requestAnimationFrame(update);
+}
+
+function startCounters() {
+  document.querySelectorAll('[data-count]').forEach(el => {
+    const target = parseInt(el.getAttribute('data-count'));
+    setTimeout(() => animateCounter(el, target, 1200), 300);
+  });
+}
+
+setTimeout(startCounters, 400);
+
+// ===== COUNTDOWN TIMER =====
+function updateCountdown() {
+  const now = new Date();
+  const target = new Date(now);
+  target.setDate(target.getDate() + 1);
+  target.setHours(10, 30, 0, 0);
+  const diff = Math.max(0, target - now);
+  const hours = Math.floor(diff / 3600000);
+  const mins = Math.floor((diff % 3600000) / 60000);
+  const secs = Math.floor((diff % 60000) / 1000);
+  const pad = n => String(n).padStart(2, '0');
+  const hEl = document.getElementById('cd-hours');
+  const mEl = document.getElementById('cd-mins');
+  const sEl = document.getElementById('cd-secs');
+  if (hEl) hEl.textContent = pad(hours);
+  if (mEl) mEl.textContent = pad(mins);
+  if (sEl) sEl.textContent = pad(secs);
+}
+
+updateCountdown();
+setInterval(updateCountdown, 1000);
+
+// ===== TABS =====
+function switchTab(tabEl, type) {
+  document.querySelectorAll('.tab-btn').forEach(t => t.classList.remove('active'));
+  tabEl.classList.add('active');
+}
+
+// ===== SEARCH =====
+document.querySelector('.topbar-search input')?.addEventListener('keyup', function(e) {
+  if (e.key === 'Enter' && this.value.trim()) {
+    // Could filter content
+    this.blur();
+  }
+});
+</script>
+
+</body>
+</html>
